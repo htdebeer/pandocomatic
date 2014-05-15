@@ -306,11 +306,12 @@ module Pandocomatic
       @options[:section_divs] = switch
     end
 
+    EMAIL_OPTIONS = [:none, :javascript, :references]
     def email_obfuscation setting
-      if [:none, :javascript, :references].include? setting then
+      if EMAIL_OPTIONS.include? setting then
         @options[:email_obfuscation] = setting
       else
-        raise "Expected one of none, javascript or references as email obfuscation option, got '#{setting}' instead."
+        raise "Expected one of #{EMAIL_OPTIONS.join(',')} as email obfuscation option, got '#{setting}' instead."
       end
     end
 
@@ -350,7 +351,7 @@ module Pandocomatic
     def reference_odt filename
       if File.exists? filename then
         if File.readable? filename then
-          @options[:reference_odt].push filename
+          @options[:reference_odt] = filename
         else
           raise "Reference ODT file '#{filename}' is not readable."
         end
@@ -362,7 +363,7 @@ module Pandocomatic
     def reference_docx filename
       if File.exists? filename then
         if File.readable? filename then
-          @options[:reference_docx].push filename
+          @options[:reference_docx] = filename
         else
           raise "Reference docx file '#{filename}' is not readable."
         end
@@ -371,7 +372,142 @@ module Pandocomatic
       end
     end
 
+    def epub_stylesheet filename
+      if File.exists? filename then
+        if File.readable? filename then
+          @options[:epub_stylesheet] = filename
+        else
+          raise "EPUB stylesheet file '#{filename}' is not readable."
+        end
+      else
+        raise "EPUB stylesheet file '#{filename}' is not a file or does not exists."
+      end
+    end
 
+    def epub_cover_image filename
+      if File.exists? filename then
+        if File.readable? filename then
+          @options[:epub_cover_image] = filename
+        else
+          raise "EPUB cover image file '#{filename}' is not readable."
+        end
+      else
+        raise "EPUB cover image file '#{filename}' is not a file or does not exists."
+      end
+    end
+
+    def epub_metadata filename
+      if File.exists? filename then
+        if File.readable? filename then
+          @options[:epub_metadata] = filename
+        else
+          raise "EPUB metadata file '#{filename}' is not readable."
+        end
+      else
+        raise "EPUB metadata file '#{filename}' is not a file or does not exists."
+      end
+    end
+
+    def epub_embed_font filename
+      if File.exists? filename then
+        if File.readable? filename then
+          if not @options[:epub_embed_font] then
+            @options[:epub_embed_font] = []
+          end
+          @options[:epub_embed_font].push filename
+        else
+          raise "EPUB embed font file '#{filename}' is not readable."
+        end
+      else
+        raise "EPUB embed font file '#{filename}' is not a file or does not exists."
+      end
+    end
+
+    def epub_chapter_level number
+      if number.integer? and number >= 0
+        @options[:epub_chapter_level] = number
+      else
+        raise "EPUB chapter level should be an integer >= 0, got '#{number}' instead."
+      end
+    end
+
+    ENGINES = [:pdflatex, :lualatex, :xelatex]
+    def latex_engine engine
+      if ENGINES.include? engine.to_sym then
+        @options[:latex_engine] = engine
+      else
+        raise "Expected one of #{ENGINES.join(',')} as value for option latex-engine, got '#{engine}' instead."
+      end
+    end
+
+    def bibliography filename
+      if File.exists? filename then
+        if File.readable? filename then
+          @options[:bibliography] = filename
+        else
+          raise "Bibliography file '#{filename}' is not readable."
+        end
+      else
+        raise "Bibliography file '#{filename}' is not a file or does not exists."
+      end
+    end
+    
+    def csl filename
+      if File.exists? filename then
+        if File.readable? filename then
+          @options[:csl] = filename
+        else
+          raise "csl file '#{filename}' is not readable."
+        end
+      else
+        raise "csl file '#{filename}' is not a file or does not exists."
+      end
+    end
+    
+    def citation_abbreviations filename
+      if File.exists? filename then
+        if File.readable? filename then
+          @options[:citation_abbreviations] = filename
+        else
+          raise "citation abbreviations file '#{filename}' is not readable."
+        end
+      else
+        raise "citation abbreviations file '#{filename}' is not a file or does not exists."
+      end
+    end
+
+    def latexmathml url = ''
+      @options[:latexmathml] = url
+    end
+
+    def mathml url = ''
+      @options[:mathml] = url
+    end
+
+    def jsmath url = ''
+      @options[:jsmath] = url
+    end
+
+    def gladtex switch = true
+      @options[:gladtex] = switch
+    end
+
+    def mimetex url = ''
+      @options[:mimetex] = url
+    end
+
+    def webtex url = ''
+      @options[:webtex] = url
+    end
+
+
+    def natbib switch = true
+      @options[:natbib] = switch
+    end
+
+    def biblatex switch = true
+      @options[:biblatex] = switch
+    end
 
 
     def to_option_string
