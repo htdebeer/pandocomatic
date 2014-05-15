@@ -95,20 +95,20 @@ module Pandocomatic
       @options[:data_dir] = path
     end
     
-    def strict
-      @options[:strict] = true
+    def strict switch = true
+      @options[:strict] = switch
     end
 
-    def parse_raw
-      @options[:parse_raw] = true
+    def parse_raw switch = true
+      @options[:parse_raw] = switch
     end
 
-    def smart
-      @options[:smart] = true
+    def smart switch = true
+      @options[:smart] = switch
     end
 
-    def old_dashes
-      @options[:old_dashes] = true
+    def old_dashes switch = true
+      @options[:old_dashes] = switch
     end
 
     def base_header_level number
@@ -131,12 +131,12 @@ module Pandocomatic
       end
     end
 
-    def normalize
-      @options[:normalize] = true
+    def normalize switch = true
+      @options[:normalize] = switch
     end
 
-    def preserve_tabs
-      @options[:preserve_tabs]
+    def preserve_tabs switch = true
+      @options[:preserve_tabs] = switch
     end
 
     def tab_stop number
@@ -147,8 +147,8 @@ module Pandocomatic
       end
     end
 
-    def standalone
-      @options[:standalone] = true
+    def standalone switch = true
+      @options[:standalone] = switch
     end
 
     def template filename
@@ -177,8 +177,8 @@ module Pandocomatic
       @options[:variable][key] = value
     end
 
-    def no_wrap
-      @options[:no_wrap] = true
+    def no_wrap switch = true
+      @options[:no_wrap] = switch
     end
 
     def columns number
@@ -189,8 +189,8 @@ module Pandocomatic
       end
     end
 
-    def toc
-      @options[:toc] = true
+    def toc switch = true
+      @options[:toc] = switch
     end
 
     alias :table_of_contents :toc
@@ -202,6 +202,176 @@ module Pandocomatic
         raise "Toc-depth expects an integer >= 0, got '#{number}' instead."
       end
     end
+
+    def no_highlight switch = true
+      @options[:no_highlight] = switch
+    end
+
+    def highlight_style style
+      if [:pygments, :kate, :monochrome, :espresso, :zenburn, :haddock, :tango].include? style.to_sym then
+       @options[:highlight_style] = style
+      else
+        raise "Unknown highlighting style, '#{style}'"
+      end 
+    end
+
+    def include_in_header filename
+      if File.exists? filename then
+        if File.readable? filename then
+          if not @options[:include_in_header] then
+            @options[:include_in_header] = []
+          end
+          @options[:include_in_header].push filename
+        else
+          raise "Header file '#{filename}' is not readable."
+        end
+      else
+        raise "Header file '#{filename}' is not a file or does not exists."
+      end
+    end
+
+    def include_after_body filename
+      if File.exists? filename then
+        if File.readable? filename then
+          if not @options[:include_after_body] then
+            @options[:include_after_body] = []
+          end
+          @options[:include_after_body].push filename
+        else
+          raise "After body file '#{filename}' is not readable."
+        end
+      else
+        raise "After body file '#{filename}' is not a file or does not exists."
+      end
+    end
+
+    def self_contained switch = true
+      @options[:self_contained] = switch
+    end
+
+    def html_q_tags switch = true
+      @options[:html_q_tags] = switch
+    end
+
+    def ascii switch = true
+      @options[:ascii] = switch
+    end
+
+    def reference_links switch = true
+      @options[:reference_links] = switch
+    end
+
+    def atx_headers switch = true
+      @options[:atx_headers] = switch
+    end
+
+    def chapters switch = true
+      @options[:chapters] = switch
+    end
+
+    def number_sections switch = true
+      @options[:number_sections] = switch
+    end
+
+    def number_offset numberformat
+      numbers = numberformat.split(',')
+      if numbers.all? {|n| n.integer? and n >= 0} then
+        @options[:number_offset] = numberformat
+      else
+        raise "'#{numberformat}' is not an acceptable number offset format"
+      end
+    end
+
+    def no_tex_ligatures switch = true
+      @options[:no_tex_ligatures] = switch
+    end
+
+    def listings switch = true
+      @options[:listings] = switch
+    end
+
+    def incremental switch = true
+      @options[:incremental] = switch
+    end
+
+    def slide_level number
+      if number.integer? and number >= 0 then
+        @options[:slide_level] = number
+      else
+        raise "Slide level should be a number >= 0, got '#{number}' instead"
+      end
+    end
+
+    def section_divs switch = true
+      @options[:section_divs] = switch
+    end
+
+    def email_obfuscation setting
+      if [:none, :javascript, :references].include? setting then
+        @options[:email_obfuscation] = setting
+      else
+        raise "Expected one of none, javascript or references as email obfuscation option, got '#{setting}' instead."
+      end
+    end
+
+    def id_prefix prefix
+      if not prefix.to_s.strip.empty? then
+        @options[:id_prefix] = prefix.to_s.strip
+      else
+        raise "id prefix should be a non-empty string without whitespace, got '#{prefix}' instead."
+      end
+    end
+
+    def title_prefix prefix
+      if not prefix.to_s.empty? then
+        @options[:title_prefix] = prefix
+      else
+        raise "title prefix should be an non-empty string."
+      end
+    end
+
+
+    # Change filename to URL?
+    def css filename
+      if File.exists? filename then
+        if File.readable? filename then
+          if not @options[:css] then
+            @options[:css] = []
+          end
+          @options[:css].push filename
+        else
+          raise "CSS file '#{filename}' is not readable."
+        end
+      else
+        raise "CSS file '#{filename}' is not a file or does not exists."
+      end
+    end
+
+    def reference_odt filename
+      if File.exists? filename then
+        if File.readable? filename then
+          @options[:reference_odt].push filename
+        else
+          raise "Reference ODT file '#{filename}' is not readable."
+        end
+      else
+        raise "Reference ODT file '#{filename}' is not a file or does not exists."
+      end
+    end
+
+    def reference_docx filename
+      if File.exists? filename then
+        if File.readable? filename then
+          @options[:reference_docx].push filename
+        else
+          raise "Reference docx file '#{filename}' is not readable."
+        end
+      else
+        raise "Reference docx file '#{filename}' is not a file or does not exists."
+      end
+    end
+
+
 
 
     def to_option_string
