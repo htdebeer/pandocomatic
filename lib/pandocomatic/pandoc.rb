@@ -91,24 +91,34 @@ module Pandocomatic
       end
     end
 
+    def output filename
+      @options[:output] = filename
+      self
+    end
+
     def data_dir path = ''
       @options[:data_dir] = path
+      self
     end
     
     def strict switch = true
       @options[:strict] = switch
+      self
     end
 
     def parse_raw switch = true
       @options[:parse_raw] = switch
+      self
     end
 
     def smart switch = true
       @options[:smart] = switch
+      self
     end
 
     def old_dashes switch = true
       @options[:old_dashes] = switch
+      self
     end
 
     def base_header_level number
@@ -117,10 +127,12 @@ module Pandocomatic
       else
        raise "Base-header-level expects an integer >= 1, got '#{number} instead."
       end
+      self
     end
 
     def indented_code_classes config
       @options[:indented_code_classes] = config
+      self
     end
 
     def filter command
@@ -129,14 +141,17 @@ module Pandocomatic
       else
         @options[:filter] = [command]
       end
+      self
     end
 
     def normalize switch = true
       @options[:normalize] = switch
+      self
     end
 
     def preserve_tabs switch = true
       @options[:preserve_tabs] = switch
+      self
     end
 
     def tab_stop number
@@ -145,10 +160,12 @@ module Pandocomatic
       else
         raise "Tab-stop expects and integer >= 0, got '#{number}' instead."
       end
+      self
     end
 
     def standalone switch = true
       @options[:standalone] = switch
+      self
     end
 
     def template filename
@@ -161,6 +178,7 @@ module Pandocomatic
       else
         raise "Template '#{filename}' is not a file or does not exists."
       end
+      self
     end
 
     def metadata key, value = true
@@ -168,6 +186,7 @@ module Pandocomatic
         @options[:metadata] = Hash.new
       end
       @options[:metadata][key] = value
+      self
     end
 
     def variable key, value = true
@@ -175,10 +194,12 @@ module Pandocomatic
         @options[:variable] = Hash.new
       end
       @options[:variable][key] = value
+      self
     end
 
     def no_wrap switch = true
       @options[:no_wrap] = switch
+      self
     end
 
     def columns number
@@ -187,10 +208,12 @@ module Pandocomatic
       else
         raise "Columns expects an integer >= 0, got '#{number}' instead."
       end
+      self
     end
 
     def toc switch = true
       @options[:toc] = switch
+      self
     end
 
     alias :table_of_contents :toc
@@ -201,10 +224,12 @@ module Pandocomatic
       else
         raise "Toc-depth expects an integer >= 0, got '#{number}' instead."
       end
+      self
     end
 
     def no_highlight switch = true
       @options[:no_highlight] = switch
+      self
     end
 
     def highlight_style style
@@ -213,6 +238,7 @@ module Pandocomatic
       else
         raise "Unknown highlighting style, '#{style}'"
       end 
+      self
     end
 
     def include_in_header filename
@@ -228,6 +254,7 @@ module Pandocomatic
       else
         raise "Header file '#{filename}' is not a file or does not exists."
       end
+      self
     end
 
     def include_after_body filename
@@ -243,34 +270,42 @@ module Pandocomatic
       else
         raise "After body file '#{filename}' is not a file or does not exists."
       end
+      self
     end
 
     def self_contained switch = true
       @options[:self_contained] = switch
+      self
     end
 
     def html_q_tags switch = true
       @options[:html_q_tags] = switch
+      self
     end
 
     def ascii switch = true
       @options[:ascii] = switch
+      self
     end
 
     def reference_links switch = true
       @options[:reference_links] = switch
+      self
     end
 
     def atx_headers switch = true
       @options[:atx_headers] = switch
+      self
     end
 
     def chapters switch = true
       @options[:chapters] = switch
+      self
     end
 
     def number_sections switch = true
       @options[:number_sections] = switch
+      self
     end
 
     def number_offset numberformat
@@ -280,18 +315,22 @@ module Pandocomatic
       else
         raise "'#{numberformat}' is not an acceptable number offset format"
       end
+      self
     end
 
     def no_tex_ligatures switch = true
       @options[:no_tex_ligatures] = switch
+      self
     end
 
     def listings switch = true
       @options[:listings] = switch
+      self
     end
 
     def incremental switch = true
       @options[:incremental] = switch
+      self
     end
 
     def slide_level number
@@ -300,10 +339,12 @@ module Pandocomatic
       else
         raise "Slide level should be a number >= 0, got '#{number}' instead"
       end
+      self
     end
 
     def section_divs switch = true
       @options[:section_divs] = switch
+      self
     end
 
     EMAIL_OPTIONS = [:none, :javascript, :references]
@@ -313,6 +354,7 @@ module Pandocomatic
       else
         raise "Expected one of #{EMAIL_OPTIONS.join(',')} as email obfuscation option, got '#{setting}' instead."
       end
+      self
     end
 
     def id_prefix prefix
@@ -321,6 +363,7 @@ module Pandocomatic
       else
         raise "id prefix should be a non-empty string without whitespace, got '#{prefix}' instead."
       end
+      self
     end
 
     def title_prefix prefix
@@ -329,6 +372,7 @@ module Pandocomatic
       else
         raise "title prefix should be an non-empty string."
       end
+      self
     end
 
 
@@ -346,6 +390,7 @@ module Pandocomatic
       else
         raise "CSS file '#{filename}' is not a file or does not exists."
       end
+      self
     end
 
     def reference_odt filename
@@ -358,6 +403,7 @@ module Pandocomatic
       else
         raise "Reference ODT file '#{filename}' is not a file or does not exists."
       end
+      self
     end
 
     def reference_docx filename
@@ -370,6 +416,7 @@ module Pandocomatic
       else
         raise "Reference docx file '#{filename}' is not a file or does not exists."
       end
+      self
     end
 
     def epub_stylesheet filename
@@ -382,6 +429,7 @@ module Pandocomatic
       else
         raise "EPUB stylesheet file '#{filename}' is not a file or does not exists."
       end
+      self
     end
 
     def epub_cover_image filename
@@ -394,6 +442,7 @@ module Pandocomatic
       else
         raise "EPUB cover image file '#{filename}' is not a file or does not exists."
       end
+      self
     end
 
     def epub_metadata filename
@@ -406,6 +455,7 @@ module Pandocomatic
       else
         raise "EPUB metadata file '#{filename}' is not a file or does not exists."
       end
+      self
     end
 
     def epub_embed_font filename
@@ -421,6 +471,7 @@ module Pandocomatic
       else
         raise "EPUB embed font file '#{filename}' is not a file or does not exists."
       end
+      self
     end
 
     def epub_chapter_level number
@@ -429,6 +480,7 @@ module Pandocomatic
       else
         raise "EPUB chapter level should be an integer >= 0, got '#{number}' instead."
       end
+      self
     end
 
     ENGINES = [:pdflatex, :lualatex, :xelatex]
@@ -438,6 +490,7 @@ module Pandocomatic
       else
         raise "Expected one of #{ENGINES.join(',')} as value for option latex-engine, got '#{engine}' instead."
       end
+      self
     end
 
     def bibliography filename
@@ -450,6 +503,7 @@ module Pandocomatic
       else
         raise "Bibliography file '#{filename}' is not a file or does not exists."
       end
+      self
     end
     
     def csl filename
@@ -462,6 +516,7 @@ module Pandocomatic
       else
         raise "csl file '#{filename}' is not a file or does not exists."
       end
+      self
     end
     
     def citation_abbreviations filename
@@ -474,39 +529,48 @@ module Pandocomatic
       else
         raise "citation abbreviations file '#{filename}' is not a file or does not exists."
       end
+      self
     end
 
     def latexmathml url = ''
       @options[:latexmathml] = url
+      self
     end
 
     def mathml url = ''
       @options[:mathml] = url
+      self
     end
 
     def jsmath url = ''
       @options[:jsmath] = url
+      self
     end
 
     def gladtex switch = true
       @options[:gladtex] = switch
+      self
     end
 
     def mimetex url = ''
       @options[:mimetex] = url
+      self
     end
 
     def webtex url = ''
       @options[:webtex] = url
+      self
     end
 
 
     def natbib switch = true
       @options[:natbib] = switch
+      self
     end
 
     def biblatex switch = true
       @options[:biblatex] = switch
+      self
     end
 
 
@@ -539,10 +603,9 @@ module Pandocomatic
       return "pandoc #{to_option_string}"
     end
 
-    def execute input
-      output = 'test'
+    def convert input
+      output = ''
       command = to_command
-      puts command
       IO.popen(command, 'r+') do |p|
         p << input
         p.close_write
@@ -550,6 +613,7 @@ module Pandocomatic
       end
       return output
     end
+    alias << convert
 
   end
 

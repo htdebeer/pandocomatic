@@ -22,8 +22,14 @@ r = Pandocomatic::Pandoc.new do
   columns 78
   metadata :title
   table_of_contents
-
 end
 puts r.to_command
 
-puts q.execute "**sdfsdf**"
+puts q << "**sdfsdf**"
+
+u = Pandocomatic::Pandoc.new do
+  from :latex
+  to :html
+end 
+g = u << '\chapter{Title of chapter} \n\n Start of first \emph{paragraph}'
+puts g
