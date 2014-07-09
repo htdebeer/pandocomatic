@@ -1,7 +1,7 @@
 
-require_relative '../lib/pandocomatic/pandoc'
+require_relative '../lib/pandocomatic/pandoc/pandoc'
 
-p = Pandocomatic::Pandoc.new do |c|
+p = Pandocomatic::Pandoc::Pandoc.new do |c|
   c.from :latex
   c.to :markdown
   c.standalone
@@ -9,10 +9,10 @@ end
 
 puts p.to_command
 
-q = Pandocomatic::Pandoc.new
+q = Pandocomatic::Pandoc::Pandoc.new
 puts q.to_command
 
-r = Pandocomatic::Pandoc.new do
+r = Pandocomatic::Pandoc::Pandoc.new do
   from :html
   metadata :author, 'Huub de Beer'
   to 'latex'
@@ -27,7 +27,7 @@ puts r.to_command
 
 puts q << "**sdfsdf**"
 
-u = Pandocomatic::Pandoc.new do
+u = Pandocomatic::Pandoc::Pandoc.new do
   from :latex
   to :html
 end 

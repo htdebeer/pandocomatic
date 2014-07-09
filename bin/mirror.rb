@@ -7,7 +7,7 @@
 require 'optparse'
 require 'ostruct'
 require 'fileutils'
-require_relative 'mirror'
+require_relative '../lib/pandocomatic/ssg/mirror'
 
 options = OpenStruct.new
 options.source = "."
@@ -52,4 +52,4 @@ end
 
 option_parser.parse ARGV
 
-Mirror.new(options.source, options.target).run
+Pandocomatic::SSG::Mirror.new(options.source, options.target).run
