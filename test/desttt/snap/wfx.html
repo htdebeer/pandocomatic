@@ -1,0 +1,60 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>TEG</title>
+<!-- <script src="lib/jquery-2.1.3.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.3.0/snap.svg-min.js"></script>
+<style type="text/css">
+#map { text-align: center; }
+
+</style>
+</head>
+<body>
+<h1>sdfsdf</h1>
+<!--
+http://snapsvg.io/docs/
+http://svg.dabbles.info/
+needs a runing webserver but it is very simple:
+python : python -m http.server
+node.js: npm install http-server -g
+-->
+<div id="map"></div>
+<!-- Show off -->
+<script>
+    var s = Snap("#map");
+    
+    // country click callback
+    var country_click_cb = function( el ) {
+        var cid = el.target.attributes.id.value.split( "-" );
+        cid = cid[2] + cid[1];
+        // do something...
+        console.log( cid );
+    };
+    
+    // country mouse over effect
+    var country_hoverover_cb = function( el ) {
+        this.animate({ transform: 's1.1r0,1,0' }, 100, mina.bounce )
+        this.attr({'fill': 'none'});
+        
+    };
+
+    // country mouse out effect
+    var country_hoverout_cb = function( el ) {
+        this.animate({ transform: 's1r0,1,0' }, 100, mina.bounce )
+    };
+    
+    var map = Snap.load("pic.svg", function ( f ) {
+        var gs = f.selectAll( 'path' );
+        gs.forEach(function( el ) {
+            var id = el.node.id;
+            id = id.split('-');
+            if (id[0] != 'Artwork') {
+                el.hover( country_hoverover_cb, country_hoverout_cb );
+                el.click( country_click_cb );
+            }
+        });
+        s.append( f );
+    } );
+</script>
+</body>
+</html>

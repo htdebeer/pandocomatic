@@ -1,0 +1,54 @@
+This is XeTeX, Version 3.14159265-2.6-0.99991 (TeX Live 2014/Debian) (preloaded format=xelatex 2014.11.18)  9 JAN 2015 13:54
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**minimal.tex
+(./minimal.tex
+LaTeX2e <2014/05/01>
+Babel <3.9k> and hyphenation patterns for 27 languages loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo
+File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count80
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@subparagraph=\count85
+\c@figure=\count86
+\c@table=\count87
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+) (./minimal.aux)
+\openout1 = `minimal.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+Missing character: There is no ☺ in font cmr12!
+
+[1
+
+] (./minimal.aux) ) 
+Here is how much of TeX's memory you used:
+ 201 strings out of 495126
+ 2072 string characters out of 6175104
+ 48443 words of memory out of 5000000
+ 3517 multiletter control sequences out of 15000+600000
+ 3938 words of font info for 15 fonts, out of 8000000 for 9000
+ 350 hyphenation exceptions out of 8191
+ 22i,4n,19p,113b,107s stack positions out of 5000i,500n,10000p,200000b,80000s
+
+Output written on minimal.pdf (1 page).
