@@ -1,11 +1,14 @@
+require 'yaml'
 module Pandoc
 
   class Pandoc
     # wrapper around pandoc program
     
     def initialize
-      @config = hash.new
-
+      @config = Hash.new
+      @spec = YAML::load_file(File.join(__dir__, 'cli_options.yaml'))
+      require 'pp'
+      pp @spec
     end
 
     def execute
@@ -19,6 +22,7 @@ module Pandoc
 
     def >>(out)
     end
+
 
 
     # Makes more sense to write a couple of specialize "ruby-like" methods, and

@@ -1,0 +1,132 @@
+types:
+  from:
+    - type: enum
+    - values:
+      - native
+      - json
+      - markdown
+      - markdown_strict
+      - markdown_phpextra
+      - markdown_github
+      - textile
+      - rst
+      - html
+      - docbook
+      - t2t
+      - docx
+      - epub
+      - opml
+      - org
+      - mediawiki
+      - twiki
+      - haddock
+      - latex
+  to:
+    - type: enum
+    - values:
+      - native
+      - json
+      - plain
+      - markdown
+      - markdown_strict
+      - markdown_phpextra
+      - markdown_github
+      - rst
+      - html
+      - html5
+      - latex
+      - beamer
+      - context
+      - man
+      - mediawiki
+      - dokuwiki
+      - textile
+      - org
+      - texinfo
+      - opml
+      - docbook
+      - opendocument
+      - odt
+      - docx
+      - haddock
+      - rtf
+      - epub
+      - epub3
+      - fb2
+      - asciidoc
+      - iclm
+      - slidy
+      - slideous
+      - dxslides
+      - revealjs
+      - s5
+  path: 
+    - type: string
+  flag: 
+    - type: boolean
+    - value: true
+  number:
+    - type: string
+    - pattern: [1-9]
+  list:
+    - type: string
+    - seperator: ','
+  keyvalue:
+    - type: string
+    - pattern: key[:value]
+arguments:
+  general:
+    - from:
+      - multiple: false
+      - type: one of from arguments
+    - to:
+      - multiple: false
+      - type: one of to arguments
+    - output:
+      - multiple: false
+      - type: path
+    - data-dir:
+      - multiple: false
+      - type: path
+  reader:
+    - parse-raw:
+      - multiple: false
+      - type: flag
+      - from:
+        - latex
+        - html
+    - smart:
+      - multiple: false
+      - type: flag
+      - from:
+        - markdown
+        - markdown_strict
+        - textile
+        - twiki
+    - old-dashes:
+      - multiple: false
+      - type: flag
+      - depricated: true
+    - base-header-level:
+      - multiple: false
+      - type: number
+      - value: 1
+    - indented-code-classes:
+      - multiple: false
+      - type: list
+    - default-image-extension:
+      - multiple: false
+      - type: string
+    - filter:
+      - multiple: true
+      - type: path
+    - metadata:
+      - multiple: true
+      - type: keyvalue
+    - normalize:
+      - multiple: false
+      - type: flag
+    - preserve-tabs:
+      - multiple: false
+      - type: flag
+
