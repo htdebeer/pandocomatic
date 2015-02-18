@@ -1,14 +1,21 @@
 require 'yaml'
+require 'pathname'
 module Pandoc
 
   class Pandoc
     # wrapper around pandoc program
+    attr_reader :config
     
-    def initialize
+    def initialize &config_block
       @config = Hash.new
-      @spec = YAML::load_file(File.join(__dir__, 'cli_options.yaml'))
-      require 'pp'
-      pp @spec
+      configure(&config_block) if block_given?
+      @spec = YAML::load_file(File.join(__dir__, 'pandoc_options.yaml'))
+#      require 'pp'
+#      pp @spec
+    end
+
+    def configure &config_block
+      yield self if block_given?
     end
 
     def execute
@@ -24,13 +31,29 @@ module Pandoc
     end
 
 
+    def flag(name)
+      @config[name] = true
+    end
 
-    # Makes more sense to write a couple of specialize "ruby-like" methods, and
-    # take care of the rest of Pandoc's options through a flexible scheme to
-    # collect options through method_missing.
+    def string(name, val) 
+      @config[name] = val
+    end
+
+    def path(name, path, check_path = false)
+      raise "#{path} does not exist"  if check_path and not Pathname.new(path).exists?
+      string name, path      
+    end
+
+    def list(name, val)
+      @config[name] = Array.new if not @config[name]
+      @config[name].push val
+    end
 
     def method_missing(name, *args)
-      @config[name.to_s] = args.join ' '
+      puts name
+      puts @spec[name.to_s]
+
+      self.send(@spec[name.to_s]['type'], name.to_s, args)
     end
 
   end
