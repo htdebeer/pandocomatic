@@ -1,4 +1,4 @@
-module Pandocomatic
+module Pandoc
 
   require 'yaml'
 
@@ -531,37 +531,6 @@ module Pandocomatic
       end
       self
     end
-
-    def latexmathml url = ''
-      @options[:latexmathml] = url
-      self
-    end
-
-    def mathml url = ''
-      @options[:mathml] = url
-      self
-    end
-
-    def jsmath url = ''
-      @options[:jsmath] = url
-      self
-    end
-
-    def gladtex switch = true
-      @options[:gladtex] = switch
-      self
-    end
-
-    def mimetex url = ''
-      @options[:mimetex] = url
-      self
-    end
-
-    def webtex url = ''
-      @options[:webtex] = url
-      self
-    end
-
 
     def natbib switch = true
       @options[:natbib] = switch

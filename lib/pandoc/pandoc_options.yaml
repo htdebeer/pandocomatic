@@ -1,0 +1,8 @@
+from:
+  type: string
+to:
+  type: string
+output:
+  type: path
+data-dir:
+  type: path
