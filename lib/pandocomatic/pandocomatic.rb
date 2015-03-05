@@ -6,6 +6,7 @@ module Pandocomatic
 
   require 'pathname'
   require 'fileutils'
+  require 'paru/pandoc'
 
   class Pandocomatic
 
@@ -58,7 +59,12 @@ module Pandocomatic
 
     def convert_file src_file, dst_tree
       destination =  dst_tree.join "#{src_file.basename(src_file.extname)}.html"
-      FileUtils.cp src_file, destination
+      Paru::Pandoc.new do 
+        from :markdown
+        to :html5
+        standalone
+        output destination
+      end << File.read(src_file)
     end
 
     def do_action? action, file
