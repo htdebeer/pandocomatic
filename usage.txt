@@ -1,0 +1,57 @@
+(this is a design, not final yet)
+
+pandocomatic [[options] input-file-or-dir [output-file-or-dir]]
+
+Options
+
+-R --recursive "if file-or-dir is a dir, run pandocomatic recursively"
+-p --pandoc "default pandoc options"
+-c --config "config file as described below"
+
+
+If no options or arguments are given, the current directory is assumed to be a
+pandocomatic project directory with
+
+- config.yaml having the following options:
+
+  * skip "pattern of files to skip, defaults to .* and pandocomatic.yaml"
+  * follow_links (true or false)
+  * filters "dir where filters are located, defaults to ."
+  * preprocessors "dir where preprocessors are located, defaults to ."
+  * postprocessors "dir where postprocessors are locates, defaults to ."
+  * source_tree "path to source tree to convert from, no default; input
+    supersedes this setting"
+  * target_tree "path to target tree to convert to, no default; output
+    supersedes this setting"
+
+
+specifying the above options. Actual conversion for all files in a dir are set
+in pandocomatic.yaml
+
+Scenarios
+
+assuming some_file.md contains all options as yaml blocks
+
+pandocomatic some_file.md output.html
+
+assuming pandocoptions.yaml contains setting for pandoc, use that to convert
+some_file.md to output.html
+
+pandocomatic -p pandocoptions.yaml some_file.md output.html
+
+assuming dir contains pandocomatic.yaml, converts (for example) md files in
+book/ to html files in the same directory or uses output file in pandoc
+specification. Use this like a makefile
+
+pandocomatic book/ 
+
+Idem, but instead converts to directory website/ use this for static-site
+generation
+
+pandocomatic book/ website/
+
+assuming pandocomatic project directory, generates target tree from source
+tree, using settings in config.yaml. Use this for static site generation
+
+pandocomatic
+
