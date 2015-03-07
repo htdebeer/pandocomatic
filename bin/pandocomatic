@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+
+require 'trollop'
+require 'yaml'
+
+def convert_file input, opts
+  puts "converting file"
+end
+
+def convert_dir input, opts
+  puts "converting dir"
+end
+
+def convert_tree input, opts
+  puts "Converting tree"
+end
+
+opts = Trollop::options do
+  version "pandocomatic 0.0.1"
+  banner <<-EOB
+
+Pandocomatic automates the use of pandoc (<http://www.pandoc.org>). It can be
+used to convert a file, a directory, or a directory tree.
+
+Usage:
+
+      pandocomatic [[options] [--output output] input]
+
+Options:
+EOB
+  opt :config, "pandocomatic configuration file", :type => :string
+  opt :pandoc, "pandoc configuration file", :type => :string
+  opt :recursive, "apply pandocomatic recursively"
+  opt :make, "named conversion target", :type => :string
+  opt :output, "output file or directory", :type => :string
+end
+
+case ARGV.length
+when 0
+  
+when 1
+  input = ARGV.first
+  Trollop::die "#{input} does not exist" if not File.exists? input
+
+  if File.file? input then
+    convert_file input, opts
+  elsif File.directory? input then
+    if opts[:recursive] then
+      convert_tree input, opts
+    else
+      convert_dir input, opts
+    end
+  end
+else
+  Trollop::die "Too many inputs specified; pandocomatic can handle at most one"
+end
+
+
+
