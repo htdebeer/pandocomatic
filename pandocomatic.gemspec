@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.description = "Automate the use of pandoc <http://pandoc.org>: use pandocomatic as a makefile to convert one file, a whole directory of files, or even as a static site generator."
   s.author = "Huub de Beer"
   s.email = "Huub@heerdebeer.org"
-  s.files = ["lib/pandocomatic/pandocomatic.rb"]
+  s.files = ["lib/pandocomatic/pandocomatic.rb, lib/pandocomatic/configuration.rb"]
   s.add_runtime_dependency "paru", "~> 0.0", ">= 0.0.2"
   s.add_runtime_dependency "trollop", "~> 2.0", ">= 2.0.0"
   s.executables << "pandocomatic"
