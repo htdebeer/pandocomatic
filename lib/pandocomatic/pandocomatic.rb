@@ -1,77 +1,47 @@
 module Pandocomatic
-  DEFAULT_CONFIG = {
-    skip: ['.*'],
-    convert: ['*.markdown', '*.md']
-  }
 
-  require 'pathname'
+  require 'yaml'
   require 'fileutils'
-  require 'paru/pandoc'
+  require_relative 'configuration.rb'
 
   class Pandocomatic
+  # Generate the website defined in src_dir and copy the output to dst_dir.
+    def self.generate src_dir, dst_dir, config
 
-    def initialize(source, destination, config = DEFAULT_CONFIG)
-      @source = source
-      @destination = destination
-      @config = reconfigure config
+    # Ensure dst_dir exist and is a directory
+    if File.exist? dst_dir then
+      raise "Destination problem" if not File.directory? dst_dir
+    else
+      Dir.mkdir(dst_dir) if not File.exist? dst_dir
     end
 
-    def generate
-      destination_tree = ensure_destination
-      source_tree = Pathname.new @source
-      source_tree.each_child do |source_child|
-        next if skip? source_child
+    # Reconfigure when there is a config file in src_dir
+    config_file = File.join src_dir, 'pandocomatic.yaml'
+    config = config.reconfigure YAML.load_file(config_file) if File.exist? config_file
 
-        destination_child = destination_tree.join source_child.basename
+    # Process the files in src_dir using config
+    Dir.foreach(src_dir) do |basename|
+      src = File.join src_dir, basename
+      next if config.skip? src
 
-        if source_child.directory?
-          Pandocomatic.new(source_child.to_path, destination_child.to_path, @config).generate
+      dst = File.join dst_dir, basename
+
+      # TODO: symlinks
+
+      if File.directory? src
+        generate src, dst, config if config.recursive?
+      else
+        # dst is a file
+        if config.convert? src
+          config.convert src, dst_dir
         else
-          if convert? source_child
-            convert_file source_child, destination_tree
-          else
-            FileUtils.cp source_child, destination_child
-          end
+          FileUtils.cp src, dst
         end
       end
-    end
-    
-    private 
 
-    def skip? file
-      do_action? :skip, file
     end
-
-    def convert? file
-      do_action? :convert, file
-    end
-    
-    def reconfigure config
-      return config
-    end
-
-    def ensure_destination
-      destination = Pathname.new @destination
-      destination.mkdir if not destination.exist?
-      raise "Destination problem" if not destination.directory?
-      destination
-    end
-
-    def convert_file src_file, dst_tree
-      destination =  dst_tree.join "#{src_file.basename(src_file.extname)}.html"
-      Paru::Pandoc.new do 
-        from :markdown
-        to :html5
-        standalone
-        output destination
-      end << File.read(src_file)
-    end
-
-    def do_action? action, file
-      @config[action].any? do |pattern|
-        Pathname.glob("#{@source}/" "#{pattern}").include? file
-      end
-    end
+  end
 
   end
+
 end
