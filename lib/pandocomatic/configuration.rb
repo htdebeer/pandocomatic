@@ -3,15 +3,15 @@ module Pandocomatic
   require 'paru/pandoc'
 
   DEFAULT_CONFIG = {
-        :recursive => true,
-        :follow_links => false,
-        :skip => ['.*', 'pandocomatic.yaml'],
-        :targets => {
-          :markdown => {
-            :pattern => ['*.markdown', '*.md'],
-            :pandoc => {
-              :from => 'markdown',
-              :to => 'html5'
+        'recursive' => true,
+        'follow_links' => false,
+        'skip' => ['.*', 'pandocomatic.yaml'],
+        'targets' => {
+          'markdown' => {
+            'pattern' => ['*.markdown', '*.md'],
+            'pandoc' => {
+              'from' => 'markdown',
+              'to' => 'html5'
             }
           }
         }
@@ -31,10 +31,10 @@ module Pandocomatic
 
     def initialize hash = DEFAULT_CONFIG
       @config = {
-        :recursive => true,
-        :follow_links => false,
-        :skip => ['.*'],
-        :targets => {}
+        'recursive' => true,
+        'follow_links' => false,
+        'skip' => ['.*'],
+        'targets' => {}
       }
       @convert_patterns = {}
       reconfigure hash
@@ -42,7 +42,7 @@ module Pandocomatic
 
     def reconfigure options
       options.each do |key, value|
-        if key == :targets then
+        if key == 'targets' then
           update_targets value
         else
           @config[key] = value
@@ -52,13 +52,13 @@ module Pandocomatic
 
     def update_targets targets
       targets.each do |name, options|
-        @config[:targets][name] = options
-        @convert_patterns[name] = options[:pattern]
+        @config['targets'][name] = options
+        @convert_patterns[name] = options['pattern']
       end
     end
 
     def skip? src
-      @config[:skip].any? {|pattern| File.fnmatch pattern, File.basename(src)}
+      @config['skip'].any? {|pattern| File.fnmatch pattern, File.basename(src)}
     end
 
     def convert? src
@@ -66,11 +66,11 @@ module Pandocomatic
     end
 
     def recursive?
-      @config[:recursive]
+      @config['recursive']
     end
 
     def follow_links?
-      @config[:follow_links]
+      @config['follow_links']
     end
 
     def determine_target src
@@ -82,16 +82,20 @@ module Pandocomatic
     def convert src, dst_dir
       src_suffix = File.extname src
       src_base = File.basename src, src_suffix
-      target = @config[:targets][determine_target(src)]
-      to = target[:pandoc][:to]
+      target = @config['targets'][determine_target(src)]
+      to = target['pandoc']['to']
       dst_suffix = if FORMAT_TO_EXT.keys.include? to then FORMAT_TO_EXT[to] else to end
       pandoc = Paru::Pandoc.new
-      target[:pandoc].each do |option, value|
+      target['pandoc'].each do |option, value|
         pandoc.send option, value
       end
       dst = File.join dst_dir, "#{src_base}.#{dst_suffix}"
       pandoc.output dst
       pandoc << File.read(src)
+    end
+
+    def to_s 
+      @config
     end
 
   end

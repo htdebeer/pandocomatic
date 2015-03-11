@@ -2,11 +2,9 @@ module Pandocomatic
 
   require 'yaml'
   require 'fileutils'
-  require_relative 'configuration.rb'
 
-  class Pandocomatic
   # Generate the website defined in src_dir and copy the output to dst_dir.
-    def self.generate src_dir, dst_dir, config
+  def self.generate src_dir, dst_dir, config
 
     # Ensure dst_dir exist and is a directory
     if File.exist? dst_dir then
@@ -17,7 +15,7 @@ module Pandocomatic
 
     # Reconfigure when there is a config file in src_dir
     config_file = File.join src_dir, 'pandocomatic.yaml'
-    config = config.reconfigure YAML.load_file(config_file) if File.exist? config_file
+    config.reconfigure YAML.load_file(config_file) if File.exist? config_file
 
     # Process the files in src_dir using config
     Dir.foreach(src_dir) do |basename|
@@ -38,10 +36,8 @@ module Pandocomatic
           FileUtils.cp src, dst
         end
       end
-
     end
-  end
 
-  end
+  end # self.generate
 
 end
