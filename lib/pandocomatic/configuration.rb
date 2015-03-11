@@ -37,10 +37,10 @@ module Pandocomatic
         'targets' => {}
       }
       @convert_patterns = {}
-      reconfigure hash
+      configure hash
     end
 
-    def reconfigure options
+    def configure options
       options.each do |key, value|
         if key == 'targets' then
           update_targets value
@@ -48,6 +48,20 @@ module Pandocomatic
           @config[key] = value
         end
       end
+    end
+
+    def reconfigure options
+      new_config = Marshal.load(Marshal.dump(self))
+      new_config.configure options
+      new_config
+    end
+
+    def marshal_dump
+      [@config, @convert_patterns]
+    end
+
+    def marshal_load array
+      @config, @convert_patterns = array
     end
 
     def update_targets targets
