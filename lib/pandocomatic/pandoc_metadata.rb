@@ -18,10 +18,14 @@ module Pandocomatic
       begin
         json_reader = Paru::Pandoc.new {from 'markdown'; to 'json'}
         json_document = JSON.parse json_reader << File.read(src)
-        json_metadata = [json_document.first, []]
-        json_writer = Paru::Pandoc.new {from 'json'; to 'markdown'; standalone}
-        yaml_metadata = json_writer << JSON.generate(json_metadata)
-        return PandocMetadata.new YAML.load yaml_metadata.strip.lines[1..-1].join("\n")
+        if json_document.first["unMeta"].empty? then
+          return PandocMetadata.new 
+        else
+          json_metadata = [json_document.first, []]
+          json_writer = Paru::Pandoc.new {from 'json'; to 'markdown'; standalone}
+          yaml_metadata = json_writer << JSON.generate(json_metadata)
+          return PandocMetadata.new YAML.load yaml_metadata
+        end
       rescue Exception => e
         raise "Error while reading metadata from #{src}; Are you sure it is a pandoc markdown file?\n#{e.message}"
       end
@@ -32,7 +36,11 @@ module Pandocomatic
     end
 
     def target
-      self['pandocomatic']['target'] if has_target?
+      if has_target? then
+        self['pandocomatic']['target']
+      else
+        ''
+      end
     end
 
     def has_pandoc_options?
@@ -40,7 +48,11 @@ module Pandocomatic
     end
 
     def pandoc_options
-      self['pandocomatic']['pandoc'] if has_pandoc_options?
+      if has_pandoc_options? then
+        self['pandocomatic']['pandoc']
+      else
+        {}
+      end
     end
 
     def to_configuration parent_config = Configuration.new
