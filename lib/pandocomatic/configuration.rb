@@ -86,26 +86,33 @@ module Pandocomatic
     def follow_links?
       @config['follow_links']
     end
+    
+    def set_extension dst
+      dir = File.dirname dst
+      ext = File.extname dst
+      basename = File.basename dst, ext
+      File.join dir, "#{basename}.#{find_extension dst}"
+    end
+
+    def find_extension dst
+      target = determine_target dst
+      if target.nil? then
+        extension = 'html'
+      else
+        to = @config['targets'][target]['pandoc']['to']
+        extension = FORMAT_TO_EXT[to] || to
+      end
+    end
+
+    
+    def get_target_config target
+      @config['targets'][target]
+    end
 
     def determine_target src
       @convert_patterns.select do |target, patterns|
         patterns.any? {|pattern| File.fnmatch pattern, File.basename(src)}
       end.keys.first
-    end
-    
-    def convert src, dst_dir
-      src_suffix = File.extname src
-      src_base = File.basename src, src_suffix
-      target = @config['targets'][determine_target(src)]
-      to = target['pandoc']['to']
-      dst_suffix = if FORMAT_TO_EXT.keys.include? to then FORMAT_TO_EXT[to] else to end
-      pandoc = Paru::Pandoc.new
-      target['pandoc'].each do |option, value|
-        pandoc.send option, value
-      end
-      dst = File.join dst_dir, "#{src_base}.#{dst_suffix}"
-      pandoc.output dst
-      pandoc << File.read(src)
     end
 
     def to_s 

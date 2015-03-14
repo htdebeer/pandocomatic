@@ -47,8 +47,30 @@ module Pandocomatic
   end # self.generate
 
   def self.convert_file src, dst, parent_config
-    
-  end
+    file_config = YAML.load pandoc2yaml(src)
+    target = {}
+    if file_config.has_key? 'target' then
+      target = parent_config.pandoc_options file_config['target']
+    end
+
+    if file_config.has_key? 'pandoc' then
+      target.merge!(file_config['pandoc']) do |key, old_val, new_val|
+        if old_val.class == Array then
+          (old_val + new_val).uniq
+        else
+          new_val
+        end
+      end
+    end
+
+    pandoc = Paru::Pandoc.new
+    target.each do |option, value|
+      pandoc.send option, value
+    end
+   
+    pandoc.output dst unless dst.nil? or dst.empty?
+    pandoc << File.read(src)
+  end # self.convert_file
 
   def self.pandoc2yaml src
     # read src as json AST
@@ -69,7 +91,7 @@ module Pandocomatic
     end
 
     # return yaml metadata
-    pandoc.convert(JSON.generate metadata)
-  end
+    pandoc.convert(JSON.generate metadata).strip.lines[1..-1].join("\n")
+  end # self.pandoc2yaml
 
 end
