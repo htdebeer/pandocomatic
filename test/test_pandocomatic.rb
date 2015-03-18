@@ -1,12 +1,15 @@
-require '../lib/pandocomatic/pandocomatic'
-require '../lib/pandocomatic/configuration'
+require '../lib/pandocomatic/configuration.rb'
 require '../lib/pandocomatic/dir_converter.rb'
 require '../lib/pandocomatic/file_converter.rb'
 require '../lib/pandocomatic/pandoc_metadata.rb'
 
+require 'yaml'
+
 src_tree = '/home/ht/test/src'
 dst_tree = '/home/ht/test/www'
-config = Pandocomatic::Configuration.new
+config = Pandocomatic::Configuration.new  YAML.load_file('/home/ht/test/pandocomatic.yaml')
+
+puts config.to_s
 
 dc = Pandocomatic::DirConverter.new src_tree, dst_tree, config
 dc.convert

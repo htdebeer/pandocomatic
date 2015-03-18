@@ -37,6 +37,17 @@ module Pandocomatic
         'targets' => {}
       }
       @convert_patterns = {}
+
+      @global_settings = {
+        'template-dir' => '~/.pandocomatic/templates',
+        'preprocessor-dir' => '~/.pandocomatic/preprocessors'
+      }
+      if hash.has_key? 'global-settings' then
+        hash['global-settings'].each do |setting, value|
+          @global_settings[setting] = value
+        end
+      end
+
       configure hash
     end
 

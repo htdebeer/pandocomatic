@@ -68,6 +68,10 @@ module Pandocomatic
       end
     end
 
+    # Change paths of pandoc options when refering to non-local references, such
+    # as templates, other includes, and pre or post processors.
+    def include_path(path)
+    end
 
   end
 
