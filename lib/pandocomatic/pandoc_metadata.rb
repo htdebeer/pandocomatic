@@ -31,13 +31,13 @@ module Pandocomatic
       end
     end
 
-    def has_target?
-      has_key? 'pandocomatic' and self['pandocomatic'].has_key? 'target'
+    def has_template?
+      has_key? 'pandocomatic' and self['pandocomatic'].has_key? 'use-template'
     end
 
-    def target
-      if has_target? then
-        self['pandocomatic']['target']
+    def template
+      if has_template? then
+        self['pandocomatic']['use-template']
       else
         ''
       end

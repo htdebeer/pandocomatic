@@ -1,7 +1,6 @@
 module Pandocomatic
 
   require 'fileutils'
-
   require_relative 'file_converter.rb'
 
   CONFIG_FILE = 'pandocomatic.yaml'
@@ -68,8 +67,7 @@ module Pandocomatic
     def reconfigure current_config, src_dir
       config_file = File.join src_dir, CONFIG_FILE
       if File.exist? config_file then
-        require 'yaml'
-        current_config.reconfigure YAML.load_file config_file
+        current_config.reconfigure config_file
       else
         current_config
       end
@@ -100,7 +98,6 @@ module Pandocomatic
         warn "Skipping link #{src} because it points to outside the source tree"
       end
     end
-
 
   end
     

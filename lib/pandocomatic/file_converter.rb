@@ -3,22 +3,25 @@ module Pandocomatic
 
   require 'paru/pandoc'
   require_relative 'pandoc_metadata.rb'
+  require_relative 'processor.rb'
 
   class FileConverter
 
     def initialize
+        @config = nil
     end
 
     def convert src, dst, current_config
+      @config = current_config
       metadata = PandocMetadata.load_file src
 
-      if metadata.has_target? then
-        target = metadata.target
+      if metadata.has_template? then
+        template = metadata.template
       else
-        target = current_config.determine_target src
+        template = @config.determine_template src
       end
 
-      config = current_config.get_target_config target
+      config = @config.get_template_config template
       pandoc_options = (config['pandoc'] || {}).merge(metadata.pandoc_options || {})
 
       input = File.read src
@@ -40,6 +43,12 @@ module Pandocomatic
     def pandoc input, options
       converter = Paru::Pandoc.new
       options.each do |option, value|
+        
+        case option
+        when 'filter', 'template' 
+            value = @config.update_path option, value
+        else ;
+        end
         converter.send option, value unless option == 'output'
         # don't let pandoc write the output to enable postprocessing
       end
@@ -51,6 +60,7 @@ module Pandocomatic
     end
 
     def postprocess input, config
+        return input
       process input, 'postprocessors', config
     end
 
@@ -61,16 +71,12 @@ module Pandocomatic
         processors = config[type]
         output = input
         processors.each do |processor|
-          output = processor << output
+          output = Processor.run(@config.update_path(type, processor), output)
         end
+        output
       else
         input
       end
-    end
-
-    # Change paths of pandoc options when refering to non-local references, such
-    # as templates, other includes, and pre or post processors.
-    def include_path(path)
     end
 
   end
