@@ -15,33 +15,43 @@ module Pandocomatic
         'latex' => 'tex'
     }
 
-    ASSET_MAP = {
-        'template' => 'pandoc-template-dir',
-        'filter' => 'pandoc-filter-dir',
-        'preprocessors' => 'preprocessor-dir',
-        'postprocessors' => 'postprocessor-dir'
-    }
-
     class Configuration
 
-        def initialize settings = DEFAULT_CONFIG
-            if settings.class == Hash then
-                @config_dir = Dir.pwd
-            else
-                # settings points to a yaml file containing the settings
-                begin
-                    filename = settings
-                    path = File.absolute_path filename
-                    @config_dir = File.dirname path
-                    settings = YAML.load_file path
-                rescue Exception => e
-                    raise "Unable to load configuration file #{settings}: #{e.message}"
+        def initialize filename
+            begin
+                path = File.absolute_path filename
+                settings = YAML.load_file path
+                if settings['settings'] and settings['settings']['data-dir'] then
+                    data_dir = settings['settings']['data-dir']
+                    src_dir = File.dirname filename
+                    if data_dir.start_with? '.' then
+                        @data_dir = File.absolute_path data_dir, src_dir
+                    else
+                        @data_dir = data_dir
+                    end
+                else
+                    @data_dir = Dir.pwd
+                    warn "Data-dir not set in #{filename}, setting it to #{@data_dir}"
                 end
+            rescue Exception => e
+                raise "Unable to load configuration file #{settings}: #{e.message}"
             end
-            @settings = {'skip' => ['.*']} # hidden files will always be skipped
+
+            @settings = {'skip' => ['.*', 'pandocomatic.yaml']} # hidden files will always be skipped, as will pandocomatic configuration files
             @templates = {}
             @convert_patterns = {}
             configure settings
+        end
+
+        def reconfigure filename
+            begin
+                settings = YAML.load_file filename
+                new_config = Marshal.load(Marshal.dump(self))
+                new_config.configure settings
+                new_config
+            rescue Exception => e
+                raise "Unable to load configuration file #{filename}: #{e.message}"
+            end
         end
 
         def configure settings
@@ -53,28 +63,14 @@ module Pandocomatic
             end
         end
 
-        def reconfigure filename
-            begin
-                path = File.absolute_path filename
-                @config_dir = File.dirname path
-                settings = YAML.load_file filename
-                new_config = Marshal.load(Marshal.dump(self))
-                new_config.configure settings
-                new_config
-            rescue Exception => e
-                raise "Unable to load configuration file #{filename}: #{e.message}"
-            end
-        end
-
         def marshal_dump
-            [@config_dir, @settings, @templates, @convert_patterns]
+            [@data_dir, @settings, @templates, @convert_patterns]
         end
 
         def marshal_load array
-            @config_dir, @settings, @templates, @convert_patterns = array
+            @data_dir, @settings, @templates, @convert_patterns = array
         end
-
-
+    
         def skip? src
             if @settings.has_key? 'skip' then
                 @settings['skip'].any? {|glob| File.fnmatch glob, File.basename(src)}
@@ -112,7 +108,7 @@ module Pandocomatic
             end
         end
 
-        def get_template_config template_name
+        def get_template template_name
             @templates[template_name]
         end
 
@@ -122,38 +118,29 @@ module Pandocomatic
             end.keys.first
         end
 
-        def update_path asset, template_asset
-
-            if template_asset.start_with? './' then
-                template_asset
+        def update_path path, src_dir
+            if path.start_with? './' 
+                # refers to a local (to file) dir
+                File.join src_dir, path
+            elsif path.start_with? '/' then
+                path
             else
-                File.join @settings[ASSET_MAP[asset]], template_asset
+                # refers to data-dir
+                File.join @data_dir, path
             end
         end
 
-        def to_s 
-            marshal_dump
-        end
-
         private 
-
+        
         def reset_settings settings
             settings.each do |setting, value|
-                if setting == 'skip' then
-                    @settings[setting].merge value
+                case setting
+                when 'skip'
+                    @settings['skip'] = @settings['skip'].concat(value).uniq
+                when 'data-dir'
+                    next # skip data-dir setting; is set once in initialization
                 else
-                    if ASSET_MAP.values.include? setting then
-                        if value.start_with? '/' then
-                            # absolute path, keep
-                            @settings[setting] = value
-                        else
-                            # relative path (wrt config file), convert to
-                            # absolute path
-                            @settings[setting] = File.join @config_dir, value
-                        end
-                    else
-                        @settings[setting] = value
-                    end
+                    @settings[setting] = value
                 end
             end
         end
@@ -168,7 +155,6 @@ module Pandocomatic
                 @convert_patterns[name] = template['glob']
             end
         end
-
 
     end
 

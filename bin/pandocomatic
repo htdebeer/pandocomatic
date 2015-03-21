@@ -1,74 +1,76 @@
 #!/usr/bin/env ruby
 
 require 'trollop'
-require 'yaml'
+require 'fileutils'
 
 require_relative '../lib/pandocomatic/dir_converter.rb'
 require_relative '../lib/pandocomatic/file_converter.rb'
 require_relative '../lib/pandocomatic/configuration.rb'
 
-def convert_file input, opts
-  puts "converting file"
-end
-
-def convert_dir input, opts
-  puts "converting dir"
-end
-
-def convert_tree input, opts
-  puts "Converting tree"
-end
-
 opts = Trollop::options do
-  version "pandocomatic 0.0.1"
+  version "pandocomatic 0.0.3"
   banner <<-EOB
 
 Pandocomatic automates the use of pandoc (<http://www.pandoc.org>). It can be
-used to convert a file, a directory, or a directory tree.
+used to convert one file or a whole directory (tree).
 
 Usage:
 
-  Convert a file
-
-      pandocomatic [--config file.yaml] --output output.file input.file
-
-  Convert a directory or directory tree
-
-      pandocomatic [--config file.yaml] [--recursive] --output output.dir input.dir
+    pandocomatic [--config pandocomatic.yaml] --output output input
 
 Options:
 EOB
-  opt :config, "pandocomatic configuration file", :type => :string
-  opt :recursive, "apply pandocomatic recursively"
-  opt :target, "named conversion target", :type => :string
+
+  opt :config, "Pandocomatic configuration file, default is ./pandocomatic.yaml",  :type => :string 
   opt :output, "output file or directory", :type => :string
+
+
 end
 
 # input file/directory
 Trollop::die "Expect exactly one input file or directory" if ARGV.length != 1
 input = ARGV.first
 
+# output file/directory
 Trollop::die "Expect an output file or directory" if opts[:output].nil?
 output = opts[:output]
 
 # Configuration
-if opts[:config].nil? then
-  config = Pandocomatic::Configuration.new
-else
-  if not File.exist? opts[:config] or not File.readable? opts[:config] then
-    Trollop::die "Cannot read configuration file #{opts[:config]}" if File
-  end
+if opts[:config].nil? 
+    if Dir.entries(Dir.pwd).include? 'pandocomatic.yaml'
+        settings_file = File.join Dir.pwd, 'pandocomatic.yaml'
+    else
+        default_dir = File.join Dir.home, '.pandocomatic'
+        default_config = File.join default_dir, 'pandocomatic.yaml'
+        begin
+            if not Dir.exist? default_dir 
+                Dir.mkdir default_dir
+            end
 
-  config = Pandocomatic::Configuration.new YAML.load_file opts[:config]
+            if not File.exist? default_config
+                config_template = File.absolute_path '../lib/pandocomatic/default_configuration.yaml', __dir__
+                FileUtils.cp config_template, default_config
+            end
+        rescue Exception => e
+            raise "Failed creating default pandocomatic file at #{default_config}: #{e.message}"
+        end
+        settings_file = default_config
+    end
+else
+    settings_file = opts[:config]
 end
 
+if not File.exist? settings_file or not File.readable? settings_file then
+    Trollop::die "Cannot read configuration file #{settings_file}" if File
+end
+
+config = Pandocomatic::Configuration.new settings_file
 
 if File.directory? input then
   if File.exist? output and not File.directory? output then
     Trollop::die "Expected an output directory, found a file instead"
   end
 
-  config.configure({'recursive' => true}) if opts[:recursive] 
   Pandocomatic::DirConverter.new(input, output, config).convert
 
 else 

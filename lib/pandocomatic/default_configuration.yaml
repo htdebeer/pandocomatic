@@ -1,8 +1,4 @@
 settings:
-    preprocessor-dir: '.'
-    pandoc-filter-dir: '.'
-    pandoc-template-dir: '.'
-    postprocessor-dir: '.'
     recursive: true
     follow-symlinks: true
     skip: ['.*', 'pandocomatic.yaml']

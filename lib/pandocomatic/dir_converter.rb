@@ -26,12 +26,15 @@ module Pandocomatic
 
         dst = File.join dst_dir, filename
 
-        if File.directory? src and config.recursive?
+        if File.directory? src then
+            if config.recursive? then
           
-          # Convert subdirectories only when the recursivity is set in the
-          # configuration.
-          convert src, dst, config
-
+              # Convert subdirectories only when the recursivity is set in the
+              # configuration.
+              convert src, dst, config
+            else
+              next # skip directories when not recursive
+            end
         elsif File.symlink? src and not config.follow_links
 
           recreate_link src, dst

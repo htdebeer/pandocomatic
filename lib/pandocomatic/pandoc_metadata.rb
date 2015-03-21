@@ -32,10 +32,12 @@ module Pandocomatic
     end
 
     def has_template?
-      has_key? 'pandocomatic' and self['pandocomatic'].has_key? 'use-template'
+      has_key? 'pandocomatic' and 
+          self['pandocomatic'].has_key? 'use-template' and 
+          not self['pandocomatic']['use-template'].empty?
     end
 
-    def template
+    def template_name
       if has_template? then
         self['pandocomatic']['use-template']
       else
