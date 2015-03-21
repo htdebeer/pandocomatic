@@ -30,8 +30,7 @@ module Pandocomatic
                         @data_dir = data_dir
                     end
                 else
-                    @data_dir = Dir.pwd
-                    warn "Data-dir not set in #{filename}, setting it to #{@data_dir}"
+                    @data_dir = File.join Dir.home, '.pandocomatic'
                 end
             rescue Exception => e
                 raise "Unable to load configuration file #{settings}: #{e.message}"

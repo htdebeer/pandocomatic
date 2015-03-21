@@ -3,6 +3,7 @@ module Pandocomatic
   require 'paru/pandoc'
   require_relative 'pandoc_metadata.rb'
   require_relative 'processor.rb'
+  require_relative 'fileinfo_preprocessor'
 
   class FileConverter
 
@@ -21,6 +22,7 @@ module Pandocomatic
       pandoc_options = (template['pandoc'] || {}).merge(metadata.pandoc_options || {})
 
       input = File.read src
+      input = FileInfoPreprocessor.run input, src
       input = preprocess input, template
       input = pandoc input, pandoc_options, File.dirname(src)
       output = postprocess input, template
@@ -36,7 +38,8 @@ module Pandocomatic
 
     private
 
-    PANDOC_OPTIONS_WITH_PATH = ['filter', 
+    PANDOC_OPTIONS_WITH_PATH = [
+         'filter', 
          'template', 
          'css', 
          'include-in-header', 
