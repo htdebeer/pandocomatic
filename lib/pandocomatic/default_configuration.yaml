@@ -1,6 +1,6 @@
 settings:
     recursive: true
-    follow-symlinks: true
+    follow-symlinks: false
     skip: ['.*', 'pandocomatic.yaml']
 templates:
     markdown-to-html:

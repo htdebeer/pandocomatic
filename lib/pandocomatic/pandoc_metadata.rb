@@ -4,8 +4,6 @@ module Pandocomatic
   require 'yaml'
   require 'paru/pandoc'
 
-  require_relative 'configuration.rb'
-
   class PandocMetadata < Hash
 
     def initialize hash = {}
@@ -16,24 +14,32 @@ module Pandocomatic
     # Collect the metadata embedded in the src file
     def self.load_file src
       begin
-        json_reader = Paru::Pandoc.new {from 'markdown'; to 'json'}
-        json_document = JSON.parse json_reader << File.read(src)
-        if json_document.first["unMeta"].empty? then
-          return PandocMetadata.new 
+        yaml_metadata = pandoc2yaml File.read(src)
+        if yaml_metadata.empty? then
+            return PandocMetadata.new
         else
-          json_metadata = [json_document.first, []]
-          json_writer = Paru::Pandoc.new {from 'json'; to 'markdown'; standalone}
-          yaml_metadata = json_writer << JSON.generate(json_metadata)
-          return PandocMetadata.new YAML.load yaml_metadata
+            return PandocMetadata.new YAML.load(yaml_metadata)
         end
       rescue Exception => e
         raise "Error while reading metadata from #{src}; Are you sure it is a pandoc markdown file?\n#{e.message}"
       end
     end
 
+    def self.pandoc2yaml document
+        json_reader = Paru::Pandoc.new {from 'markdown'; to 'json'}
+        json_document = JSON.parse json_reader << document
+        yaml_metadata = ''
+        metadata = json_document.first
+        if metadata.has_key? "unMeta" and not metadata["unMeta"].empty? then
+            json_metadata = [metadata, []]
+            json_writer = Paru::Pandoc.new {from 'json'; to 'markdown'; standalone}
+            yaml_metadata = json_writer << JSON.generate(json_metadata)
+        end
+        yaml_metadata
+    end
+
     def has_template?
-      has_key? 'pandocomatic' and 
-          self['pandocomatic'].has_key? 'use-template' and 
+      self['pandocomatic'] and self['pandocomatic']['use-template'] and 
           not self['pandocomatic']['use-template'].empty?
     end
 
@@ -46,7 +52,7 @@ module Pandocomatic
     end
 
     def has_pandoc_options?
-      has_key? 'pandocomatic' and self['pandocomatic'].has_key? 'pandoc'
+      self['pandocomatic'] and self['pandocomatic']['pandoc']
     end
 
     def pandoc_options
@@ -55,9 +61,6 @@ module Pandocomatic
       else
         {}
       end
-    end
-
-    def to_configuration parent_config = Configuration.new
     end
 
   end

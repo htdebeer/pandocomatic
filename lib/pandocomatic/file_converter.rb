@@ -9,6 +9,7 @@ module Pandocomatic
 
     def convert src, dst, current_config
       @config = current_config
+      @src = src
       metadata = PandocMetadata.load_file src
 
       if metadata.has_template? then
@@ -83,7 +84,8 @@ module Pandocomatic
         processors = config[type]
         output = input
         processors.each do |processor|
-          output = Processor.run(@config.update_path(type, processor), output)
+          script = @config.update_path(processor, File.dirname(@src))
+          output = Processor.run(script, output)
         end
         output
       else
