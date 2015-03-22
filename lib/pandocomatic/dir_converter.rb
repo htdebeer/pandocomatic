@@ -8,8 +8,8 @@ module Pandocomatic
   class DirConverter
 
     def initialize src, dst, config
-      @src_root = File.absolute_path src
-      @dst_root = File.absolute_path dst
+      @src_root = src
+      @dst_root = dst
       @config = config
     end
 
@@ -101,7 +101,7 @@ module Pandocomatic
       if src_target.start_with? '.' then
         full_src_target = File.expand_path src_target, File.dirname(src)
         dst_target = src_target
-          if full_src_target.start_with? @src_root
+          if full_src_target.start_with? File.absolute_path(@src_root)
             File.symlink dst_target, dst unless File.exist? dst
           else
             warn "Skipping link #{src} because it points to outside the source tree"
