@@ -16,8 +16,8 @@ used to convert one file or a whole directory (tree).
 
 ## Options
 
--c, --config=<s>    Pandocomatic configuration file, default is
-                  ./pandocomatic.yaml
--o, --output=<s>    output file or directory
--v, --version       Print version and exit
--h, --help          Show this message
+    -c, --config=<s>    Pandocomatic configuration file, default is
+                        ./pandocomatic.yaml
+    -o, --output=<s>    output file or directory
+    -v, --version       Print version and exit
+    -h, --help          Show this message
