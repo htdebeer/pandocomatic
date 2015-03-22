@@ -23,7 +23,7 @@ module Pandocomatic
       pandoc_options = (template['pandoc'] || {}).merge(metadata.pandoc_options || {})
 
       input = File.read src
-      input = FileInfoPreprocessor.run input, @config.src
+      input = FileInfoPreprocessor.run input, src
       input = preprocess input, template
       input = pandoc input, pandoc_options, File.dirname(src)
       output = postprocess input, template
