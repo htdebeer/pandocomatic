@@ -57,7 +57,14 @@ module Pandocomatic
             reset_settings settings['settings'] if settings.has_key? 'settings'
             if settings.has_key? 'templates' then
                 settings['templates'].each do |name, template|
-                    reset_template name, template
+                    full_template = {
+                        'glob' => [],
+                        'preprocessors' => [],
+                        'pandoc' => {},
+                        'postprocessors' => []
+                    }
+
+                    reset_template name, full_template.merge(template)
                 end
             end
         end
@@ -146,7 +153,16 @@ module Pandocomatic
 
         def reset_template name, template
             if @templates.has_key? name then
-                @templates[name].merge! template
+                @templates[name].merge!(template) do |setting, oldval, newval|
+                    case setting
+                    when 'preprocessors', 'postprocessors', 'glob'
+                        oldval.concat(newval).uniq
+                    when 'pandoc'
+                        oldval.merge newval
+                    else
+                        newval
+                    end
+                end
             else
                 @templates[name] = template
             end

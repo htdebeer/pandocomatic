@@ -8,8 +8,8 @@ module Pandocomatic
   class DirConverter
 
     def initialize src, dst, config
-      @src_root = src
-      @dst_root = dst
+      @src_root = File.absolute_path src
+      @dst_root = File.absolute_path dst
       @config = config
     end
 
@@ -26,7 +26,15 @@ module Pandocomatic
 
         dst = File.join dst_dir, filename
 
-        if File.directory? src then
+        if File.symlink? src and not config.follow_links?
+            # Symlinks are also recognized as files and directories, so first
+            # check if they should be followed (and treated as files and
+            # directories), or if they should be recreated (if follow-links
+            # setting is false
+            recreate_link src, dst
+            
+        elsif File.directory? src then
+
             if config.recursive? then
           
               # Convert subdirectories only when the recursivity is set in the
@@ -35,9 +43,6 @@ module Pandocomatic
             else
               next # skip directories when not recursive
             end
-        elsif File.symlink? src and not config.follow_links
-
-          recreate_link src, dst
 
         elsif File.file? src 
 
@@ -90,15 +95,17 @@ module Pandocomatic
     end
 
     # Recreate source link in destination tree if it points to somewhere inside
-    # the source tree
+    # the source tree using relative paths
     def recreate_link src, dst
-      src_target = File.readlink(src)
-      full_src_target = File.realpath src_target
-      if full_src_target.start_with? @src_root
-        dst_target = File.join @dst_root, src_target
-        File.symlink dst_target, dst
-      else
-        warn "Skipping link #{src} because it points to outside the source tree"
+      src_target = File.readlink src
+      if src_target.start_with? '.' then
+        full_src_target = File.expand_path src_target, File.dirname(src)
+        dst_target = src_target
+          if full_src_target.start_with? @src_root
+            File.symlink dst_target, dst unless File.exist? dst
+          else
+            warn "Skipping link #{src} because it points to outside the source tree"
+          end
       end
     end
 
