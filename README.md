@@ -54,7 +54,7 @@ You can set three different settings:
 - `recursive` indicates if this directory and its children should be converted
   recursively, or if all subdirectories should be ignored during conversion.
 
-- `follow-links' indicates if symbolic links in the source tree should be
+- `follow-links` indicates if symbolic links in the source tree should be
   treated as the files and directories they point to, or if the links have to
   be recreated in the destination tree. If the latter (setting is `true`),
   only links that point inside the source tree are recreated in the
