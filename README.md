@@ -8,6 +8,8 @@ used to convert one file or a whole directory (tree).
 
 This software is in alpha stage (version 0.0.6)
 
+Licence: GPL3
+
 # Installation
 
     gem install pandocomatic
@@ -130,7 +132,7 @@ For example:
     ---
     title: Overview of all my blog posts
     pandocomatic:
-        use-templates: 'overview'
+        use-template: 'overview'
         pandoc:
             toc: true
     ...
