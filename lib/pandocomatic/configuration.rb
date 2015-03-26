@@ -153,14 +153,29 @@ module Pandocomatic
 
         def reset_template name, template
             if @templates.has_key? name then
-                @templates[name].merge!(template) do |setting, oldval, newval|
-                    case setting
+                fields = ['glob', 'preprocessors', 'pandoc', 'postprocessors']
+                fields.each do |field|
+                    case field
                     when 'preprocessors', 'postprocessors', 'glob'
-                        oldval.concat(newval).uniq
+                        if @templates[name][field] then
+                            if template[field] then
+                                @templates[name][field].concat(template[field]).uniq!
+                            end
+                        else
+                            if template[field] then
+                                @templates[name][field] = template[field]
+                            end
+                        end
                     when 'pandoc'
-                        oldval.merge newval
-                    else
-                        newval
+                        if @templates[name][field] then
+                            if template[field] then
+                                @templates[name][field].merge! template[field]
+                            end
+                        else
+                            if template[field] then
+                                @templates[name][field] = template[field]
+                            end
+                        end
                     end
                 end
             else
