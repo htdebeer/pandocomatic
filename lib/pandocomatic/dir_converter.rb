@@ -53,10 +53,10 @@ module Pandocomatic
           # otherwise, copy it to the destination tree
           if config.convert? src then
             dst = config.set_extension dst
-            Pandocomatic::FileConverter.new.convert src, dst, config
+            Pandocomatic::FileConverter.new.convert src, dst, config if file_modified? src, dst
           else
             # copy file
-            FileUtils.cp src, dst
+            FileUtils.cp src, dst if file_modified? src, dst
           end
 
         else
@@ -107,6 +107,11 @@ module Pandocomatic
             warn "Skipping link #{src} because it points to outside the source tree"
           end
       end
+    end
+
+    def file_modified? src, dst
+        # src file is newer than the dstination file?
+        File.exist? dst and File.mtime(src) > File.mtime(dst)
     end
 
   end

@@ -6,7 +6,7 @@ Automating the use of pandoc
 Pandocomatic automates the use of pandoc (<http://www.pandoc.org>). It can be
 used to convert one file or a whole directory (tree).
 
-This software is in alpha stage (version 0.0.7)
+This software is in alpha stage (version 0.0.8)
 
 Licence: GPL3
 
@@ -25,6 +25,10 @@ Licence: GPL3
     -o, --output=<s>    output file or directory
     -v, --version       Print version and exit
     -h, --help          Show this message
+
+When converting directories, only source files that are newer than the
+desination files are being converted. Removing the destination files will
+always cause regeneration.
 
 # Configuration
 
