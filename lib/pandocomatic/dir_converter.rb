@@ -111,7 +111,7 @@ module Pandocomatic
 
     def file_modified? src, dst
         # src file is newer than the dstination file?
-        File.exist? dst and File.mtime(src) > File.mtime(dst)
+        not File.exist? dst or File.mtime(src) > File.mtime(dst)
     end
 
   end

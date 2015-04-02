@@ -6,7 +6,7 @@ Automating the use of pandoc
 Pandocomatic automates the use of pandoc (<http://www.pandoc.org>). It can be
 used to convert one file or a whole directory (tree).
 
-This software is in alpha stage (version 0.0.8)
+This software is in alpha stage (version 0.0.9)
 
 Licence: GPL3
 
