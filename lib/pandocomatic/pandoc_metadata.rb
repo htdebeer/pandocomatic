@@ -5,6 +5,18 @@ module Pandocomatic
   require 'paru/pandoc'
 
   class PandocMetadata < Hash
+  
+    # Paru converters:
+    # Note. When converting metadata back to the pandoc markdown format, you have
+    # to use the option "standalone", otherwise the metadata is skipped
+    PANDOC_2_JSON = Paru::Pandoc.new {from "markdown"; to "json"}
+    JSON_2_PANDOC = Paru::Pandoc.new {from "json"; to "markdown"; standalone}
+
+    # When converting a pandoc document to JSON, or vice versa, the JSON object
+    # has the following three properties:
+    VERSION = "pandoc-api-version"
+    META = "meta"
+    BLOCKS = "blocks"
 
     def initialize hash = {}
       super
@@ -26,16 +38,22 @@ module Pandocomatic
     end
 
     def self.pandoc2yaml document
-        json_reader = Paru::Pandoc.new {from 'markdown'; to 'json'}
-        json_document = JSON.parse json_reader << document
-        yaml_metadata = ''
-        metadata = json_document.first
-        if metadata.has_key? "unMeta" and not metadata["unMeta"].empty? then
-            json_metadata = [metadata, []]
-            json_writer = Paru::Pandoc.new {from 'json'; to 'markdown'; standalone}
-            yaml_metadata = json_writer << JSON.generate(json_metadata)
+        json = JSON.parse(PANDOC_2_JSON << File.read(document))
+        yaml = ""
+
+        version, metadata = json.values_at(VERSION, META)
+
+        if not metadata.empty? then
+          metadata_document = {
+            VERSION => version, 
+            META => metadata, 
+            BLOCKS => []
+          }
+
+          yaml = JSON_2_PANDOC << JSON.generate(metadata_document)
         end
-        yaml_metadata
+
+        yaml
     end
 
     def has_template?
