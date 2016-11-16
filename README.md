@@ -6,7 +6,9 @@ Automating the use of pandoc
 Pandocomatic automates the use of pandoc (<http://www.pandoc.org>). It can be
 used to convert one file or a whole directory (tree).
 
-This software is in alpha stage (version 0.0.9)
+This software is in alpha stage (version 0.0.10). Version 0.0.10 supports
+pandoc version >= 1.18. For lower versions of pandoc, please use pandocomatic
+version 0.0.9.
 
 Licence: GPL3
 
@@ -148,4 +150,3 @@ For example:
 In any markdown file, you can set more specific pandoc(omatic) options in a
 yaml block by adding a `pandocomatic` setting, and adding to options set
 earlier like in the example above
-
