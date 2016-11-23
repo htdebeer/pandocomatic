@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
              "lib/pandocomatic/fileinfo_preprocessor.rb"
             ]
   s.add_runtime_dependency "paru", "~> 0.2", ">= 0.2.0"
+  s.add_runtime_dependency "trollop", "~> 2.1.2", ">= 2.1.0"
   s.add_development_dependency "minitest-reporters"
   s.executables << "pandocomatic"
   s.homepage = "https://heerdebeer.org/Software/markdown/pandocomatic/"

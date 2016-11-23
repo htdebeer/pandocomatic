@@ -1,42 +1,46 @@
 module Pandocomatic
+
+  require_relative "./cli.rb"
+
   VERSION = [0, 1, 0]
 
   class Pandocomatic
-    def initialize config = {}
+    def initialize config = {}, args = ARGV
+      invoke args
+    end
+
+    def invoke args = ARGV
+      @global_options, @subcommand, @options = CLI.parse args
     end
 
     def configure config
     end
 
-    # Run pandocomatic with parameters
+    # Run pandocomatic with options
 
-    def run path = ".", parameters = {}
-    end
-
-    # Generate pandocomatic configuartion
-    def generate path = ".", parameters = {}
+    def run options = {}
     end
 
     # Manage assets used by pandocomatic
 
-    def install path, parameters = {}
+    def install options = {}
     end
 
-    def uninstall path, parameters = {}
+    def uninstall options = {}
     end
 
-    def list type = nil, parameters = {}
+    def list options = {}
     end
 
-    def search search_string, parameters = {}
+    def search options = {}
     end
 
     # Help on pandocomatic
-    def help subcommand = nil, parameters = {}
-      if subcommand.nil?
+    def help options = {}
+      if :default == options[:topic]
         "general help"
       else
-        "help for #{subcommand}"
+        "help for #{options[:topic]}"
       end
     end
 
