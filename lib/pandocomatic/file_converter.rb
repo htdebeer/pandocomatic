@@ -66,6 +66,7 @@ module Pandocomatic
         converter.send option, value unless option == 'output'
         # don't let pandoc write the output to enable postprocessing
       end
+
       converter << input
     end
 

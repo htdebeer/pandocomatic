@@ -5,7 +5,7 @@ module Pandocomatic
   require 'paru/pandoc'
 
   class PandocMetadata < Hash
-  
+
     # Paru converters:
     # Note. When converting metadata back to the pandoc markdown format, you have
     # to use the option "standalone", otherwise the metadata is skipped
@@ -26,39 +26,39 @@ module Pandocomatic
     # Collect the metadata embedded in the src file
     def self.load_file src
       begin
-        yaml_metadata = pandoc2yaml File.read(src)
+        yaml_metadata = PandocMetadata.pandoc2yaml src
         if yaml_metadata.empty? then
-            return PandocMetadata.new
+          return PandocMetadata.new
         else
-            return PandocMetadata.new YAML.load(yaml_metadata)
+          return PandocMetadata.new YAML.load(yaml_metadata)
         end
       rescue Exception => e
         raise "Error while reading metadata from #{src}; Are you sure it is a pandoc markdown file?\n#{e.message}"
       end
     end
 
-    def self.pandoc2yaml document
-        json = JSON.parse(PANDOC_2_JSON << File.read(document))
-        yaml = ""
+    def self.pandoc2yaml path
+      json = JSON.parse(PANDOC_2_JSON << File.read(path))
+      yaml = ""
 
-        version, metadata = json.values_at(VERSION, META)
+      version, metadata = json.values_at(VERSION, META)
 
-        if not metadata.empty? then
-          metadata_document = {
-            VERSION => version, 
-            META => metadata, 
-            BLOCKS => []
-          }
+      if not metadata.empty? then
+        metadata_document = {
+          VERSION => version, 
+          META => metadata, 
+          BLOCKS => []
+        }
 
-          yaml = JSON_2_PANDOC << JSON.generate(metadata_document)
-        end
+        yaml = JSON_2_PANDOC << JSON.generate(metadata_document)
+      end
 
-        yaml
+      yaml
     end
 
     def has_template?
       self['pandocomatic'] and self['pandocomatic']['use-template'] and 
-          not self['pandocomatic']['use-template'].empty?
+        not self['pandocomatic']['use-template'].empty?
     end
 
     def template_name
