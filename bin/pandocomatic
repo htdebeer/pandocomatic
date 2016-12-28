@@ -8,7 +8,7 @@ require_relative '../lib/pandocomatic/file_converter.rb'
 require_relative '../lib/pandocomatic/configuration.rb'
 
 opts = Trollop::options do
-  version "pandocomatic 0.0.11"
+  version "pandocomatic 0.0.12"
   banner <<-EOB
 
 Pandocomatic automates the use of pandoc (<http://www.pandoc.org>). It can be
