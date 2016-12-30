@@ -26,7 +26,7 @@ module Pandocomatic
     # Collect the metadata embedded in the src file
     def self.load_file src
       begin
-        yaml_metadata = PandocMetadata.pandoc2yaml src
+        yaml_metadata = PandocMetadata.pandoc2yaml File.read(src)
         if yaml_metadata.empty? then
           return PandocMetadata.new
         else
@@ -37,8 +37,8 @@ module Pandocomatic
       end
     end
 
-    def self.pandoc2yaml path
-      json = JSON.parse(PANDOC_2_JSON << File.read(path))
+    def self.pandoc2yaml document
+      json = JSON.parse(PANDOC_2_JSON << document)
       yaml = ""
 
       version, metadata = json.values_at(VERSION, META)

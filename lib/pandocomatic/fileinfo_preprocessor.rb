@@ -10,6 +10,7 @@ module Pandocomatic
             output << "  created: #{created_at.strftime '%Y-%m-%d'}\n"
             output << "  modified: #{modified_at.strftime '%Y-%m-%d'}\n"
             output << "..."
+            output
         end
     end
 end
