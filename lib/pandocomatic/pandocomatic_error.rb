@@ -1,5 +1,5 @@
 #--
-# Copyright 2014, 2015, 2016, 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -17,15 +17,6 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-
-    require 'open3'
-
-    class Processor
-
-        def self.run script, input
-            output, _ = Open3.capture2(script, :stdin_data => input)
-            output
-        end
-
-    end
-end
+  class PandocomaticError < StandardError
+  end
+end 

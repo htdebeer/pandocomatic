@@ -7,14 +7,7 @@ Gem::Specification.new do |s|
   s.description = "Automating the use of pandoc <http://pandoc.org>: use pandocomatic to convert one file or a directory tree of files."
   s.author = ["Huub de Beer"]
   s.email = "Huub@heerdebeer.org"
-  s.files = ["lib/pandocomatic/configuration.rb", 
-             "lib/pandocomatic/default_configuration.yaml",
-             "lib/pandocomatic/dir_converter.rb", 
-             "lib/pandocomatic/file_converter.rb", 
-             "lib/pandocomatic/pandoc_metadata.rb",
-             "lib/pandocomatic/processor.rb",
-             "lib/pandocomatic/fileinfo_preprocessor.rb"
-            ]
+  s.files = ["lib/pandocomatic/**/*.rb"]
   s.add_runtime_dependency "paru", "~> 0.2", ">= 0.2.0"
   s.add_runtime_dependency "trollop", "~> 2.1.2", ">= 2.1.0"
   s.add_development_dependency "minitest-reporters"

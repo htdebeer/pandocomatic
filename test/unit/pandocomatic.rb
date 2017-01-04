@@ -1,5 +1,5 @@
-require "minitest/autorun"
-require "pandocomatic/pandocomatic"
+require 'minitest/autorun'
+require 'pandocomatic/pandocomatic'
 
 class TestPandocomatic < Minitest::Test
   def setup
@@ -11,6 +11,6 @@ class TestPandocomatic < Minitest::Test
   end
 
   def test_pandocomatic_version
-    assert_equal [0, 1, 0], @pandocomatic.version
+    assert_equal Pandocomatic::VERSION, @pandocomatic.version
   end
 end
