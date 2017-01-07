@@ -1,5 +1,5 @@
 require "rake/testtask"
-require "rdoc/task"
+require "yard"
 
 Rake::TestTask.new do |t|
   t.libs << "lib"
@@ -9,10 +9,8 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-Rake::RDocTask.new do |t|
-  t.rdoc_files.include("lib/**/*.rb")
-  t.rdoc_dir = "doc/api"
-  t.title = "Pandocomatic API documentation"
+YARD::Rake::YardocTask.new do |t|
+  t.files = ['lib/**/*.rb']
 end
 
 task :default => :test
