@@ -18,20 +18,27 @@
 #++
 module Pandocomatic
 
+  require 'paru'
+
+  require_relative './pandocomatic_error.rb'
   require_relative './cli.rb'
 
   VERSION = [0, 1, 0]
+  CONFIG_FILE = 'pandocomatic.yaml'
 
   class Pandocomatic
-    def initialize(config = {}, args = ARGV)
-      invoke args
+
+    def initialize(args = ARGV)
+      begin
+        global_options, subcommand, options = CLI.parse args
+        configure global_options
+        method(subcommand).call(options)
+      rescue PandocomaticError => e
+        error e
+      end
     end
 
-    def invoke(args = ARGV)
-      @global_options, @subcommand, @options = CLI.parse args
-    end
-
-    def configure(config)
+    def run
     end
 
     # Run pandocomatic with options
@@ -44,7 +51,7 @@ module Pandocomatic
 
     # Help on pandocomatic
     def help(options = {})
-      if :default == options[:topic]
+      if 'default' == options[:topic]
         "general help"
       else
         "help for #{options[:topic]}"
@@ -55,8 +62,42 @@ module Pandocomatic
     # Return the current version of pandocomatic. Pandocomatic's version uses
     # {semantic versioning}[http://semver.org/].
     #
-    def version
+    def version(options = {})
       VERSION
     end
+
+
+    private
+
+    def determine_data_dir(data_dir_option)
+      data_dir = "?"
+      if data_dir_option.nil?
+        # No data-dir option given: try to find the default one from pandoc
+        begin
+          data_dir = Paru::Pandoc.info().data_dir
+        rescue StandardError => e
+          raise PandocomaticError.new("Error running 'pandoc' while trying to determine the default data directory: #{e.message}")
+        end
+      else
+        # Check data dir given as an option
+      end
+
+      # check if data directory does exist and is readable
+      path = File.absolute_path data_dir
+
+      raise PandocomaticError.new("Unable to find data directory '#{data_dir}'") unless File.exist? path
+      raise PandocomaticError.new("Data directory '#{data_dir}' is not a directory") unless File.directory? path
+      raise PandocomaticError.new("Unable to read data directory '#{data_dir}'") unless File.readable? path
+
+      path
+    end
+
+
+    def configure(options)
+      @dry_run = if options.has_key? :dry_run then options[:dry_run] else false end
+      @quiet = if options.has_key? :quiet then options[:quiet] else false end
+      @data_dir = determine_data_dir options[:data_dir]
+    end
+
   end
 end

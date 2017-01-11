@@ -31,40 +31,45 @@ module Pandocomatic
     # optional subcommand, and the (optional) options for that subcommand.
     #
     # @param args [String, Array] A command line invocation string or a list of strings like ARGV
+    #
     # @return [Array] a list containing the global option, the subcommand, and
     # the subcommand's options
     #
     def self.parse(args)
       args = args.split if args.is_a? String
 
-      global_options = parse_global_options args || {}
+      begin
+        global_options = parse_global_options args || {}
 
-      subcommand = args.shift
-      subcommand = '' if subcommand.nil?
+        subcommand = args.shift
+        subcommand = '' if subcommand.nil?
 
-      # "global" options for help and version are converted to subcommands;
-      # other global options are ignored.
-      if global_options[:version]
-        subcommand = 'version'
-      elsif global_options[:help]
-        subcommand = 'help'
+        # "global" options for help and version are converted to subcommands;
+        # other global options are ignored.
+        if global_options[:version]
+          subcommand = 'version'
+        elsif global_options[:help]
+          subcommand = 'help'
+        end
+
+        if ['version', 'help'].include? subcommand
+          global_options = {}
+        end
+
+        # There cannot be any options if there is no subcommand; no need to
+        # parse the rest if there is no subcommand and no need for general
+        # options either
+        if subcommand.empty? then 
+          global_options = {}
+          options = {}
+        else 
+          options = parse_subcommand_options subcommand, args
+        end
+
+        [global_options, subcommand, options]
+      rescue Trollop::CommandlineError => e
+        raise PandocomaticError.new("Error while parsing the command line options: #{e.message}")
       end
-
-      if ['version', 'help'].include? subcommand
-        global_options = {}
-      end
-     
-      # There cannot be any options if there is no subcommand; no need to
-      # parse the rest if there is no subcommand and no need for general
-      # options either
-      if subcommand.empty? then 
-        global_options = {}
-        options = {}
-      else 
-        options = parse_subcommand_options subcommand, args
-      end
-
-      [global_options, subcommand, options]
     end
 
     private 
@@ -75,22 +80,6 @@ module Pandocomatic
       'version',
       'help'
     ]
-
-    # Check existence and readability of the path for this option.
-    def self.readable?(path)
-      path = File.absolute_path path
-      raise PandocomaticError.new "unable to find #{path}" unless File.exist? path 
-      raise PandocomaticError.new "unable to read #{path}" unless File.readable? path
-      true
-    end
-
-    # Check existence and writability of the path for this option.
-    def self.writable?(path)
-      path = File.absolute_path path
-      raise PandocomaticError.new "unable to find #{path}" unless File.exist? path 
-      raise PandocomaticError.new "unable to write #{path}" unless File.writable? path
-      true
-    end
 
     # Parse pandocomatic's global options.
     def self.parse_global_options(args)
@@ -120,8 +109,6 @@ module Pandocomatic
       else
         options.delete :show_version
         options.delete :show_help
-
-        readable? options[:data_dir] if options[:data_dir]
       end
       
       options
@@ -151,15 +138,10 @@ module Pandocomatic
       options = parser.parse args
       options.delete :help
 
-      # if no input argument specified, it should follow
+      # if no input option specified, it should follow
       options[:input] = args.shift unless options[:input]
 
       raise PandocomaticError.new("No input file specified") if options[:input].nil? or options[:input].empty?
-
-      readable? options[:input] if options[:input]
-      # output is not required. It can be specified in the pandoc
-      # configuration in the input file, or stdout is used.
-      writable? options[:output] if options[:output]
 
       options
     end
@@ -173,15 +155,19 @@ module Pandocomatic
         opt :recursive, 'Run on sub directories as well', :short => '-r', 
           :default => true
         opt :skip, 'Skip files/directory that match pattern', :short => '-s', :multi => true, :type => String
-        opt :output, 'Output directory', :short => '-o', :type => String, :required => true
+        opt :output, 'Output directory', :short => '-o', :type => String
+        opt :input, 'Input directory', :short => '-i', :type => String
       end
 
       options = parser.parse args
       options.delete :help
 
-      writable? :output, options[:output]
-      readable? :config, options[:config] if options[:config]
+      # if no input option is specified, it should follow
+      options[:input] = args.shift unless options[:input]
 
+      raise PandocomaticError.new("No input directory specified") if options[:input].nil? or options[:input].empty?
+      raise PandocomaticError.new("No output directory specified") if options[:output].nil? or options[:output].empty?
+      
       options
     end
 
@@ -206,7 +192,7 @@ module Pandocomatic
         options[:topic] = args.shift || 'default'
       rescue Exception
         # Ignore errors when trying to parse the help subcommand: the user
-        # probably can use the help.
+        # probably can use the help :-).
       end
 
       options
