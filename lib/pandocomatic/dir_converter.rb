@@ -20,10 +20,11 @@ module Pandocomatic
 
   require 'fileutils'
   require_relative 'file_converter.rb'
+  require_relative 'converter.rb'
 
   CONFIG_FILE = 'pandocomatic.yaml'
 
-  class DirConverter
+  class DirConverter < Converter
 
     def initialize src, dst, config
       @src_root = src

@@ -22,8 +22,9 @@ module Pandocomatic
   require_relative 'pandoc_metadata.rb'
   require_relative 'processor.rb'
   require_relative 'fileinfo_preprocessor'
+  require_relative 'converter.rb'
 
-  class FileConverter
+  class FileConverter < Converter
 
     def convert src, dst, current_config
       @config = current_config

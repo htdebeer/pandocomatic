@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.author = ["Huub de Beer"]
   s.email = "Huub@heerdebeer.org"
   s.files = ["lib/pandocomatic/**/*.rb"]
-  s.add_runtime_dependency "paru", "~> 0.2", ">= 0.2.0"
+  s.add_runtime_dependency "paru", "~> 0.2", ">= 0.2.3"
   s.add_runtime_dependency "trollop", "~> 2.1.2", ">= 2.1.0"
   s.add_development_dependency "minitest-reporters"
   s.executables << "pandocomatic"

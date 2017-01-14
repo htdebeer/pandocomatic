@@ -22,19 +22,20 @@ module Pandocomatic
 
   require_relative './pandocomatic_error.rb'
   require_relative './cli.rb'
+  require_relative './configuration.rb'
 
   VERSION = [0, 1, 0]
   CONFIG_FILE = 'pandocomatic.yaml'
 
   class Pandocomatic
 
-    def initialize(args = ARGV)
+    def initialize(args)
       begin
         global_options, subcommand, options = CLI.parse args
         configure global_options
         method(subcommand).call(options)
       rescue PandocomaticError => e
-        error e
+        raise e
       end
     end
 
@@ -43,10 +44,10 @@ module Pandocomatic
 
     # Run pandocomatic with options
 
-    def generate(options = {})
+    def convert_dir(options = {})
     end
 
-    def convert(options = {})
+    def convert_file(options = {})
     end
 
     # Help on pandocomatic
@@ -74,7 +75,7 @@ module Pandocomatic
       if data_dir_option.nil?
         # No data-dir option given: try to find the default one from pandoc
         begin
-          data_dir = Paru::Pandoc.info().data_dir
+          data_dir = Paru::Pandoc.info()[:data_dir]
         rescue StandardError => e
           raise PandocomaticError.new("Error running 'pandoc' while trying to determine the default data directory: #{e.message}")
         end

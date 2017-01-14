@@ -35,7 +35,32 @@ module Pandocomatic
 
     class Configuration
 
-        def initialize filename
+        def initialize
+            begin
+                path = File.absolute_path filename
+                settings = YAML.load_file path
+                if settings['settings'] and settings['settings']['data-dir'] then
+                    data_dir = settings['settings']['data-dir']
+                    src_dir = File.dirname filename
+                    if data_dir.start_with? '.' then
+                        @data_dir = File.absolute_path data_dir, src_dir
+                    else
+                        @data_dir = data_dir
+                    end
+                else
+                    @data_dir = File.join Dir.home, '.pandocomatic'
+                end
+            rescue Exception => e
+                raise "Unable to load configuration file #{settings}: #{e.message}"
+            end
+
+            @settings = {'skip' => ['.*', 'pandocomatic.yaml']} # hidden files will always be skipped, as will pandocomatic configuration files
+            @templates = {}
+            @convert_patterns = {}
+            configure settings
+        end
+        
+        def load(filename)
             begin
                 path = File.absolute_path filename
                 settings = YAML.load_file path
