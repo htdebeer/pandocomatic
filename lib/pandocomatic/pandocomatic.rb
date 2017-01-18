@@ -20,9 +20,14 @@ module Pandocomatic
 
   require 'paru'
 
-  require_relative './pandocomatic_error.rb'
+  require_relative './error/pandocomatic_error.rb'
   require_relative './cli.rb'
   require_relative './configuration.rb'
+  require_relative './dir_converter.rb'
+  require_relative './file_converter.rb'
+  require_relative './printer/help_printer.rb'
+  require_relative './printer/version_printer.rb'
+  require_relative './printer/error_printer.rb'
 
   VERSION = [0, 1, 0]
   CONFIG_FILE = 'pandocomatic.yaml'
@@ -31,42 +36,54 @@ module Pandocomatic
 
     def initialize(args)
       begin
-        global_options, subcommand, options = CLI.parse args
-        configure global_options
-        method(subcommand).call(options)
+        options = CLI.parse args
+        
+        if config[:has_version]
+          # The version option has precedence over all other options; if
+          # given, the version is printed
+          version
+        elsif config[:has_help]
+          # The help option has precedence over all other options except the
+          # version option. If given, the help is printed.
+          help
+        else
+          config = Pandocomatic::Configuration.new options
+          input = File.absolute_path options[:input]
+          output = if options[:has_output]
+                     File.absolute_path options[:output] 
+                   else
+                     $stdout
+                   end
+
+          @converter = if File.directory? input
+                        Pandocomatic::DirConverter.new(input, output, config)
+                      else
+                        Pandocomatic::FileConverter.new(input, output, config)
+                      end
+        end
       rescue PandocomaticError => e
+        # If any error is thrown while running pandocomatic, that error is
+        # inspected and a suitable error message is printed.
         raise e
       end
     end
 
     def run
-    end
-
-    # Run pandocomatic with options
-
-    def convert_dir(options = {})
-    end
-
-    def convert_file(options = {})
+      @converter.convert
     end
 
     # Help on pandocomatic
-    def help(options = {})
-      if 'default' == options[:topic]
-        "general help"
-      else
-        "help for #{options[:topic]}"
-      end
+    def help
+      HelpPrinter.print
     end
 
     ##
     # Return the current version of pandocomatic. Pandocomatic's version uses
     # {semantic versioning}[http://semver.org/].
     #
-    def version(options = {})
-      VERSION
+    def version
+      HelpPrinter.print VERSION
     end
-
 
     private
 

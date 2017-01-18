@@ -19,7 +19,7 @@
 module Pandocomatic
   require 'trollop'
 
-  require_relative './cli_error.rb'
+  require_relative './error/cli_error.rb'
 
   ##
   # Command line options parser for pandocomatic using trollop.
@@ -64,6 +64,7 @@ module Pandocomatic
         opt :recursive, 'Run on sub directories as well', :short => '-r', 
           :default => true
         opt :skip, 'Skip files/directory that match pattern', :short => '-s', :multi => true, :type => String
+        opt :unskip, 'Do not skip files/directory that match pattern', :short => '-u', :multi => true, :type => String
 
         # What to convert and where to put it
         opt :output, 'Output', :short => '-o', :type => String
@@ -173,7 +174,7 @@ module Pandocomatic
     end
     
     def self.match_file_types(input, output)
-        if not matching_file_types input, output 
+        if not matching_file_types? input, output 
           raise CLIError.new(CLIError::OUTPUT_IS_NOT_A_FILE) if File.file? input
           raise CLIError.new(CLIError::OUTPUT_IS_NOT_A_DIRECTORY) if File.directory? input
         end

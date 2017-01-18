@@ -1,0 +1,11 @@
+Pandocomatic
+
+  pandocomatic [options] input
+
+Usage
+
+-q  --quiet     run pandocomatic quiet.
+
+Examples
+
+

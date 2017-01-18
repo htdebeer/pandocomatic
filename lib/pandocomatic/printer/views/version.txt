@@ -1,0 +1,3 @@
+pandocomatic version <%=@version.join('.')%>
+(c) 2017 Huub de Beer <Huub@heerdebeer.org>
+

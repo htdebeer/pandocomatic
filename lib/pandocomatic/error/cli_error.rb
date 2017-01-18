@@ -19,7 +19,6 @@
 module Pandocomatic
   require_relative './pandocomatic_error.rb'
 
-
   class CLIError < PandocomaticError
 
     TYPES = [
