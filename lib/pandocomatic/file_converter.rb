@@ -26,7 +26,7 @@ module Pandocomatic
 
   class FileConverter < Converter
 
-    def convert src, dst, current_config
+    def convert src = @src, dst = @dst, current_config = @config
       @config = current_config
       @src = src
       metadata = PandocMetadata.load_file src

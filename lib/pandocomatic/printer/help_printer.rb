@@ -20,5 +20,8 @@ module Pandocomatic
   require_relative './printer.rb'
 
   class HelpPrinter < Printer
+    def initialize()
+      super 'help.txt'
+    end
   end
 end

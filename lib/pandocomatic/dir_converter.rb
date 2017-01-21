@@ -19,20 +19,13 @@
 module Pandocomatic
 
   require 'fileutils'
+
   require_relative 'file_converter.rb'
   require_relative 'converter.rb'
 
-  CONFIG_FILE = 'pandocomatic.yaml'
-
   class DirConverter < Converter
 
-    def initialize src, dst, config
-      @src_root = src
-      @dst_root = dst
-      @config = config
-    end
-
-    def convert src_dir = @src_root, dst_dir = @dst_root, config = @config
+    def convert src_dir = @src, dst_dir = @dst, config = @config
 
       ensure_directory dst_dir
       config = reconfigure config, src_dir
@@ -92,7 +85,7 @@ module Pandocomatic
     # If the source directory contains a configuration file, use it to
     # reconfigure the converter. Otherwise, use the current configuration
     def reconfigure current_config, src_dir
-      config_file = File.join src_dir, CONFIG_FILE
+      config_file = File.join src_dir, Pandocomatic::CONFIG_FILE
       if File.exist? config_file then
         current_config.reconfigure config_file
       else

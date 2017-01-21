@@ -21,10 +21,16 @@ module Pandocomatic
   require 'paru'
 
   require_relative './error/pandocomatic_error.rb'
+  require_relative './error/pandoc_error.rb'
+  require_relative './error/configuration_error.rb'
+
   require_relative './cli.rb'
+
   require_relative './configuration.rb'
+
   require_relative './dir_converter.rb'
   require_relative './file_converter.rb'
+
   require_relative './printer/help_printer.rb'
   require_relative './printer/version_printer.rb'
   require_relative './printer/error_printer.rb'
@@ -34,87 +40,93 @@ module Pandocomatic
 
   class Pandocomatic
 
-    def initialize(args)
+    def self.run(args)
       begin
         options = CLI.parse args
-        
-        if config[:has_version]
+
+        if options[:version_given]
           # The version option has precedence over all other options; if
           # given, the version is printed
-          version
-        elsif config[:has_help]
+          VersionPrinter.new(VERSION).print
+        elsif options[:help_given]
           # The help option has precedence over all other options except the
           # version option. If given, the help is printed.
-          help
+          HelpPrinter.new().print
         else
-          config = Pandocomatic::Configuration.new options
-          input = File.absolute_path options[:input]
-          output = if options[:has_output]
-                     File.absolute_path options[:output] 
-                   else
-                     $stdout
-                   end
+          input = options[:input]
+          output = options[:output]
+          configuration = configure options
 
-          @converter = if File.directory? input
-                        Pandocomatic::DirConverter.new(input, output, config)
-                      else
-                        Pandocomatic::FileConverter.new(input, output, config)
-                      end
+          converter_type = if File.directory? input then DirConverter else FileConverter end
+
+          converter_type
+            .new(input, output, configuration)
+            .convert
         end
       rescue PandocomaticError => e
-        # If any error is thrown while running pandocomatic, that error is
-        # inspected and a suitable error message is printed.
-        raise e
+        ErrorPrinter.new(e).print
       end
-    end
-
-    def run
-      @converter.convert
-    end
-
-    # Help on pandocomatic
-    def help
-      HelpPrinter.print
-    end
-
-    ##
-    # Return the current version of pandocomatic. Pandocomatic's version uses
-    # {semantic versioning}[http://semver.org/].
-    #
-    def version
-      HelpPrinter.print VERSION
     end
 
     private
 
-    def determine_data_dir(data_dir_option)
-      data_dir = "?"
-      if data_dir_option.nil?
+    def self.determine_config_file(options, data_dir = Dir.pwd)
+      config_file =''
+
+      if options[:config_given]
+        config_file = options[:config]
+      elsif Dir.entries(data_dir).include? CONFIG_FILE
+        config_file = File.join(data_dir, CONFIG_FILE)
+      elsif Dir.entries(Dir.pwd).include? CONFIG_FILE
+        config_file = File.join(Dir.pwd(), CONFIG_FILE)
+      else
+        # Fall back to default configuration file distributed with
+        # pandocomatic
+        config_file = File.join(__dir__, 'default_configuration.yaml')
+      end
+
+      path = File.absolute_path config_file
+
+      raise ConfigurationError.new(ConfigurationError::CONFIG_FILE_DOES_NOT_EXIST, path) unless File.exist? path
+      raise ConfigurationError.new(ConfigurationError::CONFIG_FILE_IS_NOT_A_FILE, path) unless File.file? path
+      raise ConfigurationError.new(ConfigurationError::CONFIG_FILE_IS_NOT_READABLE, path) unless File.readable? path
+
+      path
+    end
+
+    def self.determine_data_dir(options)
+      data_dir = ''
+
+      if options[:data_dir_given]
+        data_dir = options[:data_dir]
+      else
         # No data-dir option given: try to find the default one from pandoc
         begin
           data_dir = Paru::Pandoc.info()[:data_dir]
+        rescue Paru::Error => e
+          # If pandoc cannot be run, continuing probably does not work out
+          # anyway, so raise pandoc error
+          raise PandocError.new(e)
         rescue StandardError => e
-          raise PandocomaticError.new("Error running 'pandoc' while trying to determine the default data directory: #{e.message}")
+          # Ignore error and use the current working directory as default working directory
+          data_dir = Dir.pwd
         end
-      else
-        # Check data dir given as an option
       end
 
       # check if data directory does exist and is readable
       path = File.absolute_path data_dir
 
-      raise PandocomaticError.new("Unable to find data directory '#{data_dir}'") unless File.exist? path
-      raise PandocomaticError.new("Data directory '#{data_dir}' is not a directory") unless File.directory? path
-      raise PandocomaticError.new("Unable to read data directory '#{data_dir}'") unless File.readable? path
+      raise ConfigurationError.new(ConfigurationError::DATA_DIR_DOES_NOT_EXIST, path) unless File.exist? path
+      raise ConfigurationError.new(ConfigurationError::DATA_DIR_IS_NOT_A_DIRECTORY, path) unless File.directory? path
+      raise ConfigurationError.new(ConfigurationError::DATA_DIR_IS_NOT_READABLE, path) unless File.readable? path
 
       path
     end
 
-
-    def configure(options)
-      @dry_run = if options.has_key? :dry_run then options[:dry_run] else false end
-      @quiet = if options.has_key? :quiet then options[:quiet] else false end
-      @data_dir = determine_data_dir options[:data_dir]
+    def self.configure(options)
+      data_dir = determine_data_dir options
+      config_file = determine_config_file options, data_dir
+      Configuration.new options, data_dir, config_file
     end
 
   end

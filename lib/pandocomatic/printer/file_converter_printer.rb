@@ -19,15 +19,11 @@
 module Pandocomatic
   require_relative './printer.rb'
 
-  class ErrorPrinter < Printer
-    def initialize(error)
-      template = if error.respond_to? :template then error.template else 'error.txt' end
-      super template
-      @error = error
-    end
+  class FileConverterPrinter < Printer
+    def initialize(filename)
+      super 'convert_file.txt'
 
-    def print
-      warn to_s
+      @filename = filename
     end
   end
 end

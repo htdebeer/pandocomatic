@@ -1,0 +1,7 @@
+Pandocomatic has encountered an error:
+
+    <%= @error.message %>
+
+Run 'pandocomatic --help' for a short introduction on how to use pandocomatic
+or read its documentation at 
+https://heerdebeer.org/Software/markdown/pandocomatic/

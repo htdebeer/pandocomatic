@@ -17,17 +17,37 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './printer.rb'
+  require_relative './pandocomatic_error.rb'
 
-  class ErrorPrinter < Printer
-    def initialize(error)
-      template = if error.respond_to? :template then error.template else 'error.txt' end
-      super template
+  class ConfigurationError < PandocomaticError
+
+    TYPES = [
+      :data_dir_does_not_exist,
+      :data_dir_is_not_a_directory,
+      :data_dir_is_not_readable,
+
+      :config_file_does_not_exist,
+      :config_file_is_not_a_file,
+      :config_file_is_not_readable,
+      :unable_to_load_config_file
+    ]
+    
+    TYPES.each do |type|
+      const_set type.to_s.upcase, type
+    end
+
+    attr_reader :type
+
+    def initialize(type, option = '', error = nil)
+      @type = type
+      @option = option
       @error = error
+      super type.to_s
     end
 
-    def print
-      warn to_s
+    def has_error?
+      not @error.nil?
     end
+
   end
-end
+end 

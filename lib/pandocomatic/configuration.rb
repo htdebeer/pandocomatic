@@ -35,29 +35,22 @@ module Pandocomatic
 
     class Configuration
 
-        def initialize
-            begin
-                path = File.absolute_path filename
-                settings = YAML.load_file path
-                if settings['settings'] and settings['settings']['data-dir'] then
-                    data_dir = settings['settings']['data-dir']
-                    src_dir = File.dirname filename
-                    if data_dir.start_with? '.' then
-                        @data_dir = File.absolute_path data_dir, src_dir
-                    else
-                        @data_dir = data_dir
-                    end
-                else
-                    @data_dir = File.join Dir.home, '.pandocomatic'
-                end
-            rescue Exception => e
-                raise "Unable to load configuration file #{settings}: #{e.message}"
-            end
+        def initialize options, data_dir, configuration_file
+          @quiet = if options[:quiet_given] then options[:quiet] else false end
+          @dry_run = if options[:dry_run_given] then options[:dry_run] else false end
+          
+          @data_dir = data_dir
 
-            @settings = {'skip' => ['.*', 'pandocomatic.yaml']} # hidden files will always be skipped, as will pandocomatic configuration files
-            @templates = {}
-            @convert_patterns = {}
-            configure settings
+          load configuration_file
+
+          # Command line options take precedence over settings in the
+          # configuration file
+          
+          # skip / unskip
+
+          @settings[:recursive] = options[:recursive] if options[:recursive_given] and options[:recursive]
+          @settings[:follow_links] = opions[:follow_links] if options[:follow_links_given] and options[:follow_links]
+
         end
         
         def load(filename)
@@ -72,16 +65,20 @@ module Pandocomatic
                     else
                         @data_dir = data_dir
                     end
-                else
-                    @data_dir = File.join Dir.home, '.pandocomatic'
                 end
-            rescue Exception => e
-                raise "Unable to load configuration file #{settings}: #{e.message}"
+            rescue StandardError => e
+              raise ConfigurationError.new(ConfigurationError.UNABLE_TO_LOAD_CONFIG_FILE, filename, e)
             end
 
-            @settings = {'skip' => ['.*', 'pandocomatic.yaml']} # hidden files will always be skipped, as will pandocomatic configuration files
+            # hidden files will always be skipped, as will pandocomatic
+            # configuration files, unless explicitly set to not skip via the
+            # "unskip" option
+
+            @settings = {'skip' => ['.*', 'pandocomatic.yaml']} 
+
             @templates = {}
             @convert_patterns = {}
+
             configure settings
         end
 
@@ -91,8 +88,8 @@ module Pandocomatic
                 new_config = Marshal.load(Marshal.dump(self))
                 new_config.configure settings
                 new_config
-            rescue Exception => e
-                raise "Unable to load configuration file #{filename}: #{e.message}"
+            rescue StandardError => e
+              raise ConfigurationError.new(ConfigurationError.UNABLE_TO_LOAD_CONFIG_FILE, filename, e)
             end
         end
 
@@ -113,11 +110,11 @@ module Pandocomatic
         end
 
         def marshal_dump
-            [@data_dir, @settings, @templates, @convert_patterns]
+            [@data_dir, @settings, @templates, @convert_patterns, @quiet, @dry_run]
         end
 
         def marshal_load array
-            @data_dir, @settings, @templates, @convert_patterns = array
+            @data_dir, @settings, @templates, @convert_patterns, @quiet, @dry_run = array
         end
     
         def skip? src

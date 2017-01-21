@@ -25,10 +25,13 @@ module Pandocomatic
       @template = File.absolute_path(File.join(dir, 'views', template_file))
     end
 
-    def print
-      b = binding
+    def to_s
       erb = ERB.new(File.read(@template))
-      puts erb.result(b)
+      erb.result(binding())
+    end
+
+    def print
+      puts to_s()
     end
 
   end

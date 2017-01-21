@@ -154,6 +154,7 @@ module Pandocomatic
     def self.use_custom_version options
       if options[:show_version]
         options.delete :show_version
+        options.delete :show_version_given
         options[:version] = true
         options[:version_given] = true
       end
@@ -163,6 +164,7 @@ module Pandocomatic
     def self.use_custom_help options
       if options[:show_help]
         options.delete :show_help
+        options.delete :show_help_given
         options[:help] = true
         options[:help_given] = true
       end

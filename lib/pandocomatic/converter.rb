@@ -24,10 +24,13 @@ module Pandocomatic
   require_relative 'fileinfo_preprocessor'
 
   class Converter
-    def initialize src, dst, configuration
+    def initialize src, dst, config
+      @src = src
+      @dst = dst
+      @config = config
     end
 
-    def convert src, dst, configuration
+    def convert src = @src, dst = @dst, config = @config
     end
   end
 end

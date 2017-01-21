@@ -17,17 +17,20 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './printer.rb'
+  require_relative './pandocomatic_error.rb'
 
-  class ErrorPrinter < Printer
-    def initialize(error)
-      template = if error.respond_to? :template then error.template else 'error.txt' end
-      super template
-      @error = error
+  class PandocError < PandocomaticError
+
+    attr_reader :pandoc_error
+
+    def initialize(pandoc_error = nil)
+      @pandoc_error = pandoc_error
+      super
     end
 
-    def print
-      warn to_s
+    def has_pandoc_error?
+      not @pandoc_error.nil?
     end
+
   end
-end
+end 
