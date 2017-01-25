@@ -20,45 +20,25 @@ module Pandocomatic
   require_relative './pandocomatic_error.rb'
 
   class CLIError < PandocomaticError
+      # :no_input_given,
+      # :input_does_not_exist,
+      # :input_is_not_readable,
 
-    TYPES = [
-      :no_input_given,
-      :input_does_not_exist,
-      :input_is_not_readable,
+      # :no_output_given,
+      # :output_is_not_a_directory,
+      # :output_is_not_a_file,
+      # :output_it_not_writable,
 
-      :no_output_given,
-      :output_is_not_a_directory,
-      :output_is_not_a_file,
-      :output_it_not_writable,
+      # :unknown_option,
+      # :too_many_options,
+      # :problematic_invocation,
 
-      :unknown_option,
-      :too_many_options,
-      :problematic_invocation,
+      # :data_dir_does_not_exist,
+      # :data_dir_is_not_a_directory,
+      # :data_dir_is_not_readable,
 
-      :data_dir_does_not_exist,
-      :data_dir_is_not_a_directory,
-      :data_dir_is_not_readable,
-
-      :config_file_does_not_exist,
-      :config_file_is_not_a_file,
-      :config_file_is_not_readable
-    ]
-    
-    TYPES.each do |type|
-      const_set type.to_s.upcase, type
-    end
-
-    attr_reader :type, :trollop_error
-
-    def initialize(type, trollop_error = nil)
-      @type = type
-      @trollop_error = trollop_error
-      super type.to_s
-    end
-
-    def has_trollop_error?
-      not @trollop_error.nil?
-    end
-
+      # :config_file_does_not_exist,
+      # :config_file_is_not_a_file,
+      # :config_file_is_not_readable
   end
 end 

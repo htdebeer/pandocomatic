@@ -18,19 +18,8 @@
 #++
 module Pandocomatic
   require_relative './pandocomatic_error.rb'
-
+  
   class PandocError < PandocomaticError
-
-    attr_reader :pandoc_error
-
-    def initialize(pandoc_error = nil)
-      @pandoc_error = pandoc_error
-      super
-    end
-
-    def has_pandoc_error?
-      not @pandoc_error.nil?
-    end
-
+    # :error_running_pandoc
   end
 end 

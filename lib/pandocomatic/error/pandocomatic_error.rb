@@ -18,5 +18,20 @@
 #++
 module Pandocomatic
   class PandocomaticError < StandardError
+    attr_reader :error, :data
+    def initialize(message = :unknown, error = nil, data = nil)
+      super message.to_s
+      @error = error
+      @data = data
+    end
+
+    def has_error?
+      not @error.nil?
+    end
+
+    def has_data?
+      not @data.nil?
+    end
+
   end
 end 

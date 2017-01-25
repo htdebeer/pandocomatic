@@ -19,14 +19,8 @@
 module Pandocomatic
   require_relative './pandocomatic_error.rb'
 
-  class ConfigurationError < PandocomaticError
-    # :data_dir_does_not_exist,
-    # :data_dir_is_not_a_directory,
-    # :data_dir_is_not_readable,
-
-    # :config_file_does_not_exist,
-    # :config_file_is_not_a_file,
-    # :config_file_is_not_readable,
-    # :unable_to_load_config_file
+  class IOError < PandocomaticError
+    # :error_opening_file
   end
+
 end 

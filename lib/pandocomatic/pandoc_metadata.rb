@@ -22,42 +22,26 @@ module Pandocomatic
   require 'yaml'
   require 'paru/pandoc'
 
+  require_relative './error/pandoc_error.rb'
+
   class PandocMetadata < Hash
   
     # Paru converters:
     # Note. When converting metadata back to the pandoc markdown format, you have
-    # to use the option "standalone", otherwise the metadata is skipped
-    PANDOC_2_JSON = Paru::Pandoc.new {from "markdown"; to "json"}
-    JSON_2_PANDOC = Paru::Pandoc.new {from "json"; to "markdown"; standalone}
+    # to use the option 'standalone', otherwise the metadata is skipped
+    PANDOC_2_JSON = Paru::Pandoc.new {from 'markdown'; to 'json'}
+    JSON_2_PANDOC = Paru::Pandoc.new {from 'json'; to 'markdown'; standalone}
 
     # When converting a pandoc document to JSON, or vice versa, the JSON object
     # has the following three properties:
-    VERSION = "pandoc-api-version"
-    META = "meta"
-    BLOCKS = "blocks"
+    VERSION = 'pandoc-api-version'
+    META = 'meta'
+    BLOCKS = 'blocks'
 
-    def initialize hash = {}
-      super
-      merge! hash
-    end
-
-    # Collect the metadata embedded in the src file
-    def self.load_file src
+    def self.extract_metadata input_document
+      yaml = ""
       begin
-        yaml_metadata = pandoc2yaml File.read(src)
-        if yaml_metadata.empty? then
-            return PandocMetadata.new
-        else
-            return PandocMetadata.new YAML.load(yaml_metadata)
-        end
-      rescue Exception => e
-        raise "Error while reading metadata from #{src}; Are you sure it is a pandoc markdown file?\n#{e.message}"
-      end
-    end
-
-    def self.pandoc2yaml document
-        json = JSON.parse(PANDOC_2_JSON << File.read(document))
-        yaml = ""
+        json = JSON.parse(PANDOC_2_JSON << File.read(input_document))
 
         version, metadata = json.values_at(VERSION, META)
 
@@ -70,8 +54,28 @@ module Pandocomatic
 
           yaml = JSON_2_PANDOC << JSON.generate(metadata_document)
         end
+      rescue Paru::Error => e
+        raise PandocError.new(:error_running_pandoc, e, input_document)
+      rescue StandardError => e
+        raise IOError.new(:error_opening_file, e, input_document)
+      end
 
-        yaml
+      yaml
+    end
+
+    # Collect the metadata embedded in the src file
+    def self.load_file src
+      yaml_metadata = extract_metadata src
+      if yaml_metadata.empty? then
+        return PandocMetadata.new
+      else
+        return PandocMetadata.new YAML.load(yaml_metadata)
+      end
+    end
+    
+    def initialize hash = {}
+      super
+      merge! hash
     end
 
     def has_template?

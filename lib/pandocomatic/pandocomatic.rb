@@ -71,13 +71,13 @@ module Pandocomatic
     private
 
     def self.determine_config_file(options, data_dir = Dir.pwd)
-      config_file =''
+      config_file = ''
 
       if options[:config_given]
         config_file = options[:config]
       elsif Dir.entries(data_dir).include? CONFIG_FILE
         config_file = File.join(data_dir, CONFIG_FILE)
-      elsif Dir.entries(Dir.pwd).include? CONFIG_FILE
+      elsif Dir.entries(Dir.pwd()).include? CONFIG_FILE
         config_file = File.join(Dir.pwd(), CONFIG_FILE)
       else
         # Fall back to default configuration file distributed with
@@ -87,9 +87,9 @@ module Pandocomatic
 
       path = File.absolute_path config_file
 
-      raise ConfigurationError.new(ConfigurationError::CONFIG_FILE_DOES_NOT_EXIST, path) unless File.exist? path
-      raise ConfigurationError.new(ConfigurationError::CONFIG_FILE_IS_NOT_A_FILE, path) unless File.file? path
-      raise ConfigurationError.new(ConfigurationError::CONFIG_FILE_IS_NOT_READABLE, path) unless File.readable? path
+      raise ConfigurationError.new(:config_file_does_not_exist, nil, path) unless File.exist? path
+      raise ConfigurationError.new(:config_file_is_not_a_file, nil, path) unless File.file? path
+      raise ConfigurationError.new(:config_file_is_not_readable, nil, path) unless File.readable? path
 
       path
     end
@@ -106,7 +106,7 @@ module Pandocomatic
         rescue Paru::Error => e
           # If pandoc cannot be run, continuing probably does not work out
           # anyway, so raise pandoc error
-          raise PandocError.new(e)
+          raise PandocError.new(:error_running_pandoc, e, data_dir)
         rescue StandardError => e
           # Ignore error and use the current working directory as default working directory
           data_dir = Dir.pwd
@@ -116,9 +116,9 @@ module Pandocomatic
       # check if data directory does exist and is readable
       path = File.absolute_path data_dir
 
-      raise ConfigurationError.new(ConfigurationError::DATA_DIR_DOES_NOT_EXIST, path) unless File.exist? path
-      raise ConfigurationError.new(ConfigurationError::DATA_DIR_IS_NOT_A_DIRECTORY, path) unless File.directory? path
-      raise ConfigurationError.new(ConfigurationError::DATA_DIR_IS_NOT_READABLE, path) unless File.readable? path
+      raise ConfigurationError.new(:data_dir_does_not_exist, nil, path) unless File.exist? path
+      raise ConfigurationError.new(:data_dir_is_not_a_directory, nil, path) unless File.directory? path
+      raise ConfigurationError.new(:data_dir_is_not_readable, nil, path) unless File.readable? path
 
       path
     end

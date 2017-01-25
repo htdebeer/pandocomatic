@@ -42,7 +42,7 @@ module Pandocomatic
         options = parse_options args || {:help => true, :help_given => true}
         options
       rescue Trollop::CommandlineError => e
-        raise CLIError.new(CLIError::PROBLEMATIC_INVOCATION, e)
+        raise CLIError.new(:problematic_invocation, e, args)
       end
     end
 
@@ -79,7 +79,7 @@ module Pandocomatic
       begin
         options = parser.parse args
       rescue Trollop::CommandlineError => e
-        raise CLIError.new(CLIError::PROBLEMATIC_INVOCATION, e)
+        raise CLIError.new(:problematic_invocation, e, args)
       end
       
       options = use_custom_version options
@@ -93,15 +93,15 @@ module Pandocomatic
         end
 
         # There should be no other options left.
-        raise CLIError.new(CLIError::TOO_MANY_OPTIONS) if not args.empty?
+        raise CLIError.new(:too_many_options, nil, args) if not args.empty?
 
         # There should be an input specified
-        raise CLIError.new(CLIError::NO_INPUT_GIVEN) if options[:input].nil? or options[:input].empty?
+        raise CLIError.new(:no_input_given) if options[:input].nil? or options[:input].empty?
 
         # The input file or directory should exist
         input = File.absolute_path options[:input]
-        raise CLIError.new(CLIError::INPUT_DOES_NOT_EXIST) unless File.exist? input
-        raise CLIError.new(CLIError::INPUT_IS_NOT_READABLE) unless File.readable? input
+        raise CLIError.new(:input_does_not_exist, nil, input) unless File.exist? input
+        raise CLIError.new(:input_is_not_readable, nil, input) unless File.readable? input
 
         if options[:output_given]
           output = File.absolute_path options[:output]
@@ -109,30 +109,30 @@ module Pandocomatic
           match_file_types input, output
 
           # The output, if it already exist, should be writable
-          raise CLIError.new(CLIError::OUTPUT_IS_NOT_WRITABLE) unless not File.exist? output or File.writable? output
+          raise CLIError.new(:output_is_not_writable, nil, output) unless not File.exist? output or File.writable? output
         else
           # If the input is a directory, an output directory should be
           # specified as well. If the input is a file, the output could be
           # specified in the input file, or STDOUT could be used.
-          raise CLIError.new(CLIError::NO_OUTPUT_GIVEN) if File.directory? input
+          raise CLIError.new(:no_output_given) if File.directory? input
         end
 
         # Data dir, if specified, should be an existing and readable directory
         if options[:data_dir_given]
           data_dir = File.absolute_path options[:data_dir]
 
-          raise CLIError.new(CLIError::DATA_DIR_DOES_NOT_EXIST) unless File.exist? data_dir
-          raise CLIError.new(CLIError::DATA_DIR_IS_NOT_READABLE) unless File.readable? data_dir
-          raise CLIError.new(CLIError::DATA_DIR_IS_NOT_A_DIRECTORY) unless File.directory? data_dir
+          raise CLIError.new(:data_dir_does_not_exist, nil, data_dir) unless File.exist? data_dir
+          raise CLIError.new(:data_dir_is_not_readable, nil, data_dir) unless File.readable? data_dir
+          raise CLIError.new(:data_dir_is_not_a_directory, nil, data_dir) unless File.directory? data_dir
         end
 
         # Config file, if specified, should be an existing and readable file
         if options[:config_given]
           config = File.absolute_path options[:config]
 
-          raise CLIError.new(CLIError::CONFIG_FILE_DOES_NOT_EXIST) unless File.exist? config
-          raise CLIError.new(CLIError::CONFIG_FILE_IS_NOT_READABLE) unless File.readable? config
-          raise CLIError.new(CLIError::CONFIG_FILE_IS_NOT_A_FILE) unless File.file? config
+          raise CLIError.new(:config_file_does_not_exist, nil, config) unless File.exist? config
+          raise CLIError.new(:config_file_is_not_readable, nil, config) unless File.readable? config
+          raise CLIError.new(:config_file_is_not_a_file, nil, config) unless File.file? config
         end
 
       end
@@ -171,14 +171,17 @@ module Pandocomatic
       options 
     end
 
+    # If output does not exist, the output can be
+    # created with the same type. If output does exist, however, it should
+    # have the same type as the input.
     def self.matching_file_types?(input, output)
-      File.ftype(input) == File.ftype(output)
+      not File.exist?(output) or File.ftype(input) == File.ftype(output)
     end
     
     def self.match_file_types(input, output)
         if not matching_file_types? input, output 
-          raise CLIError.new(CLIError::OUTPUT_IS_NOT_A_FILE) if File.file? input
-          raise CLIError.new(CLIError::OUTPUT_IS_NOT_A_DIRECTORY) if File.directory? input
+          raise CLIError.new(:output_is_not_a_file, nil, input) if File.file? input
+          raise CLIError.new(:output_is_not_a_directory, nil, input) if File.directory? input
         end
     end
 

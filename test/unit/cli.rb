@@ -37,7 +37,7 @@ class TestPandocomatic < Minitest::Test
       cli('-q')
       cli('-q -i')
     end
-    assert_equal e.type, Pandocomatic::CLIError::NO_INPUT_GIVEN
+    assert_equal e.message, :no_input_given.to_s
 
     assert_includes cli('test/files/readable_test_file'), :input
     assert_includes cli('-i test/files/readable_test_file'), :input
@@ -48,7 +48,7 @@ class TestPandocomatic < Minitest::Test
       cli('-i test/files/non_existing_file')
       cli('--input test/files/non_existing_file')
     end
-    assert_equal e.type, Pandocomatic::CLIError::INPUT_DOES_NOT_EXIST
+    assert_equal e.message, :input_does_not_exist.to_s
 
     # TODO: I cannot add "unreadable" files to git. I am not so sure mocking the
     # file system is such a good idea. Creating file and making it unreadable
@@ -58,24 +58,24 @@ class TestPandocomatic < Minitest::Test
     #   cli('-i test/files/unreadable_test_file')
     #   cli('--input test/files/unreadable_test_file')
     # end
-    # assert_equal e.type, Pandocomatic::CLIError::INPUT_IS_NOT_READABLE
+    # assert_equal e.message, Pandocomatic::CLIError::INPUT_IS_NOT_READABLE
   end
 
   def test_output
     e = assert_raises Pandocomatic::CLIError do
       cli('-i test/files/readable_test_dir')
     end
-    assert_equal e.type, Pandocomatic::CLIError::NO_OUTPUT_GIVEN
+    assert_equal e.message, :no_output_given.to_s
     
     e = assert_raises Pandocomatic::CLIError do
       cli('-i test/files/readable_test_file -o test/files/readable_test_dir')
     end
-    assert_equal e.type, Pandocomatic::CLIError::OUTPUT_IS_NOT_A_FILE
+    assert_equal e.message, :output_is_not_a_file.to_s
     
     e = assert_raises Pandocomatic::CLIError do
       cli('-i test/files/readable_test_dir -o test/files/readable_test_file')
     end
-    assert_equal e.type, Pandocomatic::CLIError::OUTPUT_IS_NOT_A_DIRECTORY
+    assert_equal e.message, :output_is_not_a_directory.to_s
     
     assert_includes cli('--input test/files/readable_test_file'), :output
     assert_includes cli('--input test/files/readable_test_file -o test/files/readable_test_file'), :output
@@ -86,17 +86,17 @@ class TestPandocomatic < Minitest::Test
     e = assert_raises Pandocomatic::CLIError do
       cli('-i test/files/readable_test_file -d test/files/non_existing_file')
     end
-    assert_equal e.type, Pandocomatic::CLIError::DATA_DIR_DOES_NOT_EXIST
+    assert_equal e.message, :data_dir_does_not_exist.to_s
     
     e = assert_raises Pandocomatic::CLIError do
       cli('-i test/files/readable_test_file -d test/files/readable_test_file')
     end
-    assert_equal e.type, Pandocomatic::CLIError::DATA_DIR_IS_NOT_A_DIRECTORY
+    assert_equal e.message, :data_dir_is_not_a_directory.to_s
     
     e = assert_raises Pandocomatic::CLIError do
       cli('-i test/files/readable_test_file -d test/files/unreadable_test_dir')
     end
-    assert_equal e.type, Pandocomatic::CLIError::DATA_DIR_IS_NOT_READABLE
+    assert_equal e.message, :data_dir_is_not_readable.to_s
 
     assert_includes cli('-i test/files/readable_test_file -d test/files/readable_test_dir'), :data_dir
   end
@@ -105,12 +105,12 @@ class TestPandocomatic < Minitest::Test
     e = assert_raises Pandocomatic::CLIError do
       cli('-i test/files/readable_test_file -c test/files/non_existing_file')
     end
-    assert_equal e.type, Pandocomatic::CLIError::CONFIG_FILE_DOES_NOT_EXIST
+    assert_equal e.message, :config_file_does_not_exist.to_s
     
     e = assert_raises Pandocomatic::CLIError do
       cli('-i test/files/readable_test_file -c test/files/readable_test_dir')
     end
-    assert_equal e.type, Pandocomatic::CLIError::CONFIG_FILE_IS_NOT_A_FILE
+    assert_equal e.message, :config_file_is_not_a_file.to_s
     
     assert_includes cli('-i test/files/readable_test_file -c test/files/readable_test_file'), :config
   end
@@ -156,14 +156,14 @@ class TestPandocomatic < Minitest::Test
       cli('--some-unknown-option')
       cli('-Z')
     end
-    assert_equal e.type, Pandocomatic::CLIError::PROBLEMATIC_INVOCATION
+    assert_equal e.message, :problematic_invocation.to_s
   end
 
   def test_too_many_options
     e = assert_raises Pandocomatic::CLIError do
       cli('-i files/test/readable_test_file files/test/another_file')
     end
-    assert_equal e.type, Pandocomatic::CLIError::TOO_MANY_OPTIONS
+    assert_equal e.message, :too_many_options.to_s
   end
 
 end
