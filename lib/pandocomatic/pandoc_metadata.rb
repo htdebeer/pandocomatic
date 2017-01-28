@@ -91,6 +91,9 @@ module Pandocomatic
       end
     end
 
+    # TODO: allow a pandoc block outside a pandocomatic block to make
+    # pandocomatic work like paru's do-pandoc.rb.
+
     def has_pandoc_options?
       self['pandocomatic'] and self['pandocomatic']['pandoc']
     end

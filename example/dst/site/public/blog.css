@@ -1,0 +1,26 @@
+body {
+  font-size: 14pt;
+  line-height: 1.45;
+}
+
+header {
+  background-color: crimson;
+  color: ivory;
+  border-bottom: 1px solid black;
+}
+
+main {
+  text-align: justify;
+  max-width: 45em;
+}
+
+main h1 {
+  font-size: 20pt;
+  text-align: left;
+}
+
+main h2 {
+  font-size: 18pt;
+  text-align: left;
+}
+

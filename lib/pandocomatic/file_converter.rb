@@ -19,6 +19,7 @@
 module Pandocomatic
 
   require 'paru/pandoc'
+
   require_relative 'pandoc_metadata.rb'
   require_relative 'processor.rb'
   require_relative 'fileinfo_preprocessor'

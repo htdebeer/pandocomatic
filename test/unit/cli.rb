@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'pandocomatic'
 
-class TestPandocomatic < Minitest::Test
+class TestPandocomaticCLI < Minitest::Test
 
   def setup
   end

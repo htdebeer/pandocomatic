@@ -1,0 +1,12 @@
+body {
+  font-size: 14pt;
+  font-family: sans-serif;
+}
+
+a.empty {
+  color: red;
+}
+
+a.external {
+  color: green;
+}

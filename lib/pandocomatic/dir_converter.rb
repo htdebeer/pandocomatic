@@ -65,7 +65,7 @@ module Pandocomatic
           # otherwise, copy it to the destination tree
           if config.convert? src then
             dst = config.set_extension dst
-            Pandocomatic::FileConverter.new.convert src, dst, config if file_modified? src, dst
+            FileConverter.new(src, dst, config).convert if file_modified? src, dst
           else
             # copy file
             FileUtils.cp src, dst if file_modified? src, dst

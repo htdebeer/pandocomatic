@@ -1,0 +1,3 @@
+settings:
+  recursive: true
+  follow-links: false

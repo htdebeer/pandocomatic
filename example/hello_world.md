@@ -4,4 +4,4 @@ pandocomatic:
     from: markdown
     to: html5
 ...
-hallo *world*
+*Hello world!*, from **pandocomatic**.

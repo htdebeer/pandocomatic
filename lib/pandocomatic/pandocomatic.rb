@@ -35,10 +35,9 @@ module Pandocomatic
   require_relative './printer/version_printer.rb'
   require_relative './printer/error_printer.rb'
 
-  VERSION = [0, 1, 0]
-  CONFIG_FILE = 'pandocomatic.yaml'
-
   class Pandocomatic
+    VERSION = [0, 1, 0]
+    CONFIG_FILE = 'pandocomatic.yaml'
 
     def self.run(args)
       begin

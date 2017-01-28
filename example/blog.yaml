@@ -1,0 +1,11 @@
+settings:
+  recursive: true
+  follow-links: false
+templates:
+  blog:
+    glob: ['*.md']
+    pandoc:
+      from: markdown
+      to: html5
+      standalone: true
+      template: 'templates/blog.html'
