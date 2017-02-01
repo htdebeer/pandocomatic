@@ -115,37 +115,6 @@ class TestPandocomaticCLI < Minitest::Test
     assert_includes cli('-i test/files/readable_test_file -c test/files/readable_test_file'), :config
   end
 
-  def test_skip
-    assert_includes cli('-i test/files/readable_test_file -s .*'), :skip
-    
-    skip_list = cli('-i test/files/readable_test_file -s .*')[:skip]
-    assert_includes skip_list, '.*'
-    assert_equal skip_list.size, 1
-
-    skip_list = cli('-i test/files/readable_test_file -s .* --skip hello.md')[:skip]
-    assert_includes skip_list, '.*'
-    assert_includes skip_list, 'hello.md'
-    assert_equal skip_list.size, 2
-
-    skip_list = cli('-i test/files/readable_test_file -s .* --skip hello.md -s hello.md')[:skip]
-    assert_includes skip_list, '.*'
-    assert_includes skip_list, 'hello.md'
-    assert_equal skip_list.size, 3 # it is not a set!
-  end
-
-  def test_unskip
-    assert_includes cli('-i test/files/readable_test_file -u .*'), :unskip
-    
-    unskip_list = cli('-i test/files/readable_test_file -u .*')[:unskip]
-    assert_includes unskip_list, '.*'
-    assert_equal unskip_list.size, 1
-
-    unskip_list = cli('-i test/files/readable_test_file -u .* --unskip hello.md')[:unskip]
-    assert_includes unskip_list, '.*'
-    assert_includes unskip_list, 'hello.md'
-    assert_equal unskip_list.size, 2
-  end
-
   def test_other_options
     assert_includes cli('-i test/files/readable_test_file -y'), :dry_run
     assert_includes cli('-i test/files/readable_test_file -q'), :quiet

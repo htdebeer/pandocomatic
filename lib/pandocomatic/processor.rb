@@ -17,15 +17,14 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
+  require 'open3'
 
-    require 'open3'
+  class Processor
 
-    class Processor
-
-        def self.run script, input
-            output, _ = Open3.capture2(script, :stdin_data => input)
-            output
-        end
-
+    def self.run script, input
+      output, _ = Open3.capture2(script, :stdin_data => input)
+      output
     end
+
+  end
 end

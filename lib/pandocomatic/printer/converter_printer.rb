@@ -19,10 +19,12 @@
 module Pandocomatic
   require_relative './printer.rb'
 
-  class DirConverterPrinter < Printer
-    def initialize(dirname)
-      super 'convert_dir.txt'
-      @dirname = dirname
+  class ConverterPrinter < Printer
+    def initialize(message, src = nil, dst = nil)
+      super 'convert.txt'
+      @message = message
+      @src = src
+      @dst = dst
     end
   end
 end

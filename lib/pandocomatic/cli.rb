@@ -59,13 +59,6 @@ module Pandocomatic
         opt :data_dir, 'Data dir', :short => '-d', :type => String
         opt :config, 'Configuration file', :short => '-c', :type => String
 
-        opt :follow_links, 'Follow symbolic links', :short => '-l', 
-          :default => true
-        opt :recursive, 'Run on sub directories as well', :short => '-r', 
-          :default => true
-        opt :skip, 'Skip files/directory that match pattern', :short => '-s', :multi => true, :type => String
-        opt :unskip, 'Do not skip files/directory that match pattern', :short => '-u', :multi => true, :type => String
-
         # What to convert and where to put it
         opt :output, 'Output', :short => '-o', :type => String
         opt :input, 'Input', :short => '-i', :type => String

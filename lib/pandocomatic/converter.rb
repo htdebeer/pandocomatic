@@ -31,6 +31,7 @@ module Pandocomatic
     end
 
     def convert src = @src, dst = @dst, config = @config
+      # override in subclasses
     end
   end
 end

@@ -28,5 +28,7 @@ module Pandocomatic
     # :config_file_is_not_a_file,
     # :config_file_is_not_readable,
     # :unable_to_load_config_file
+    
+    # :no_such_template
   end
 end 

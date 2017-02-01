@@ -17,17 +17,21 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-    class FileInfoPreprocessor < Processor
-        def self.run input, path
-            created_at = File.stat(path).ctime
-            modified_at = File.stat(path).mtime
-            output = input
-            output << "\n---\n"
-            output << "fileinfo:\n"
-            output << "  path: '#{path}'\n"
-            output << "  created: #{created_at.strftime '%Y-%m-%d'}\n"
-            output << "  modified: #{modified_at.strftime '%Y-%m-%d'}\n"
-            output << "..."
-        end
+
+  # FileInfoPreprocessor collects information about a file to be converted and
+  # mixes that information into that file's metadata. It is a default
+  # preprocessor.
+  class FileInfoPreprocessor < Processor
+    def self.run input, path
+      created_at = File.stat(path).ctime
+      modified_at = File.stat(path).mtime
+      output = input
+      output << "\n---\n"
+      output << "fileinfo:\n"
+      output << "  path: '#{path}'\n"
+      output << "  created: #{created_at.strftime '%Y-%m-%d'}\n"
+      output << "  modified: #{modified_at.strftime '%Y-%m-%d'}\n"
+      output << "..."
     end
+  end
 end

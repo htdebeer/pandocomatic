@@ -17,13 +17,12 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './printer.rb'
+  require_relative './pandocomatic_error.rb'
 
-  class FileConverterPrinter < Printer
-    def initialize(filename)
-      super 'convert_file.txt'
-
-      @filename = filename
-    end
+  class ProcessorError < PandocomaticError
+    # :script_does_not_exist script
+    # :script_is_not_executable script
+    # :error_processing_script [script, src]
   end
-end
+
+end 

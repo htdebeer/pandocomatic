@@ -76,7 +76,7 @@ class TestPandocomaticRun < Minitest::Test
       config = File.join ['example', 'site.yaml']
       output = File.join [dir, 'site']
 
-      Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
+      Pandocomatic::Pandocomatic.run " -d #{data_dir} -c #{config} -i #{input} -o #{output}"
 
       example_output = File.join ['example', 'dst', 'site']
       assert_directories_equal example_output, output
