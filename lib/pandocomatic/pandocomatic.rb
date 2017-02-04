@@ -28,12 +28,13 @@ module Pandocomatic
 
   require_relative './configuration.rb'
 
-  require_relative './dir_converter.rb'
-  require_relative './file_converter.rb'
-
   require_relative './printer/help_printer.rb'
   require_relative './printer/version_printer.rb'
   require_relative './printer/error_printer.rb'
+
+  require_relative './command/command.rb'
+  require_relative './command/convert_dir_command.rb'
+  require_relative './command/convert_file_command.rb'
 
   class Pandocomatic
     VERSION = [0, 1, 0]
@@ -56,11 +57,41 @@ module Pandocomatic
           output = options[:output]
           configuration = configure options
 
-          converter_type = if File.directory? input then DirConverter else FileConverter end
+          src_root = File.absolute_path input
+          quiet = if options[:quiet_given] then options[:quiet] else false end
+          dry_run = if options[:dry_run_given] then options[:dry_run] else false end
 
-          converter_type
-            .new(input, output, configuration)
-            .convert
+          Command.class_eval %Q{
+            def src_root() 
+              "#{src_root}"
+            end
+
+            def dry_run?()
+              #{dry_run}
+            end
+
+            def quiet?()
+              #{quiet}
+            end
+          }
+          
+          if File.directory? input
+            command = ConvertDirCommand.new(configuration, input, output)
+          else
+            command = ConvertFileCommand.new(configuration, input, output)
+          end
+
+          if command.all_errors.size > 0
+            command.all_errors.each do |error|
+              ErrorPrinter.new(error).print
+            end
+            # ask to continue?
+            exit
+          end
+        
+
+          command.execute()
+
         end
       rescue PandocomaticError => e
         ErrorPrinter.new(e).print

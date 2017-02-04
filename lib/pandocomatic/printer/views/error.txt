@@ -1,6 +1,7 @@
 Pandocomatic has encountered an error:
 
     <%= @error.message %>
+    <%= @error.data %>
 
 Run 'pandocomatic --help' for a short introduction on how to use pandocomatic
 or read its documentation at 

@@ -1,5 +1,5 @@
 #--
-# Copyright 2014, 2015, 2016, 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -20,65 +20,77 @@ module Pandocomatic
 
   require 'paru/pandoc'
 
-  require_relative 'pandoc_metadata.rb'
-  require_relative 'processor.rb'
-  require_relative 'fileinfo_preprocessor'
-  require_relative 'converter.rb'
+  require_relative '../pandoc_metadata.rb'
+  require_relative '../processor.rb'
+  require_relative '../fileinfo_preprocessor'
 
-  require_relative 'error/io_error.rb'
-  require_relative 'error/configuration_error.rb'
-  require_relative 'error/processor_error.rb'
+  require_relative '../error/io_error.rb'
+  require_relative '../error/configuration_error.rb'
+  require_relative '../error/processor_error.rb'
 
-  require_relative 'printer/converter_printer.rb'
+  require_relative 'command.rb'
 
-  class FileConverter < Converter
+  class ConvertFileCommand < Command
 
-    def convert(src = @src, dst = @dst, current_config = @config)
-      @config = current_config
+    attr_reader :config, :src, :dst
+
+    def initialize(config, src, dst)
+      super()
+      @config = config
       @src = src
+      @dst = dst
 
-      ConverterPrinter.new(:converting_file, src, dst).print unless @config.quiet?
+      @errors.push IOError.new(:file_does_not_exist, nil, @src) unless File.exist? @src
+      @errors.push IOError.new(:file_is_not_a_file, nil, @src) unless File.file? @src
+      @errors.push IOError.new(:file_is_not_readable, nil, @src) unless File.readable? @src
+    end
 
-      raise IOError.new(:file_does_not_exist, nil, src) unless File.exist? src
-      raise IOError.new(:file_is_not_a_file, nil, src) unless File.file? src
-      raise IOError.new(:file_is_not_readable, nil, src) unless File.readable? src
+    def run
+      convert_file if file_modified?(@src, @dst)
+    end
 
-      metadata = PandocMetadata.load_file src
-
-      if metadata.has_template? then
-        template_name = metadata.template_name
-      else
-        template_name = @config.determine_template src
-      end
-
-      raise ConfigurationError.new(:no_such_template, nil, template_name) unless @config.has_template? template_name
-      template = @config.get_template template_name
-
-      pandoc_options = (template['pandoc'] || {}).merge(metadata.pandoc_options || {})
-
-      input = File.read src
-      input = FileInfoPreprocessor.run input, src
-      input = preprocess input, template
-      input = pandoc input, pandoc_options, File.dirname(src)
-      output = postprocess input, template
-
-      if dst.to_s.empty? and metadata.pandoc_options.has_key? 'output'
-        dst = metadata.pandoc_options['output']
-      end
-
-      begin
-        File.open(dst, 'w') do |file| 
-          raise IOError.new(:file_is_not_a_file, nil, dst) unless File.file? dst
-          raise IOError.new(:file_is_not_writable, nil, dst) unless File.writable? dst
-          file << output
-        end
-      rescue StandardError => e
-        raise IOError.new(:error_writing_file, e, dst)
-      end
+    def to_s
+      "converting #{@src} to #{@dst}"
     end
 
     private
 
+    def convert_file
+      metadata = PandocMetadata.load_file @src
+
+      if metadata.has_template? then
+        template_name = metadata.template_name
+      else
+        template_name = @config.determine_template @src
+      end
+
+      raise ConfigurationError.new(:no_such_template, nil, template_name) unless @config.has_template? template_name
+
+      template = @config.get_template template_name
+
+      pandoc_options = (template['pandoc'] || {}).merge(metadata.pandoc_options || {})
+
+      input = File.read @src
+      input = FileInfoPreprocessor.run input, @src
+      input = preprocess input, template
+      input = pandoc input, pandoc_options, File.dirname(@src)
+      output = postprocess input, template
+
+      if @dst.to_s.empty? and metadata.pandoc_options.has_key? 'output'
+        @dst = metadata.pandoc_options['output']
+      end
+
+      begin
+        File.open(@dst, 'w') do |file| 
+          raise IOError.new(:file_is_not_a_file, nil, @dst) unless File.file? @dst
+          raise IOError.new(:file_is_not_writable, nil, @dst) unless File.writable? @dst
+          file << output
+        end
+      rescue StandardError => e
+        raise IOError.new(:error_writing_file, e, @dst)
+      end
+    end
+    
     # TODO: update this list
     PANDOC_OPTIONS_WITH_PATH = [
       'filter', 
@@ -148,5 +160,4 @@ module Pandocomatic
     end
 
   end
-
 end

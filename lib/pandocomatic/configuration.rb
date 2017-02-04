@@ -37,9 +37,6 @@ module Pandocomatic
   class Configuration
 
     def initialize options, data_dir, configuration_file
-      @quiet = if options[:quiet_given] then options[:quiet] else false end
-      @dry_run = if options[:dry_run_given] then options[:dry_run] else false end
-
       @data_dir = data_dir
 
       load configuration_file
@@ -83,7 +80,7 @@ module Pandocomatic
     # @param [String] filename path to the configuration file
     #
     # @returns [Configuration] a new configuration
-    def reconfigure filename
+    def reconfigure(filename)
       begin
         settings = YAML.load_file filename
         new_config = Marshal.load(Marshal.dump(self))
@@ -94,7 +91,7 @@ module Pandocomatic
       end
     end
 
-    def configure settings
+    def configure(settings)
       reset_settings settings['settings'] if settings.has_key? 'settings'
       if settings.has_key? 'templates' then
         settings['templates'].each do |name, template|
@@ -110,12 +107,16 @@ module Pandocomatic
       end
     end
 
-    def marshal_dump
-      [@data_dir, @settings, @templates, @convert_patterns, @quiet, @dry_run]
+    def marshal_dump()
+      [@data_dir, @settings, @templates, @convert_patterns]
     end
 
     def marshal_load(array)
-      @data_dir, @settings, @templates, @convert_patterns, @quiet, @dry_run = array
+      @data_dir, @settings, @templates, @convert_patterns  = array
+    end
+
+    def to_s()
+      marshal_dump
     end
 
     def skip?(src)
@@ -126,11 +127,11 @@ module Pandocomatic
       end
     end
 
-    def quiet?
+    def quiet?()
       @quiet
     end
 
-    def dry_run?
+    def dry_run?()
       @dry_run
     end
 
@@ -138,11 +139,11 @@ module Pandocomatic
       @convert_patterns.values.flatten.any? {|glob| File.fnmatch glob, File.basename(src)}
     end
 
-    def recursive?
+    def recursive?()
       @settings['recursive']
     end
 
-    def follow_links?
+    def follow_links?()
       @settings['follow_links']
     end
 

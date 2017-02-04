@@ -5,13 +5,14 @@ require 'pandocomatic'
 class TestPandocomaticRun < Minitest::Test
 
   def assert_files_equal(expected, generated)
-    assert_equal File.basename(expected), File.basename(generated) 
-    assert_equal File.read(expected), File.read(generated)
+    assert File.exist?(generated), generated
+    assert_equal File.basename(expected), File.basename(generated), generated
+    assert_equal File.read(expected), File.read(generated), generated
   end
 
   def assert_directories_equal(expected, generated)
     assert_equal File.basename(expected), File.basename(generated)
-    assert_equal Dir.entries(expected).size, Dir.entries(generated).size
+    assert_equal Dir.entries(expected).size, Dir.entries(generated).size, expected
 
     Dir.foreach(expected).each do |entry|
       next if entry == '.' or entry == '..'
