@@ -18,13 +18,40 @@
 #++
 module Pandocomatic
 
+  require_relative '../printer/command_printer.rb'
+
   class Command
 
-    attr_reader :errors, :warnings
+    attr_reader :errors, :index
+
+    @@total = 0
+    @@dry_run = false
+    @@quiet = false
+    @@src_root = "."
 
     def initialize()
       @errors = []
-      @warnings = []
+      @@total += 1
+      @index = @@total
+    end
+
+    def self.reset(src_root = ".", dry_run = false, quiet = false)
+      @@src_root = src_root
+      @@dry_run = dry_run
+      @@quiet = quiet
+      @@total = 0
+    end
+
+    def src_root
+      @@src_root
+    end
+
+    def dry_run?
+      @@dry_run
+    end
+
+    def quiet?
+      @@quiet
     end
 
     def count()
@@ -35,8 +62,12 @@ module Pandocomatic
       @errors
     end
 
+    def index_to_s
+      "#{@index}".rjust((@@total / 10) + 1)
+    end
+
     def execute()
-      puts to_s unless quiet?
+      CommandPrinter.new(self).print unless quiet?
       run if not dry_run? and runnable?
     end
 
@@ -50,15 +81,15 @@ module Pandocomatic
     def to_s
       'command'
     end
+    
+    def directory?
+      false
+    end
 
     def has_errors?()
       not @errors.empty?
     end
 
-    def has_warnings?()
-      not @warnings.empty?
-    end
-    
     # src file is newer than the dstination file?
     def file_modified?(src, dst)
       not File.exist? dst or File.mtime(src) > File.mtime(dst)

@@ -50,7 +50,7 @@ module Pandocomatic
     end
 
     def to_s
-      "converting #{@src} to #{@dst}"
+      "convert #{File.basename @src} → #{@dst}"
     end
 
     private

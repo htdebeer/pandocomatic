@@ -93,8 +93,12 @@ module Pandocomatic
       end
     end
 
+    def directory?
+      true
+    end
+
     def to_s()
-      "Converting dir: #{@src_dir}"
+      "enter: #{@src_dir}"
     end
 
     def run

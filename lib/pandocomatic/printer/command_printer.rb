@@ -17,33 +17,12 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require 'fileutils'
+  require_relative './printer.rb'
 
-  require_relative '../error/io_error.rb'
-  require_relative 'command.rb'
-
-  class CopyFileCommand < Command
-    attr_reader :src
-
-    def initialize(src, dst)
-      super()
-      @src = src
-      @dst = dst
-      @errors.push IOError.new(:file_is_not_readable, nil, @src) unless File.readable? @src
-      @errors.push IOError.new(:file_is_not_writable, nil, @dst) unless not File.exist?(@dst) or File.writable?(@dst)
+  class CommandPrinter < Printer
+    def initialize(command)
+      super 'command.txt'
+      @command = command
     end
-
-    def run()
-      begin
-        FileUtils.cp(@src, @dst) if file_modified?(@src, @dst)
-      rescue StandardError => e
-        raise IOError.new(:unable_to_copy_file, e, [@src, @dst])
-      end
-    end
-
-    def to_s()
-      "copy #{File.basename @src} → #{@dst}"
-    end
-    
   end
 end

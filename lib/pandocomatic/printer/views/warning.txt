@@ -1,0 +1,1 @@
+Warning. <%=@warning.message.to_s%>: <%=@warning.src%>

@@ -19,12 +19,15 @@
 module Pandocomatic
   require_relative './printer.rb'
 
-  class ConverterPrinter < Printer
-    def initialize(message, src = nil, dst = nil)
-      super 'convert.txt'
-      @message = message
-      @src = src
-      @dst = dst
+  class WarningPrinter < Printer
+    def initialize(warning)
+      template = 'warning.txt'
+      super template
+      @warning = warning
+    end
+
+    def print
+      warn to_s
     end
   end
 end

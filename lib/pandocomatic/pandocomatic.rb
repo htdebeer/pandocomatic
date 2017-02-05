@@ -53,48 +53,57 @@ module Pandocomatic
           # version option. If given, the help is printed.
           HelpPrinter.new().print
         else
+          # Run the pandocomatic converter configured according to the options
+          # given.
           input = options[:input]
           output = options[:output]
           configuration = configure options
 
+          # Extend the command classes by setting the source tree root
+          # directory, and the options quiet and dry-run, which are used when
+          # executing a command: if dry-run the command is not actually
+          # executed and if quiet the command is not printed to STDOUT
           src_root = File.absolute_path input
-          quiet = if options[:quiet_given] then options[:quiet] else false end
           dry_run = if options[:dry_run_given] then options[:dry_run] else false end
+          quiet = if options[:quiet_given] then options[:quiet] else false end
 
-          Command.class_eval %Q{
-            def src_root() 
-              "#{src_root}"
-            end
+          Command.reset(src_root, dry_run, quiet)
 
-            def dry_run?()
-              #{dry_run}
-            end
-
-            def quiet?()
-              #{quiet}
-            end
-          }
-          
+          # Pandocomatic has two modes: converting a directory tree or
+          # converting a single file. The mode is selected by the input.
           if File.directory? input
             command = ConvertDirCommand.new(configuration, input, output)
           else
             command = ConvertFileCommand.new(configuration, input, output)
           end
 
+          # Notify the user about all configuration errors collected when
+          # determining the commands to run to perform this pandocomatic
+          # conversion.
           if command.all_errors.size > 0
+            warn "Errors encountered while configuring pandocomatic:"
             command.all_errors.each do |error|
               ErrorPrinter.new(error).print
             end
-            # ask to continue?
             exit
           end
-        
 
+          # Pandocomatic is successfully configured: running the
+          # actual conversion now.
+          puts "#{command.count} command#{"s" if command.count > 1} to execute:" unless quiet
+          
+          # Depending on the options dry-run and quiet, the command.execute
+          # method will actually performing the commands (dry-run = false) and
+          # print the command to STDOUT (quiet = false)
           command.execute()
-
         end
       rescue PandocomaticError => e
+        # Report the error and break off the conversion process.
         ErrorPrinter.new(e).print
+      rescue StandardError => e
+        # An unexpected error has occurred; break off the program drastically
+        # for now
+        raise e
       end
     end
 

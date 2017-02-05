@@ -1,0 +1,1 @@
+<%= if @command.directory? then "\n" end %>(<%=@command.index_to_s%>) <%=if @command.directory? then "+ " else "  - " end%><%= @command.to_s%>

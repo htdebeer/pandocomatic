@@ -22,6 +22,7 @@ module Pandocomatic
 
   require_relative '../warning.rb'
   require_relative '../error/io_error.rb'
+  require_relative '../printer/warning_printer.rb'
 
   class CreateLinkCommand < Command
 
@@ -40,7 +41,7 @@ module Pandocomatic
             @dst = dst
             @dst_target = src_target
           else
-            @warnings.push Warning.new(:skipping_link_because_it_points_outside_the_source_tree, @src)
+            WarningPrinter.new(Warning.new(:skipping_link_because_it_points_outside_the_source_tree, @src)).print
           end
         end
       rescue StandardError => e
@@ -58,6 +59,10 @@ module Pandocomatic
 
     def runnable?
       not (has_errors? or @dst.nil? or @dst_target.nil? or @src.nil?)
+    end
+
+    def to_s
+      "link #{File.basename @dst} → #{@dst_target}"
     end
 
   end
