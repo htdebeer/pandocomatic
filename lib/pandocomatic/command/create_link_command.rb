@@ -62,7 +62,7 @@ module Pandocomatic
     end
 
     def to_s
-      "link #{File.basename @dst} → #{@dst_target}"
+      "link #{File.basename @dst} -> #{@dst_target}"
     end
 
   end

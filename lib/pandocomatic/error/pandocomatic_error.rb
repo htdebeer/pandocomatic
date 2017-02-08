@@ -17,6 +17,8 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
+  require_relative '../printer/error_printer.rb'
+
   class PandocomaticError < StandardError
     attr_reader :error, :data
     def initialize(message = :unknown, error = nil, data = nil)
@@ -25,12 +27,16 @@ module Pandocomatic
       @data = data
     end
 
-    def has_error?
+    def has_error?()
       not @error.nil?
     end
 
-    def has_data?
+    def has_data?()
       not @data.nil?
+    end
+
+    def print()
+      ErrorPrinter.new(self).to_s
     end
 
   end

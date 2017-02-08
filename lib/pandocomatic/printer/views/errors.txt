@@ -1,0 +1,10 @@
+Pandocomatic has encountered the following errors while trying to configure
+the conversion process:
+
+<% @errors.each do |error| %>
+- <%= error.to_s %>
+<% end %>
+
+Pandocomatic will not start the conversion process before these errors are
+resolved. See `pandocomatic --help` for more information on how to use
+pandocomatic.

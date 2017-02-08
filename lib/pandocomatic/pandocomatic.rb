@@ -31,6 +31,7 @@ module Pandocomatic
   require_relative './printer/help_printer.rb'
   require_relative './printer/version_printer.rb'
   require_relative './printer/error_printer.rb'
+  require_relative './printer/errors_printer.rb'
 
   require_relative './command/command.rb'
   require_relative './command/convert_dir_command.rb'
@@ -81,10 +82,7 @@ module Pandocomatic
           # determining the commands to run to perform this pandocomatic
           # conversion.
           if command.all_errors.size > 0
-            warn "Errors encountered while configuring pandocomatic:"
-            command.all_errors.each do |error|
-              ErrorPrinter.new(error).print
-            end
+            ErrorsPrinter.new(command.all_errors).print
             exit
           end
 

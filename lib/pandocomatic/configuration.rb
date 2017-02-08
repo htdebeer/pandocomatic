@@ -127,14 +127,6 @@ module Pandocomatic
       end
     end
 
-    def quiet?()
-      @quiet
-    end
-
-    def dry_run?()
-      @dry_run
-    end
-
     def convert?(src)
       @convert_patterns.values.flatten.any? {|glob| File.fnmatch glob, File.basename(src)}
     end

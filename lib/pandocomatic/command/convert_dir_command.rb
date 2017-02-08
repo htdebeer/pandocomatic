@@ -98,12 +98,12 @@ module Pandocomatic
     end
 
     def to_s()
-      "enter: #{@src_dir}"
+      "convert #{@src_dir}" + '; ' + if create_directory? then 'create and ' end + "enter #{@dst_dir}"
     end
 
     def run
       begin
-        Dir.mkdir @dst_dir unless File.exists? @dst_dir and File.directory? @dst_dir
+        Dir.mkdir @dst_dir if create_directory?
       rescue SystemError => e
         raise IOError.new(:error_creating_directory, e, @dst_dir)
       end
@@ -114,6 +114,10 @@ module Pandocomatic
     end
 
     private
+
+    def create_directory?()
+      not File.exist? @dst_dir or not File.directory? @dst_dir
+    end
 
     # If the source directory contains a configuration file, use it to
     # reconfigure the converter. Otherwise, use the current configuration

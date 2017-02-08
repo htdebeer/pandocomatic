@@ -63,7 +63,7 @@ module Pandocomatic
     end
 
     def index_to_s
-      "#{@index}".rjust((@@total / 10) + 1)
+      "#{@@total - @index + 1}".rjust(@@total.to_s.size)
     end
 
     def execute()

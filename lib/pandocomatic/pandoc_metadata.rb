@@ -20,9 +20,10 @@ module Pandocomatic
 
   require 'json'
   require 'yaml'
-  require 'paru/pandoc'
+  require 'paru'
 
   require_relative './error/pandoc_error.rb'
+  require_relative './error/io_error.rb'
 
   class PandocMetadata < Hash
   
@@ -39,9 +40,17 @@ module Pandocomatic
     BLOCKS = 'blocks'
 
     def self.extract_metadata input_document
+      begin
+        pandoc2yaml File.read(input_document)
+      rescue StandardError => e
+        raise IOError.new(:error_opening_file, e, input_document)
+      end
+    end
+
+    def self.pandoc2yaml(input)
       yaml = ""
       begin
-        json = JSON.parse(PANDOC_2_JSON << File.read(input_document))
+        json = JSON.parse(PANDOC_2_JSON << input)
 
         version, metadata = json.values_at(VERSION, META)
 
@@ -56,8 +65,6 @@ module Pandocomatic
         end
       rescue Paru::Error => e
         raise PandocError.new(:error_running_pandoc, e, input_document)
-      rescue StandardError => e
-        raise IOError.new(:error_opening_file, e, input_document)
       end
 
       yaml

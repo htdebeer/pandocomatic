@@ -18,7 +18,7 @@
 #++
 module Pandocomatic
 
-  require 'paru/pandoc'
+  require 'paru'
 
   require_relative '../pandoc_metadata.rb'
   require_relative '../processor.rb'
@@ -50,7 +50,7 @@ module Pandocomatic
     end
 
     def to_s
-      "convert #{File.basename @src} → #{@dst}"
+      "convert #{File.basename @src} -> #{File.basename @dst}"
     end
 
     private
