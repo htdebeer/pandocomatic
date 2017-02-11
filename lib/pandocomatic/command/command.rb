@@ -42,15 +42,15 @@ module Pandocomatic
       @@total = 0
     end
 
-    def src_root
+    def src_root()
       @@src_root
     end
 
-    def dry_run?
+    def dry_run?()
       @@dry_run
     end
 
-    def quiet?
+    def quiet?()
       @@quiet
     end
 
@@ -58,11 +58,11 @@ module Pandocomatic
       1
     end
 
-    def all_errors
+    def all_errors()
       @errors
     end
 
-    def index_to_s
+    def index_to_s()
       "#{@@total - @index + 1}".rjust(@@total.to_s.size)
     end
 
@@ -78,11 +78,11 @@ module Pandocomatic
       not has_errors?
     end
 
-    def to_s
+    def to_s()
       'command'
     end
     
-    def directory?
+    def directory?()
       false
     end
 

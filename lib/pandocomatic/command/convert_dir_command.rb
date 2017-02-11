@@ -93,21 +93,26 @@ module Pandocomatic
       end
     end
 
-    def directory?
+    def directory?()
       true
     end
 
     def to_s()
-      "convert #{@src_dir}" + '; ' + if create_directory? then 'create and ' end + "enter #{@dst_dir}"
+      "convert #{@src_dir}" + '; ' + if create_directory? then 'create and ' else '' end + "enter #{@dst_dir}"
     end
 
-    def run
+    def run()
       begin
         Dir.mkdir @dst_dir if create_directory?
       rescue SystemError => e
         raise IOError.new(:error_creating_directory, e, @dst_dir)
       end
+    end
 
+    def execute()
+      CommandPrinter.new(self).print unless quiet?
+      run if not dry_run? and runnable?
+      
       @subcommands.each do |subcommand|
         subcommand.execute
       end
