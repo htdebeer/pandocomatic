@@ -67,8 +67,9 @@ module Pandocomatic
           src_root = File.absolute_path input
           dry_run = if options[:dry_run_given] then options[:dry_run] else false end
           quiet = if options[:quiet_given] then options[:quiet] else false end
+          modified_only = if options[:modified_only_given] then options[:modified_only_given] else false end
 
-          Command.reset(src_root, dry_run, quiet)
+          Command.reset(src_root, dry_run, quiet, modified_only)
 
           # Pandocomatic has two modes: converting a directory tree or
           # converting a single file. The mode is selected by the input.
@@ -88,7 +89,7 @@ module Pandocomatic
 
           # Pandocomatic is successfully configured: running the
           # actual conversion now.
-          puts "#{command.count} command#{"s" if command.count > 1} to execute:" unless quiet
+          print_summary(command, input, output) unless quiet
           
           # Depending on the options dry-run and quiet, the command.execute
           # method will actually performing the commands (dry-run = false) and
@@ -106,6 +107,15 @@ module Pandocomatic
     end
 
     private
+
+    def self.print_summary(command, input, output)
+      if command.count <= 0
+        summary = 'Nothing to do'
+      else
+        summary = "#{command.count} command#{"s" if command.count != 1} to execute"
+      end
+      puts summary + " to convert '#{input}' to '#{output}'."
+    end
 
     def self.determine_config_file(options, data_dir = Dir.pwd)
       config_file = ''

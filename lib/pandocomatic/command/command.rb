@@ -28,6 +28,7 @@ module Pandocomatic
     @@dry_run = false
     @@quiet = false
     @@src_root = "."
+    @@modified_only = false
 
     def initialize()
       @errors = []
@@ -35,10 +36,11 @@ module Pandocomatic
       @index = @@total
     end
 
-    def self.reset(src_root = ".", dry_run = false, quiet = false)
+    def self.reset(src_root = ".", dry_run = false, quiet = false, modified_only)
       @@src_root = src_root
       @@dry_run = dry_run
       @@quiet = quiet
+      @@modified_only = modified_only
       @@total = 0
     end
 
@@ -52,6 +54,10 @@ module Pandocomatic
 
     def quiet?()
       @@quiet
+    end
+
+    def modified_only?()
+      @@modified_only
     end
 
     def count()
@@ -84,6 +90,14 @@ module Pandocomatic
     
     def directory?()
       false
+    end
+
+    def skip?()
+      false
+    end
+
+    def uncount()
+      @@total -= 1
     end
 
     def has_errors?()

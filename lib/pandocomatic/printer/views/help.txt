@@ -73,10 +73,17 @@ OPTIONS
                   respectively. In a file, the property 'use-template' tells
                   pandocomatic which template to use.
 
-  -q, --quiet     Run pandocomatic quietly. Default is FALSE
+  -m, --modified-only
+        
+                  Only convert files that have been modified. Only source files
+                  that have been updated later than the corresponding
+                  destination files will be converted, copied, or linked.
+                  Default is FALSE.
+
+  -q, --quiet     Run pandocomatic quietly. Default is FALSE.
 
   -y, --dry-run   Configure pandocomatic to run the conversion process, but do
-                  not actually run it. Default is FALSE
+                  not actually run it. Default is FALSE.
 
   -v, --version   Show the version. If this option is used, all other options
                   are ignored.

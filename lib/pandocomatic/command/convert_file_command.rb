@@ -46,7 +46,7 @@ module Pandocomatic
     end
 
     def run
-      convert_file if file_modified?(@src, @dst)
+      convert_file
     end
 
     def to_s

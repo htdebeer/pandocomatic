@@ -43,6 +43,8 @@ module Pandocomatic
           else
             WarningPrinter.new(Warning.new(:skipping_link_because_it_points_outside_the_source_tree, @src)).print
           end
+
+          uncount if skip?
         end
       rescue StandardError => e
         @errors.push IOError.new(:unable_to_read_symbolic_link, e, @src)
@@ -57,12 +59,26 @@ module Pandocomatic
       end
     end
 
-    def runnable?
+    def runnable?()
       not (has_errors? or @dst.nil? or @dst_target.nil? or @src.nil?)
     end
 
-    def to_s
+    def to_s()
       "link #{File.basename @dst} -> #{@dst_target}"
+    end
+
+    def skip?()
+      not modified_only? or not modified?
+    end
+    
+    def modified?()
+      if File.exist? @dst then
+        absolute_dst = File.realpath @dst
+        target = File.expand_path(@dst_target, absolute_dst)
+        absolute_dst != target
+      else
+        true
+      end
     end
 
   end

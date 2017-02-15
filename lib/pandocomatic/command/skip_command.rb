@@ -36,6 +36,10 @@ module Pandocomatic
     def run()
     end
 
+    def skip?()
+      true
+    end
+
     def to_s
       "skipping #{File.basename @src}" + if has_message?
         ": #{@message.to_s}"

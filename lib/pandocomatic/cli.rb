@@ -54,6 +54,7 @@ module Pandocomatic
         # General options 
         opt :dry_run, 'Do a dry run', :short => '-y'
         opt :quiet, 'Run quietly', :short => '-q'
+        opt :modified_only, 'Modified files only', :short => '-m'
 
         # Configuration of the converter
         opt :data_dir, 'Data dir', :short => '-d', :type => String

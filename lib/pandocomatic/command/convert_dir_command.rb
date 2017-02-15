@@ -61,28 +61,41 @@ module Pandocomatic
         dst = File.join @dst_dir, filename
 
         if File.symlink? src and not config.follow_links?
-          @subcommands.push CreateLinkCommand.new(src, dst)
+          subcommand = CreateLinkCommand.new(src, dst)
         elsif File.directory? src then
           if config.recursive? then
-            @subcommands.push ConvertDirCommand.new(config, src, dst)
+            subcommand = ConvertDirCommand.new(config, src, dst)
           else
-            @subcommands.push SkipCommand.new(src, :skipping_directory)
+            subcommand = SkipCommand.new(src, :skipping_directory)
           end
         elsif File.file? src 
           if config.convert? src then
             dst = config.set_extension dst
-            @subcommands.push ConvertFileCommand.new(config, src, dst)
+            if not modified_only? or file_modified? src, dst then
+              subcommand = ConvertFileCommand.new(config, src, dst)
+            end
           else
-            @subcommands.push CopyFileCommand.new(src, dst)
+            if not modified_only? or file_modified? src, dst then
+              subcommand = CopyFileCommand.new(src, dst)
+            end
           end
         else
-          @subcommands.push SkipCommand.new(src, :unclear_what_to_do)
+          subcommand = SkipCommand.new(src, :unclear_what_to_do)
         end
+
+        @subcommands.push subcommand unless subcommand.nil? or subcommand.skip?
       end
+
+      # Empty commands do not count to the total amount of commands to execute
+      uncount if skip?
+    end
+
+    def skip?()
+      @subcommands.empty?
     end
 
     def count()
-      @subcommands.reduce(1) do |total, subcommand|
+      @subcommands.reduce(if skip? then 0 else 1 end) do |total, subcommand|
         total += subcommand.count
       end
     end
@@ -110,11 +123,13 @@ module Pandocomatic
     end
 
     def execute()
-      CommandPrinter.new(self).print unless quiet?
-      run if not dry_run? and runnable?
-      
-      @subcommands.each do |subcommand|
-        subcommand.execute
+      if not @subcommands.empty?
+        CommandPrinter.new(self).print unless quiet?
+        run if not dry_run? and runnable?
+
+        @subcommands.each do |subcommand|
+          subcommand.execute
+        end
       end
     end
 
