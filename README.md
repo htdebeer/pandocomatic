@@ -6,6 +6,12 @@ Automating the use of pandoc
 Pandocomatic automates the use of pandoc (<http://www.pandoc.org>). It can be
 used to convert one file or a whole directory (tree).
 
+*Februari the 18th 2017* the first **0.1 beta** version of pandocomatic is
+released. Try its
+[pre-release](https://github.com/htdebeer/pandocomatic/releases/tag/0.1.0.b)
+to test its new features!
+
+
 This software is in alpha stage (version 0.0.13). Version 0.0.13 supports
 pandoc version >= 1.18. For lower versions of pandoc, please use pandocomatic
 version 0.0.9.
