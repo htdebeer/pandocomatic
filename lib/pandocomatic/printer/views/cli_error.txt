@@ -1,0 +1,12 @@
+<%=@error.message%>: <% case @error.type 
+when :no_input_given%>
+Specify the input file or directory with the option `--input PATH`.
+<% when :unknown_option %>
+See `pandocomatic --help` which options are allowed.
+<% when :too_many_options %>
+<%= @error.data.join(" ") %>.
+<% when :problematic_invocation %>
+<%=@error.error.message%>.
+<% else %>
+'<%= @error.data %>'.
+<% end %>

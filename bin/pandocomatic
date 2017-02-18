@@ -1,4 +1,3 @@
 #!/usr/bin/env ruby
-#require 'pandocomatic/pandocomatic'
-require_relative '../lib/pandocomatic/pandocomatic.rb'
+require 'pandocomatic/pandocomatic'
 Pandocomatic::Pandocomatic.run ARGV

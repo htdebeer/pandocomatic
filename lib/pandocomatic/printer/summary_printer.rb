@@ -17,32 +17,19 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative '../printer/error_printer.rb'
+  require_relative './printer.rb'
 
-  class PandocomaticError < StandardError
-    attr_reader :type, :error, :data
-    def initialize(type = :unknown, error = nil, data = nil)
-      super type.to_s.gsub("_", " ").capitalize
-      @type = type
-      @error = error
-      @data = data
+  class SummaryPrinter < Printer
+    def initialize(command, input, output)
+      super 'summary.txt'
+      @command = command
+      @input = input
+      @output = output
     end
 
-    def has_error?()
-      not @error.nil?
-    end
-
-    def has_data?()
-      not @data.nil?
-    end
-
-    def print()
-      ErrorPrinter.new(self).print
-    end
-
-    def show()
-      ErrorPrinter.new(self).to_s
+    def commands()
+      "#{@command.count} command#{'s' if @command.count != 1}"
     end
 
   end
-end 
+end

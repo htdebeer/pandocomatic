@@ -94,7 +94,7 @@ module Pandocomatic
 
         # The input file or directory should exist
         input = File.absolute_path options[:input]
-        raise CLIError.new(:input_does_not_exist, nil, input) unless File.exist? input
+        raise CLIError.new(:input_does_not_exist, nil, options[:input]) unless File.exist? input
         raise CLIError.new(:input_is_not_readable, nil, input) unless File.readable? input
 
         if options[:output_given]
@@ -115,7 +115,7 @@ module Pandocomatic
         if options[:data_dir_given]
           data_dir = File.absolute_path options[:data_dir]
 
-          raise CLIError.new(:data_dir_does_not_exist, nil, data_dir) unless File.exist? data_dir
+          raise CLIError.new(:data_dir_does_not_exist, nil, options[:data_dir]) unless File.exist? data_dir
           raise CLIError.new(:data_dir_is_not_readable, nil, data_dir) unless File.readable? data_dir
           raise CLIError.new(:data_dir_is_not_a_directory, nil, data_dir) unless File.directory? data_dir
         end
@@ -124,7 +124,7 @@ module Pandocomatic
         if options[:config_given]
           config = File.absolute_path options[:config]
 
-          raise CLIError.new(:config_file_does_not_exist, nil, config) unless File.exist? config
+          raise CLIError.new(:config_file_does_not_exist, nil, options[:config]) unless File.exist? config
           raise CLIError.new(:config_file_is_not_readable, nil, config) unless File.readable? config
           raise CLIError.new(:config_file_is_not_a_file, nil, config) unless File.file? config
         end

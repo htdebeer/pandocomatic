@@ -13,4 +13,8 @@ YARD::Rake::YardocTask.new do |t|
   t.files = ['lib/**/*.rb']
 end
 
+task :build do
+  sh "gem build pandocomatic.gemspec; mv *.gem releases"
+end
+
 task :default => :test

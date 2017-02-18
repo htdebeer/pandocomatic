@@ -20,6 +20,11 @@ module Pandocomatic
   require_relative './pandocomatic_error.rb'
 
   class IOError < PandocomaticError
+
+    def template()
+      'io_error.txt'
+    end
+    
     # :file_does_not_exist file
     # :file_is_not_a_file file
     # :file_is_not_readable file

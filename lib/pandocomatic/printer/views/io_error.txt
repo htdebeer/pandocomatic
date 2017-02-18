@@ -1,0 +1,12 @@
+<%=@error.message%>: <% case @error.type 
+when :error_opening_file%>
+<%=@error.error.message %>.
+<% when :error_writing_file %>
+<%=@error.error.message%>.
+<% when :error_opening_directory %>
+<%=@error.error.message%>.
+<% when :error_creating_directory %>
+<%=@error.error.message%>.
+<% else %>
+'<%= @error.data %>'.
+<% end %>

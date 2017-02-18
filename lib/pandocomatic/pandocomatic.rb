@@ -31,7 +31,9 @@ module Pandocomatic
   require_relative './printer/help_printer.rb'
   require_relative './printer/version_printer.rb'
   require_relative './printer/error_printer.rb'
-  require_relative './printer/errors_printer.rb'
+  require_relative './printer/configuration_errors_printer.rb'
+  require_relative './printer/finish_printer.rb'
+  require_relative './printer/summary_printer.rb'
 
   require_relative './command/command.rb'
   require_relative './command/convert_dir_command.rb'
@@ -43,6 +45,7 @@ module Pandocomatic
 
     def self.run(args)
       begin
+        start_time = Time.now
         options = CLI.parse args
 
         if options[:version_given]
@@ -83,18 +86,20 @@ module Pandocomatic
           # determining the commands to run to perform this pandocomatic
           # conversion.
           if command.all_errors.size > 0
-            ErrorsPrinter.new(command.all_errors).print
+            ConfigurationErrorsPrinter.new(command.all_errors).print
             exit
           end
 
           # Pandocomatic is successfully configured: running the
           # actual conversion now.
-          print_summary(command, input, output) unless quiet
-          
+          SummaryPrinter.new(command, input, output).print unless quiet
+
           # Depending on the options dry-run and quiet, the command.execute
           # method will actually performing the commands (dry-run = false) and
           # print the command to STDOUT (quiet = false)
           command.execute()
+
+          FinishPrinter.new(command, input, output, start_time).print unless quiet
         end
       rescue PandocomaticError => e
         # Report the error and break off the conversion process.
@@ -107,15 +112,6 @@ module Pandocomatic
     end
 
     private
-
-    def self.print_summary(command, input, output)
-      if command.count <= 0
-        summary = 'Nothing to do'
-      else
-        summary = "#{command.count} command#{"s" if command.count != 1} to execute"
-      end
-      puts summary + " to convert '#{input}' to '#{output}'."
-    end
 
     def self.determine_config_file(options, data_dir = Dir.pwd)
       config_file = ''

@@ -20,6 +20,11 @@ module Pandocomatic
   require_relative './pandocomatic_error.rb'
 
   class CLIError < PandocomaticError
+
+    def template()
+      'cli_error.txt'
+    end
+
       # :no_input_given,
       # :input_does_not_exist,
       # :input_is_not_readable,

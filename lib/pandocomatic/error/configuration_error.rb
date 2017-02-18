@@ -20,6 +20,11 @@ module Pandocomatic
   require_relative './pandocomatic_error.rb'
 
   class ConfigurationError < PandocomaticError
+    
+    def template()
+      'configuration_error.txt'
+    end
+
     # :data_dir_does_not_exist,
     # :data_dir_is_not_a_directory,
     # :data_dir_is_not_readable,

@@ -1,0 +1,6 @@
+<%=@error.message%>: <% case @error.type
+when :error_processing_script%>
+<%= @error[0] %> (<%= @error[1] %>).
+<% else %>
+'<%= @error.data %>'.
+<% end %>

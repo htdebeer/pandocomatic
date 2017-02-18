@@ -20,6 +20,11 @@ module Pandocomatic
   require_relative './pandocomatic_error.rb'
 
   class ProcessorError < PandocomaticError
+
+    def template()
+      'processor_error.txt'
+    end
+
     # :script_does_not_exist script
     # :script_is_not_executable script
     # :error_processing_script [script, src]

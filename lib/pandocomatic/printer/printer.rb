@@ -20,17 +20,22 @@ module Pandocomatic
   require 'erb'
 
   class Printer
+
     def initialize(template_file = 'help.txt')
+      set_template template_file
+    end
+
+    def set_template(template_file)
       dir = File.dirname(__FILE__)
       @template = File.absolute_path(File.join(dir, 'views', template_file))
     end
 
-    def to_s
-      erb = ERB.new(File.read(@template))
+    def to_s()
+      erb = ERB.new(File.read(@template), 0, '>')
       erb.result(binding())
     end
 
-    def print
+    def print()
       puts to_s()
     end
 

@@ -29,5 +29,6 @@ module Pandocomatic
     def print
       warn to_s
     end
+
   end
 end

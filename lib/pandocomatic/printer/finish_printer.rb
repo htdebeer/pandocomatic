@@ -17,16 +17,28 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './printer.rb'
+  require_relative './summary_printer.rb'
 
-  class ErrorsPrinter < Printer
-    def initialize(errors)
-      super 'errors.txt'
-      @errors = errors
+  class FinishPrinter < SummaryPrinter
+    MINUTE = 60 # seconds
+    def initialize(command, input, output, start_time)
+      super command, input, output
+      set_template 'finish.txt'
+
+      @start_time = start_time
+      @end_time = Time.now
     end
 
-    def print
-      warn to_s
+    def duration()
+      seconds = @end_time - @start_time
+      if seconds > MINUTE
+        minutes = (seconds / MINUTE).floor
+        seconds = seconds - (minutes * MINUTE)
+        "#{minutes} minute#{'s' if minutes != 1} and #{seconds.round(1)} second#{'s' if seconds != 1}"
+      else
+        "#{seconds.round(1)} second#{'s' if seconds != 1}"
+      end
     end
+
   end
 end

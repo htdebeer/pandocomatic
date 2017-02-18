@@ -1,0 +1,1 @@
+Pandocomatic needed <%=duration%> to convert '<%= @input %>' to '<%= @output %>'.
