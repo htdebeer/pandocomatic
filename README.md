@@ -10,6 +10,12 @@ This software is in alpha stage (version 0.0.10). Version 0.0.10 supports
 pandoc version >= 1.18. For lower versions of pandoc, please use pandocomatic
 version 0.0.9.
 
+*Februari the 18th 2017* the first **0.1 beta** version of pandocomatic is
+released. Try its
+[pre-release](https://github.com/htdebeer/pandocomatic/releases/tag/0.1.0.b)
+to test its new features!
+
+
 Licence: GPL3
 
 # Installation
