@@ -1,1 +1,1 @@
-<% if @command.count <= 0 then%>Nothing to do<% else %><%= commands %> to execute to convert '<%= @input %>' to '<%= @output %>'<% end %>.
+<% if @command.count <= 0 then%>Nothing to do<% else %><%= commands %> to execute to convert '<%= @input %>'<%if has_output?%> to '<%= @output %>'<%end%><% end %>.

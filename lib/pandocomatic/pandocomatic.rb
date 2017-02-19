@@ -80,6 +80,7 @@ module Pandocomatic
             command = ConvertDirCommand.new(configuration, input, output)
           else
             command = ConvertFileCommand.new(configuration, input, output)
+            command.make_quiet
           end
 
           # Notify the user about all configuration errors collected when
@@ -92,7 +93,7 @@ module Pandocomatic
 
           # Pandocomatic is successfully configured: running the
           # actual conversion now.
-          SummaryPrinter.new(command, input, output).print unless quiet
+          SummaryPrinter.new(command, input, output).print unless quiet or not command.directory?
 
           # Depending on the options dry-run and quiet, the command.execute
           # method will actually performing the commands (dry-run = false) and

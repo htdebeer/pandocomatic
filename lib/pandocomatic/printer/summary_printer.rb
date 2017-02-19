@@ -31,5 +31,9 @@ module Pandocomatic
       "#{@command.count} command#{'s' if @command.count != 1}"
     end
 
+    def has_output?()
+      not @output.nil? and not @output.empty?
+    end
+
   end
 end

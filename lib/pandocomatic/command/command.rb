@@ -68,6 +68,10 @@ module Pandocomatic
       @errors
     end
 
+    def make_quiet()
+      @@quiet = true
+    end
+
     def index_to_s()
       "#{@@total - @index + 1}".rjust(@@total.to_s.size)
     end

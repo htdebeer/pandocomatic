@@ -13,8 +13,13 @@ YARD::Rake::YardocTask.new do |t|
   t.files = ['lib/**/*.rb']
 end
 
+task :generate_index_md do
+  sh "cd documentation; pandocomatic -i documentation.md"
+end
+
 task :build do
   sh "gem build pandocomatic.gemspec; mv *.gem releases"
+  Rake::Task["generate_index_md"].execute
 end
 
 task :default => :test

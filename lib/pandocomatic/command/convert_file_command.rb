@@ -50,7 +50,7 @@ module Pandocomatic
     end
 
     def to_s
-      "convert #{File.basename @src} -> #{File.basename @dst}"
+      "convert #{File.basename @src} #{"-> #{File.basename @dst}" unless @dst.nil?}"
     end
 
     private
@@ -58,17 +58,22 @@ module Pandocomatic
     def convert_file
       metadata = PandocMetadata.load_file @src
 
+      pandoc_options = metadata.pandoc_options || {}
+      template = {}
+
       if metadata.has_template? then
         template_name = metadata.template_name
       else
         template_name = @config.determine_template @src
       end
 
-      raise ConfigurationError.new(:no_such_template, nil, template_name) unless @config.has_template? template_name
+      if not template_name.nil? and not template_name.empty?
+        raise ConfigurationError.new(:no_such_template, nil, template_name) unless @config.has_template? template_name
 
-      template = @config.get_template template_name
+        template = @config.get_template template_name
 
-      pandoc_options = (template['pandoc'] || {}).merge(metadata.pandoc_options || {})
+        pandoc_options = (template['pandoc'] || {}).merge(pandoc_options)
+      end
 
       input = File.read @src
       input = FileInfoPreprocessor.run input, @src
@@ -112,9 +117,13 @@ module Pandocomatic
     def pandoc(input, options, src_dir)
       converter = Paru::Pandoc.new
       options.each do |option, value|
-
-        value = @config.update_path value, src_dir if 
-        PANDOC_OPTIONS_WITH_PATH.include? option
+        if PANDOC_OPTIONS_WITH_PATH.include? option
+          if value.is_a? Array
+            value = value.map {|v| @config.update_path v, src_dir}
+          else
+            value = @config.update_path value, src_dir
+          end
+        end
 
         converter.send option, value unless option == 'output'
         # don't let pandoc write the output to enable postprocessing
