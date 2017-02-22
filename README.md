@@ -1,158 +1,100 @@
-pandocomatic
-============
+Pandocomatic—Automating the use of pandoc
+=========================================
 
-Automating the use of pandoc
+Pandocomatic is a tool to automate using [pandoc](http://pandoc.org/). With pandocomatic you can express common patterns of using pandoc for generating your documents. Applied to a directory, pandocomatic can act as a static site generator. For example, this manual and the website it is put on are generated using pandocomatic!
 
-Pandocomatic automates the use of pandoc (<http://www.pandoc.org>). It can be
-used to convert one file or a whole directory (tree).
+Why pandocomatic?
+-----------------
 
-This software is in alpha stage (version 0.0.10). Version 0.0.10 supports
-pandoc version >= 1.18. For lower versions of pandoc, please use pandocomatic
-version 0.0.9.
+I use [pandoc](http://pandoc.org/) a lot. I use it to write all my papers, notes, reports, outlines, summaries, and books. Time and again I was invoking pandoc like:
 
-*Februari the 18th 2017* the first **0.1 beta** version of pandocomatic is
-released. Try its
-[pre-release](https://github.com/htdebeer/pandocomatic/releases/tag/0.1.0.b)
-to test its new features!
+``` bash
+pandoc --from markdown \
+  --to html5 \
+  --standalone \
+  --csl apa.csl \
+  --bibliography my-bib.bib \
+  --mathjax \
+  --output result.html \
+  source.md
+```
 
+Sure, when I write about history, the csl file and bibliography changes. And I do not need the `--mathjax` option like I do when I am writing about mathematics education. Still, all these invocations are quite similar.
 
-Licence: GPL3
+I already wrote the program *do-pandoc.rb* as part of a [Ruby](https://www.ruby-lang.org/en/) wrapper around pandoc, [paru](https://heerdebeer.org/Software/markdown/paru/). Using *do-pandoc.rb* I can specify the options to pandoc as pandoc metadata in the source file itself. The above pandoc invocation then becomes:
 
-# Installation
+``` bash
+do-pandoc.rb source.md
+```
 
-    gem install pandocomatic
+It saves me from typing out the whole pandoc invocation each time I run pandoc on a source file. However, I have still to setup the same options to use in each document that I am writing, even though these options do not differ that much from document to document.
 
-# Usage
+*Pandocomatic* is a tool to re-use these common configurations by specifying a so-called *pandocomatic template* in a [YAML](http://yaml.org/) configuration file. For example, by placing the following file, `pandocomatic.yaml` in pandoc's data directory:
 
-    pandocomatic [--config pandocomatic.yaml] --output output input
+``` yaml
+template:
+  education-research:
+    preprocessors: []
+    pandoc:
+      from: markdown
+      to: html5
+      standalone: true
+      cls: 'apa.csl'
+      toc: true
+      bibliography: /path/to/bibliography.bib
+      mathjax: true
+    postprocessors: []
+```
 
-## Options
+I now can create a new document that uses that configuration by using the following metadata in my source file, `on_teaching_maths.md`:
 
-    -c, --config=<s>    Pandocomatic configuration file, default is
-                        ./pandocomatic.yaml
-    -o, --output=<s>    output file or directory
-    -v, --version       Print version and exit
-    -h, --help          Show this message
+``` pandoc
+---
+title: On teaching mathematics
+author: Huub de Beer
+pandocomatic:
+  use-template: education-research
+  pandoc:
+    output: on_teaching_mathematics.html
+...
 
-When converting directories, only source files that are newer than the
-desination files are being converted. Removing the destination files will
-always cause regeneration.
+and here follows the contents of my new paper...
+```
 
-# Configuration
+To convert this file to `on_teaching_mathematics.html` I now run pandocomatic as follows:
 
-Pandocomatic is configured by configuration files in the YAML format and are
-named `pandocomatic.yaml`. Configuration files in a sub directory merge with
-parent configurations, overwriting or adding to existing settings. A
-configuration file consists of two (optional) parts: settings and templates
+``` bash
+pandocomatic -i on_teaching_maths.md
+```
 
-## Settings
+With just two lines of pandoc metadata, I can tell pandocomatic what template to use when converting a file. Adding file-specific pandoc options to the conversion process is as easy as adding a `pandoc` property with those options to the `pandocomatic` metadata property in the source file.
 
-    settings:
-        data-dir: 'some/path/to/a/dir/with/stuff/to/use'
-        recursive: true
-        follow-links: false
-        skip: ['*.swp']
+Once I had written a number of related documents this way, it was a small step to enable pandocomatic to convert directories as well as files. Just like that, pandocomatic can be used as a *static site generator*!
 
-You can set three different settings:
+Licence
+-------
 
-- in the first configuration file encountered, either through the option
-  `--config filename.yaml` or the configuration file in the current directory,
-  `data-dir` sets the directory where pandocomatic looks for template assets,
-  such as pandoc template, preprocessors, and so on.
+Pandocomatic is [free sofware](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic is released under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html). You find pandocomatic's source code on [github](https://github.com/htdebeer/pandocomatic).
 
-  In any next configuration file, this setting is ignored
+Installation
+------------
 
-  (*Question*: should this be the default behavior, or does it makes more sense
-  to change the data-dir whenever it is specified?)
+Pandocomatic is installed through [RubyGems](https://rubygems.org/) as follows:
 
-- `recursive` indicates if this directory and its children should be converted
-  recursively, or if all subdirectories should be ignored during conversion.
+``` bash
+gem install pandocomatic
+```
 
-- `follow-links` indicates if symbolic links in the source tree should be
-  treated as the files and directories they point to, or if the links have to
-  be recreated in the destination tree. If the latter (setting is `true`),
-  only links that point inside the source tree are recreated in the
-  destination tree.
+You can also download the latest gem [pandocomatic-0.1.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.0.gem) from github and install it as follows:
 
-- `skip`, an array indicating the glob patterns of all files and directories
-  to skip on top of those defined in parent configuration files. Before the
-  root configuration, skip is set to `['.*', 'pandocomatic.yaml']`: skip all
-  hidden files and all pandocomatic configuration files.
+``` bash
+cd /directory/you/downloaded/the/gem/to
+gem install pandocomatic-0.1.0.gem
+```
 
-## Templates
+Pandocomatic builds on [paru](https://heerdebeer.org/Software/markdown/paru/), a Ruby wrapper around pandoc, and [pandoc](http://pandoc.org/) itself, of course.
 
-In the templates section, you can specify and refine templates. A template is
-named and contains 4 items: 
+More information
+----------------
 
-- `glob`: an array of file patterns indicating to which files this template
-  has to applied to.
-
-- `preprocessors`, an array of paths to preprocessor scripts to be run in order
-  before using pandoc for the conversion
-
-- `pandoc`, a hash of pandoc options
-
-- `postprocessors`, an array of paths to postprocessor scripts to be run in
-  order after having used pandoc for the conversion.
-
-The conversion process is:
-
-    input -> preprocessor_0 -> ... -> preprocessor_n 
-          -> pandoc 
-          -> postprocessor_0 -> ... -> postprocessor_m
-          -> output
-
-For the preprocessors, postprocessors, and pandoc options taking a path as
-value, there are three options:
-
-- if a path starts with a '/', it is treated as an absolute path
-- if a path starts with a '.', it is treated as an relative path in the same
-  directory as the input file
-- otherwise the path is treated as referring to a file in the `data-dir`
-  specified in the settings.
-
-For example, we could define the following templates to generate blog pages and
-overview pages
-
-    templates:
-        blogpage:
-            glob: ['*.markdown']
-            preprocessors: []
-            pandoc:
-                from: 'markdown'
-                to: 'html5'
-                toc: true
-                standalone: true
-                template: 'templates/blogpost.html'
-            postprocessors: []
-        overview:
-            glob: []
-            preprocesors: ['preprocessors/gather_titles.sh']
-            pandoc:
-                from: 'markdown'
-                to: 'html5'
-                standalone: true
-                template: 'templates/index.html'
-            postprocessors: []
-
-In this example, all markdown files are converted to blogposts, using the
-template in `data-dir/templates/blogpost.html`. The overview pages are not
-automatically used, but can be specified in a markdown file in a yaml block
-using the `use-template` directive.
-For example:
-
-    ---
-    title: Overview of all my blog posts
-    pandocomatic:
-        use-template: 'overview'
-        pandoc:
-            toc: true
-    ...
-
-    # This is my Blog
-
-    Overview of all the pages:
-
-In any markdown file, you can set more specific pandoc(omatic) options in a
-yaml block by adding a `pandocomatic` setting, and adding to options set
-earlier like in the example above
+For more information on pandocomatic, please see its [manual](https://heerdebeer.org/Software/markdown/pandocomatic/). In it, the usage and configuration of pandocomatic are detailed. Furthermore, the manual contains two chapters describing typical use cases for pandocomatic: i) automating setting up and running pandoc for a series of related papers and ii) using pandocomatic as a static site generator.
