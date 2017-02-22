@@ -6,7 +6,8 @@ keywords:
 - paru
 - pandocomatic
 - static site generator
-title: 'Pandocomatic—Automating the use of pandoc'
+subtitle: Automating the use of pandoc
+title: Pandocomatic
 ---
 
 Chapter 1. Introduction {#introduction}
@@ -177,16 +178,15 @@ directory and the output file or directory:
 
 -   `-i PATH, --input PATH`
 
-Convert `PATH`. If this option is not given, `INPUT` is converted.
-`INPUT` and `--input` or `-i` cannot be used together.
-
+    Convert `PATH`. If this option is not given, `INPUT` is converted.
+    `INPUT` and `--input` or `-i` cannot be used together.
 -   `-o PATH, --output PATH`
 
-Create converted files and directories in `PATH`.
+    Create converted files and directories in `PATH`.
 
-Although inadvisable, you can specify the output file in the metadata of
-a pandoc markdown input file. In that case, you can omit the output
-argument.
+    Although inadvisable, you can specify the output file in the
+    metadata of a pandoc markdown input file. In that case, you can omit
+    the output argument.
 
 The input and output should both be files or both be directories.
 
@@ -201,50 +201,51 @@ the conventional help and version arguments.
 
 -   `-d DIR, --data-dir DIR`
 
-Configure pandocomatic to use `DIR` as its data directory. The default
-data directory is pandoc's data directory. (Run `pandoc --version` to
-find pandoc's data directory on your system.)
+    Configure pandocomatic to use `DIR` as its data directory. The
+    default data directory is pandoc's data directory. (Run
+    `pandoc --version` to find pandoc's data directory on your system.)
 
 -   `-c FILE, --config FILE`
 
-Configure pandocomatic to use `FILE` as its configuration file to use
-during the conversion process. Default is `DATA_DIR/pandocomatic.yaml`.
+    Configure pandocomatic to use `FILE` as its configuration file to
+    use during the conversion process. Default is
+    `DATA_DIR/pandocomatic.yaml`.
 
 ### Arguments to change how pandocomatic operates
 
 -   `-m, --modified-only`
 
-Only convert files that have been modified since the last time
-pandocomatic has been run. Or, more precisely, only those source files
-that have been updated at later time than the corresponding destination
-files will be converted, copied, or linked. Default is `false`.
-
+    Only convert files that have been modified since the last time
+    pandocomatic has been run. Or, more precisely, only those source
+    files that have been updated at later time than the corresponding
+    destination files will be converted, copied, or linked. Default is
+    `false`.
 -   `-q, --quiet`
 
-By default pandocomatic is quite verbose when you convert a directory.
-It tells you about the number of commands to execute. When executing
-these commands, pandocomatic tells you what it is doing, and how many
-commands still have to be executed. Finally, when pandocomatic is
-finished, it tells you how long it took to perform the conversion.
+    By default pandocomatic is quite verbose when you convert
+    a directory. It tells you about the number of commands to execute.
+    When executing these commands, pandocomatic tells you what it is
+    doing, and how many commands still have to be executed. Finally,
+    when pandocomatic is finished, it tells you how long it took to
+    perform the conversion.
 
-If you do not like this verbose behavior, use the
-``` --quiet`` or ```-q`argument to run pandocomatic quietly. Default is`false\`.
-
+    If you do not like this verbose behavior, use the
+    ``` --quiet`` or ```-q`argument to run pandocomatic quietly. Default is`false\`.
 -   `-y, --dry-run`
 
-Inspect the files and directories to convert, but do not actually run
-the conversion. Default is `false`.
+    Inspect the files and directories to convert, but do not actually
+    run the conversion. Default is `false`.
 
 ### Conventional arguments: help and version
 
 -   `-v, --version`
 
-Show the version. If this option is used, all other options are ignored.
-
+    Show the version. If this option is used, all other options
+    are ignored.
 -   `-h, --help`
 
-Show a short help message. If this options is used, all other options
-except `--version` or `-v` are ignored.
+    Show a short help message. If this options is used, all other
+    options except `--version` or `-v` are ignored.
 
 2.3 Examples
 ------------
@@ -264,8 +265,7 @@ run:
 pandocomatic --data-dir assets/ -o website/ -i source/ -m
 ```
 
-See Chapters 4 & 5 for more extensive examples when two typical use
-cases of pandocomatic are described in detail.
+See Chapters 4 & 5 for more extensive examples of using pandocomatic.
 
 In the next chapter the configuration of pandocomatic is elaborated.
 
@@ -273,48 +273,59 @@ Chapter 3. Configuring pandocomatic {#configuring-pandocomatic}
 ===================================
 
 Pandocomatic is configured by command line options and configuration
-files.
+files. Each input file that is converted by pandocomatic is processed as
+follows:
 
-Automate the use of pandoc. Either converts a single file or a directory
-tree. Configure the conversion process through configuration files. Each
-input file that is converted by pandocomatic is processed as follows:
-
-input\_file -&gt; preprocessor(0) -&gt; ... -&gt; preprocessor(N) -&gt;
-pandoc -&gt; postprocessor(0) -&gt; ... -&gt; postprocessor(M) -&gt;
-output\_file
+    input_file -> 
+      preprocessor(0) -> ... -> preprocessor(N) ->
+        pandoc -> 
+          postprocessor(0) -> ... -> postprocessor(M) -> 
+            output_file
 
 The preprocessors and postprocessors used in the conversion process are
 configured in pandocomatic templates. Besides processors, you can also
-specify pandoc options to use to convert the input file. These templates
+specify pandoc options to use to convert an input file. These templates
 are specified in a configuration file. Templates can be used over and
 over, thus automating the use of pandoc.
 
-Configuration files are YAML files and can contain the following
-properties:
+Configuration files are [YAML](http://www.yaml.org/) files and can
+contain the following properties:
 
--   data-dir: PATH (see --data-dir option)
-
--   settings:
--   skip: \[GLOB PATTERNS\] files to not convert. By default hidden
-    files (starting with a ".") and "pandocomatic.yaml" are skipped.
--   recursive: BOOLEAN convert this directory recursively. Default is
-    TRUE
--   follow\_links: BOOLEAN follow symbolic links. Default is TRUE
-
--   templates:
--   glob: \[GLOB PATTERNS\] files to convert using this template.
--   preprocessors: \[SCRIPTS\] paths to scripts to run before converting
-    with pandoc.
--   postprocessors: \[SCRIPTS\] paths to scripts to run after converting
-    with pandoc.
--   pandoc: PANDOC OPTIONS to use when converting with pandoc.
+-   *settings*:
+    -   *skip*: An array of glob patterns of files and directories to
+        not convert. By default hidden files (starting with a ".") and
+        "pandocomatic.yaml" are skipped.
+    -   *recursive*: A boolean telling pandocomatic to convert the
+        subdirectories of a directory as well. By default this setting
+        is `true`.
+    -   *follow\_links*: A boolean telling pandocomatic to follow
+        symbolic links. By default is `true`. Note, links that point
+        outside the input source's directory tree will not be visited.
+-   *templates*:
+    -   *glob*: An array of glob patterns of files to convert using
+        this template.
+    -   *preprocessors*: An array of scripts to run on an input file
+        before converting the output of those scripts with pandoc.
+    -   *pandoc*: Pandoc options to use when converting an input file
+        using this template.
+    -   *postprocessors*: An array of scripts to run on the result of
+        the pandoc conversion. The output of these scripts will be
+        written to the output file.
 
 Each file and directory that is converted can contain a configuration
-YAML metadata block or YAML configuration file respectively. In a file,
-the property 'use-template' tells pandocomatic which template to use.
+YAML metadata block or a YAML configuration file respectively. In a
+file, the property *use-template* tells pandocomatic which template to
+use to convert that file.
+
+See the next two chapters for more extensive examples of using and
+configuring pandocomatic.
 
 Chapter 4. Use case I: Automating setting up and running pandoc for a series of related papers {#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers}
 ==============================================================================================
 
+to be done.
+
 Chapter 5. Use case II: Use pandocomatic as a static site generator {#use-case-ii-use-pandocomatic-as-a-static-site-generator}
 ===================================================================
+
+to be done

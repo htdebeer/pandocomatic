@@ -1,5 +1,6 @@
 ---
-title: Pandocomatic—Automating the use of pandoc
+title: Pandocomatic
+subtitle: Automating the use of pandoc
 author: Huub de Beer
 keywords:
 - pandoc
@@ -46,6 +47,14 @@ using pandocomatic as a static site generator.
 # Using pandocomatic
 
 ::paru::insert usage.md
+
+## Examples
+
+::paru::insert usage_examples.md
+
+See Chapters 4 & 5 for more extensive examples of using pandocomatic.
+
+In the next chapter the configuration of pandocomatic is elaborated.
 
 # Configuring pandocomatic
 

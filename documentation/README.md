@@ -27,11 +27,17 @@ pandocomatic:
 
 ::paru::insert install.md
 
+## Examples
+
+::paru::insert usage_examples.md
+
 ## More information
 
-For more information on pandocomatic, please see its
-[manual](https://heerdebeer.org/Software/markdown/pandocomatic/). In it, the
-usage and configuration of pandocomatic are detailed. Furthermore, the manual
-contains two chapters describing typical use cases for pandocomatic: i)
-automating setting up and running pandoc for a series of related papers and
-ii) using pandocomatic as a static site generator.
+See [pandocomatic's
+manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more
+extensive examples of using pandocomatic. Notably, the manual contains two
+typical use cases of pandocomatic:
+
+1.  automating setting up and running pandoc for a series of related papers
+    and
+2.  using pandocomatic as a static site generator.

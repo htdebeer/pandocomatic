@@ -94,7 +94,25 @@ gem install pandocomatic-0.1.0.gem
 
 Pandocomatic builds on [paru](https://heerdebeer.org/Software/markdown/paru/), a Ruby wrapper around pandoc, and [pandoc](http://pandoc.org/) itself, of course.
 
+Examples
+--------
+
+Convert `hello.md` to `hello.html` according to the configuration in `pandocomatic.yaml`:
+
+``` bash
+pandocomatic --config pandocomatic.yaml -o hello.html -i hello.md
+```
+
+Generate a static site using data directory `assets`, but only convert files that have been updated since the last time pandocomatic has been run:
+
+``` bash
+pandocomatic --data-dir assets/ -o website/ -i source/ -m
+```
+
 More information
 ----------------
 
-For more information on pandocomatic, please see its [manual](https://heerdebeer.org/Software/markdown/pandocomatic/). In it, the usage and configuration of pandocomatic are detailed. Furthermore, the manual contains two chapters describing typical use cases for pandocomatic: i) automating setting up and running pandoc for a series of related papers and ii) using pandocomatic as a static site generator.
+See [pandocomatic's manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more extensive examples of using pandocomatic. Notably, the manual contains two typical use cases of pandocomatic:
+
+1.  automating setting up and running pandoc for a series of related papers and
+2.  using pandocomatic as a static site generator.
