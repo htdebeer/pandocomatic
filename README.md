@@ -120,8 +120,8 @@ Generate the markdown files for pandocomatic's [manual](https://heerdebeer.org/S
 ``` bash
 git clone https://github.com/htdebeer/pandocomatic.git
 cd documentation
-pandocomatic --data-dir data-dir --config config.yaml -i README.md -o ../README.md
-pandocomatic --data-dir data-dir --config config.yaml -i manual.md -o ../index.md
+pandocomatic -d data-dir -c config.yaml -i README.md -o ../README.md
+pandocomatic -d data-dir -c config.yaml -i manual.md -o ../index.md
 ```
 
 Be careful to not overwrite the input file with the output file! I would suggest using different names for both, or different directories. Looking more closely to the pandocomatic configuration file `config.yaml`, we see it contains one template, `mddoc`:
@@ -178,9 +178,9 @@ manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more
 extensive examples of using pandocomatic. Notably, the manual contains two
 typical use cases of pandocomatic:
 
-1.  automating setting up and running pandoc for a series of related papers
-    and
-2.  using pandocomatic as a static site generator.
+1.  [automating setting up and running pandoc for a series of related papers](http://localhost:8080/Software/markdown/pandocomatic/#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
+2.  [using pandocomatic as a static site
+    generator](http://localhost:8080/Software/markdown/pandocomatic/#use-case-ii-use-pandocomatic-as-a-static-site-generator).
 ```
 
 Here you see that the README uses the `mddoc` template and it overwrites the `to` property with `markdown_github`.
@@ -202,5 +202,5 @@ More information
 
 See [pandocomatic's manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more extensive examples of using pandocomatic. Notably, the manual contains two typical use cases of pandocomatic:
 
-1.  automating setting up and running pandoc for a series of related papers and
-2.  using pandocomatic as a static site generator.
+1.  [automating setting up and running pandoc for a series of related papers](http://localhost:8080/Software/markdown/pandocomatic/#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and
+2.  [using pandocomatic as a static site generator](http://localhost:8080/Software/markdown/pandocomatic/#use-case-ii-use-pandocomatic-as-a-static-site-generator).

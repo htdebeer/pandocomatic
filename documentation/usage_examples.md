@@ -25,8 +25,8 @@ Generate the markdown files for pandocomatic's
 ~~~{.bash}
 git clone https://github.com/htdebeer/pandocomatic.git
 cd documentation
-pandocomatic --data-dir data-dir --config config.yaml -i README.md -o ../README.md
-pandocomatic --data-dir data-dir --config config.yaml -i manual.md -o ../index.md
+pandocomatic -d data-dir -c config.yaml -i README.md -o ../README.md
+pandocomatic -d data-dir -c config.yaml -i manual.md -o ../index.md
 ~~~
 
 Be careful to not overwrite the input file with the output file! I would

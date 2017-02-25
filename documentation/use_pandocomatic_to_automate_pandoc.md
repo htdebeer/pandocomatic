@@ -1,5 +1,3 @@
-## Introduction
-
 In this chapter I will elaborate on the example from the
 [Introduction](#why-pandocomatic) about using pandocomatic to configure and
 run pandoc for a series of related research papers.

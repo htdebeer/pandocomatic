@@ -114,9 +114,14 @@ generator*!
 But more about that later. First, the installation of pandocomatic is
 described, followed by its license. After that, in the next chapters,
 using pandocomatic and configuring pandocomatic are described in detail.
-The last two chapters of this manual describe two typical use cases for
-pandocomatic: i) automating setting up and running pandoc for a series
-of related papers and ii) using pandocomatic as a static site generator.
+The last two chapters of this manual describe two typical use cases of
+pandocomatic:
+
+1.  [automating setting up and running pandoc for a series of related
+    papers](http://localhost:8080/Software/markdown/pandocomatic/#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers),
+    and
+2.  [using pandocomatic as a static site
+    generator](http://localhost:8080/Software/markdown/pandocomatic/#use-case-ii-use-pandocomatic-as-a-static-site-generator).
 
 1.2 Licence
 -----------
@@ -282,8 +287,8 @@ Generate the markdown files for pandocomatic's
 ``` {.bash}
 git clone https://github.com/htdebeer/pandocomatic.git
 cd documentation
-pandocomatic --data-dir data-dir --config config.yaml -i README.md -o ../README.md
-pandocomatic --data-dir data-dir --config config.yaml -i manual.md -o ../index.md
+pandocomatic -d data-dir -c config.yaml -i README.md -o ../README.md
+pandocomatic -d data-dir -c config.yaml -i manual.md -o ../index.md
 ```
 
 Be careful to not overwrite the input file with the output file! I would
@@ -358,9 +363,9 @@ manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more
 extensive examples of using pandocomatic. Notably, the manual contains two
 typical use cases of pandocomatic:
 
-1.  automating setting up and running pandoc for a series of related papers
-    and
-2.  using pandocomatic as a static site generator.
+1.  [automating setting up and running pandoc for a series of related papers](http://localhost:8080/Software/markdown/pandocomatic/#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
+2.  [using pandocomatic as a static site
+    generator](http://localhost:8080/Software/markdown/pandocomatic/#use-case-ii-use-pandocomatic-as-a-static-site-generator).
 ```
 
 Here you see that the README uses the `mddoc` template and it overwrites
@@ -385,7 +390,11 @@ pandocomatic:
 Pandocomatic allows you to generalize common aspects of running pandoc
 while still offering the ability to be as specific as needed.
 
-See Chapters 4 & 5 for more extensive examples of using pandocomatic.
+See Chapters
+[4](http://localhost:8080/Software/markdown/pandocomatic/#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers)
+and
+[5](http://localhost:8080/Software/markdown/pandocomatic/#use-case-ii-use-pandocomatic-as-a-static-site-generator)
+for more extensive examples on how to use pandocomatic.
 
 In the next chapter the configuration of pandocomatic is elaborated.
 
@@ -443,9 +452,6 @@ configuring pandocomatic.
 Chapter 4. Use case I: Automating setting up and running pandoc for a series of related papers {#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers}
 ==============================================================================================
 
-4.1 Introduction
-----------------
-
 In this chapter I will elaborate on the example from the
 [Introduction](#why-pandocomatic) about using pandocomatic to configure
 and run pandoc for a series of related research papers.
@@ -483,7 +489,7 @@ Word](https://products.office.com/en/word), and would generate both
 print and HTML. I found [pandoc](http://pandoc.org) version 1.5 and I
 have been using it for all my writings since then.
 
-4.2 Starting using pandoc
+4.1 Starting using pandoc
 -------------------------
 
 Using pandoc is quite straightforward. At the least, you need to specify
@@ -562,7 +568,7 @@ becomes a hassle
 
 To improve upon this situation I created pandocomatic.
 
-4.3 Automating using pandocomatic
+4.2 Automating using pandocomatic
 ---------------------------------
 
 The basic concepts underlying pandocomatic are *templates* that contain
