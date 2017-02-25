@@ -63,7 +63,7 @@ specifying a so-called *pandocomatic template* in a
 following file, `pandocomatic.yaml` in pandoc's data directory:
 
 ``` {.yaml}
-template:
+templates:
   education-research:
     preprocessors: []
     pandoc:
@@ -139,12 +139,12 @@ gem install pandocomatic
 ```
 
 You can also download the latest gem
-[pandocomatic-0.1.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.0.gem)
+[pandocomatic-0.1.1](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.1.gem)
 from github and install it as follows:
 
 ``` {.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.1.0.gem
+gem install pandocomatic-0.1.1.gem
 ```
 
 Pandocomatic builds on
@@ -254,12 +254,16 @@ the conventional help and version arguments.
 2.3 Examples
 ------------
 
+### Convert a single file
+
 Convert `hello.md` to `hello.html` according to the configuration in
 `pandocomatic.yaml`:
 
 ``` {.bash}
 pandocomatic --config pandocomatic.yaml -o hello.html -i hello.md
 ```
+
+### Convert a directory
 
 Generate a static site using data directory `assets`, but only convert
 files that have been updated since the last time pandocomatic has been
@@ -268,6 +272,8 @@ run:
 ``` {.bash}
 pandocomatic --data-dir assets/ -o website/ -i source/ -m
 ```
+
+### Generating pandocomatic's manual and README files
 
 Generate the markdown files for pandocomatic's
 [manual](https://heerdebeer.org/Software/markdown/pandocomatic/) and its
@@ -360,6 +366,25 @@ typical use cases of pandocomatic:
 Here you see that the README uses the `mddoc` template and it overwrites
 the `to` property with `markdown_github`.
 
+Similarly, in the input file
+[`manual.md`](https://github.com/htdebeer/pandocomatic/blob/master/documentation/manual.md),
+an extra filter is specified,
+['number\_chapters\_and\_sections\_and\_figures.rb'](https://github.com/htdebeer/pandocomatic/blob/master/documentation/data-dir/filters/number_chapters_and_sections_and_figures.rb),
+to number the chapters and sections in the manual, which is not needed
+for the README, by using the following pandocomatic metadata in the
+manual input file:
+
+``` {.yaml}
+pandocomatic:
+  use-template: mddoc
+  pandoc:
+    filter: 
+    - 'filters/number_chapters_and_sections_and_figures.rb'
+```
+
+Pandocomatic allows you to generalize common aspects of running pandoc
+while still offering the ability to be as specific as needed.
+
 See Chapters 4 & 5 for more extensive examples of using pandocomatic.
 
 In the next chapter the configuration of pandocomatic is elaborated.
@@ -418,6 +443,9 @@ configuring pandocomatic.
 Chapter 4. Use case I: Automating setting up and running pandoc for a series of related papers {#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers}
 ==============================================================================================
 
+4.1 Introduction
+----------------
+
 In this chapter I will elaborate on the example from the
 [Introduction](#why-pandocomatic) about using pandocomatic to configure
 and run pandoc for a series of related research papers.
@@ -448,7 +476,268 @@ or processes.
 
 Still, I did not want to give up on my workflow either: I like working
 with plain text with tools like [vim](http://www.vim.org/), version
-control, [grep](https://www.gnu.org/software/grep/), and so on.
+control, [grep](https://www.gnu.org/software/grep/), and so on. I went
+looking for a tool that would allow me keep my workflow, enabled me to
+collaborate with people using [Microsoft
+Word](https://products.office.com/en/word), and would generate both
+print and HTML. I found [pandoc](http://pandoc.org) version 1.5 and I
+have been using it for all my writings since then.
+
+4.2 Starting using pandoc
+-------------------------
+
+Using pandoc is quite straightforward. At the least, you need to specify
+the input format, the output format, the input file, and the output
+file. The conversion process can be influenced by a whole range of
+[command line options](http://pandoc.org/MANUAL.html#options). You can
+choose to generate a table of contents, render mathematics, an output
+template to use, and so on.
+
+Usually, when starting a new paper I create a new directory and put in
+it one or more pandoc markdown files that comprise the contents of the
+paper. Then, when I want to read the paper as it is now, I convert it
+through pandoc with a command similar to:
+
+``` {.bash}
+pandoc --from markdown \
+  --to html5 \
+  --standalone \
+  --csl apa.csl \
+  --bibliography my-bib.bib \
+  --mathjax \
+  --output result.html \
+  source.md
+```
+
+Every time I want to see how the changes look, I have to re-run the
+command. Even though I can use
+[bash's](https://www.gnu.org/software/bash/) command history feature, it
+gets old fast. Particularly because I was writing multiple papers at
+once on different machines.
+
+To prevent me from entering the same command over and over, I created a
+pandoc wrapper written in Ruby,
+[paru](https://heerdebeer.org/Software/markdown/paru/), to write a
+script with it called `do-pandoc.rb`. Now I could specify the pandoc
+configuration in a YAML metadata block in the input file and convert it
+by running `do-pandoc.rb`. After introducing this script, on whatever
+machine I was working, on whatever paper I was working, invoking pandoc
+did not get more complicated than:
+
+``` {.bash}
+do-pandoc.rb source.md
+```
+
+Great!
+
+If I wanted a different output format, most often `docx`, to send a new
+version of a manuscript to my colleagues who were using Microsoft Word,
+just changing the pandoc configuration temporarily and running
+`do-pandoc.rb` would not always work well. I had to change more options
+or I had to run pandoc manually all over again for this different output
+format.
+
+Furthermore, over time, I found that when I started a new paper I would
+copy the source file of an old paper, change the title, keywords, and
+date, and removed the content to start afresh. The metadata with the
+pandoc setup would be the same except for the output file, that I would
+change to fit the new paper.
+
+Not a problem if you only write a paper now and then, but while I was
+doing my PhD, I found I was creating a lot of papers, outlines,
+proposals, course materials, pamphlets, presentations, overviews,
+etcetera. All more or less using the same pandoc configuration. I always
+had to think about which paper's configuration to copy for a particular
+new paper, and if I made some improvements on the configuration, like a
+new template or an option that I discovered I liked, I always was
+conflicted if I would update previous configurations as well.
+
+Finally, sometimes I would apply a script to either the input file or
+the output. For example, I would run [tidy](http://www.html-tidy.org/)
+to clean up HTML output. Or I would run
+[linkchecker](https://wummel.github.io/linkchecker/) to check that all
+links in the output point to something. Again, it is no problem to run
+these scripts now and then, but if you are running them all the time it
+becomes a hassle
+
+To improve upon this situation I created pandocomatic.
+
+4.3 Automating using pandocomatic
+---------------------------------
+
+The basic concepts underlying pandocomatic are *templates* that contain
+a *pandoc configuration*, a list of *preprocessors*, and a list of
+*postprocessors*. These named templates can be *used* in a pandoc
+markdown input file and customized to fit a particular use case for that
+template.
+
+### Preprocessors and postprocessors
+
+The preprocessors and postprocessors are run before and after pandoc is
+invoked on an input file. For example, I prefer a cleaner HTML output
+than pandoc generates and I like to check that all my links in the
+generated HTML work. I have created simple shell scripts for these
+tasks. For running `tidy` that script looks like:
+
+``` {.bash}
+#!/bin/bash
+tidy -quiet -clean -indent -wrap 78 -utf8
+```
+
+For running `linkchecker` that script is slightly more involved because
+it does not read a HTML file from standard input, nor does it write that
+file to standard output like `tidy` does:
+
+``` {.bash}
+#!/bin/bash
+INPUT=`cat`
+file_to_check="/tmp/FILE_TO_LINK_CHECK.html"
+echo "$INPUT" > $file_to_check
+linkchecker --no-status --anchors --check-extern $file_to_check 1>&2
+cat $file_to_check
+```
+
+The important thing to remember about processors is that they read from
+standard input and write to standard output. Ensure that all output from
+these scripts that you do not want to end up in the final result is not
+printed to standard output.
+
+### Specifying a pandocomatic template
+
+Specifying a template is easy:
+
+-   create a configuration YAML file, say `pandocomatic.yaml`
+-   add a **templates** property, and for each template:
+    -   add the template's **name** as a property containing:
+    -   a list of **preprocessors**,
+    -   a **pandoc configuration**, and
+    -   a list or **postprocessors**.
+
+Applied to example of a series of related papers, a configuration file
+could look like:
+
+``` {.yaml}
+templates:
+  research-to-html:
+    pandoc:
+      from: markdown
+      to: html5
+      standalone: true
+      toc: true
+      csl: 'apa.csl'
+      bibliography: '~/Documents/bibliography.bib'
+    postprocessors:
+      - 'postprocessors/tidy.sh'
+      - 'postprocessors/linkchecker.sh'
+```
+
+For paths in a template, such as for the CSL file, bibliography, and
+postprocessors, are looked up according to the following rules:
+
+-   if a path starts with a period ("."), the path is relative to the
+    file being converted.
+-   if a path starts with a slash ("/"), the path is an absolute path
+-   if a path starts with neither a period or a slash, the path is
+    relative to the data directory.
+
+If no **data directory** is specified when invoking pandocomatic,
+pandoc's data directory is used as the default data directory. Run the
+command
+
+``` {.bash}
+pandoc --version
+```
+
+to find out what that data directory is on your system. On mine it is
+`~/.pandoc`.
+
+It is good practice to create a separate `filters`, `preprocessors`, and
+`postprocessors` sub directory in your data directory.
+
+If no configuration file is specified when invoking pandocomatic,
+pandocomatic tries to find one named **`pandocomatic.yaml`** in the
+current working directory or, if there is no such file, the data
+directory and then the default data directory.
+
+### Using a pandocomatic template
+
+I have saved the above `pandocomatic.yaml` file in my default data
+directory. That directory also contains my postprocessors. Using the
+*research-to-html* template is easy. Just put the following metadata
+block in an input file:
+
+``` {.yaml}
+pandocomatic:
+  use-template: research-to-html
+```
+
+To generate a HTML file from the input file, run pandocomatic:
+
+``` {.bash}
+pandocomatic --input paper.md --output draft_manuscript.html
+```
+
+If you write your output to the same file each time you convert the
+input file, you can **extend** the template in the input file as
+follows:
+
+``` {.yaml}
+pandocomatic:
+  use-template: research-to-html
+  pandoc:
+    to: draft_manuscript.html
+```
+
+Running pandocomatic becomes even simpler:
+
+``` {.bash}
+pandocomatic paper.md
+```
+
+That is it!
+
+You can extend the preprocessors used, the postprocessors used, and all
+pandoc options. Changing certain options does not make always sense. In
+this example, changing the `to` option to `docx` will get you in
+trouble. Pandoc will run fine, but when the postprocessors are run on
+the outputted docx file, things will get awry.
+
+No problem, though, for you can add a second template to your
+configuration file that generates docx files. For example:
+
+``` {.yaml}
+templates:
+  research-to-docx:
+    pandoc:
+      from: markdown
+      to: docx
+      toc: true
+      csl: 'apa.csl'
+      bibliography: '~/Documents/bibliography.bib'
+      reference-docx: 'apa-formatted-paper.docx'
+  research-to-html:
+    pandoc:
+      from: markdown
+      to: html5
+      standalone: true
+      toc: true
+      csl: 'apa.csl'
+      bibliography: '~/Documents/bibliography.bib'
+    postprocessors:
+      - 'postprocessors/tidy.sh'
+      - 'postprocessors/linkchecker.sh'
+```
+
+Just change the used template in your input file to `research-to-docx`
+and run pandocomatic to generate a Microsoft Word file I can share with
+my colleagues. If the reference docx from the template is not
+sufficient, journals like to use slightly different styles after all,
+you can extend the template in your input file. No problem.
+
+Using pandocomatic has simplified my workflow for writing papers with
+pandoc significantly. Over the years, I have collected a set of
+templates, preprocessors, postprocessors, and filters I use over and
+over.
 
 Chapter 5. Use case II: Use pandocomatic as a static site generator {#use-case-ii-use-pandocomatic-as-a-static-site-generator}
 ===================================================================

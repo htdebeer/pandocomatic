@@ -1,3 +1,5 @@
+### Convert a single file
+
 Convert `hello.md` to `hello.html` according to the configuration in
 `pandocomatic.yaml`:
 
@@ -5,12 +7,16 @@ Convert `hello.md` to `hello.html` according to the configuration in
 pandocomatic --config pandocomatic.yaml -o hello.html -i hello.md
 ~~~
 
+### Convert a directory
+
 Generate a static site using data directory `assets`, but only convert files
 that have been updated since the last time pandocomatic has been run:
 
 ~~~{.bash}
 pandocomatic --data-dir assets/ -o website/ -i source/ -m
 ~~~
+
+### Generating pandocomatic's manual and README files
 
 Generate the markdown files for pandocomatic's
 [manual](https://heerdebeer.org/Software/markdown/pandocomatic/) and its
@@ -55,3 +61,18 @@ template's settings inside a pandocomatic block in a markdown file:
 
 Here you see that the README uses the `mddoc` template and it overwrites the
 `to` property with `markdown_github`.
+
+Similarly, in the input file
+[`manual.md`](https://github.com/htdebeer/pandocomatic/blob/master/documentation/manual.md),
+an extra filter is specified, ['number_chapters_and_sections_and_figures.rb'](https://github.com/htdebeer/pandocomatic/blob/master/documentation/data-dir/filters/number_chapters_and_sections_and_figures.rb), to number the chapters and sections in the manual, which is not needed for the README, by using the following pandocomatic metadata in the manual input file:
+
+~~~{.yaml}
+pandocomatic:
+  use-template: mddoc
+  pandoc:
+    filter: 
+    - 'filters/number_chapters_and_sections_and_figures.rb'
+~~~ 
+
+Pandocomatic allows you to generalize common aspects of running pandoc while
+still offering the ability to be as specific as needed.

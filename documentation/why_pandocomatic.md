@@ -39,7 +39,7 @@ file. For example, by placing the following file, `pandocomatic.yaml` in
 pandoc's data directory:
 
 ~~~{.yaml}
-template:
+templates:
   education-research:
     preprocessors: []
     pandoc:

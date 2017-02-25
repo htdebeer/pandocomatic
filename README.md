@@ -32,7 +32,7 @@ It saves me from typing out the whole pandoc invocation each time I run pandoc o
 *Pandocomatic* is a tool to re-use these common configurations by specifying a so-called *pandocomatic template* in a [YAML](http://yaml.org/) configuration file. For example, by placing the following file, `pandocomatic.yaml` in pandoc's data directory:
 
 ``` yaml
-template:
+templates:
   education-research:
     preprocessors: []
     pandoc:
@@ -85,11 +85,11 @@ Pandocomatic is installed through [RubyGems](https://rubygems.org/) as follows:
 gem install pandocomatic
 ```
 
-You can also download the latest gem [pandocomatic-0.1.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.0.gem) from github and install it as follows:
+You can also download the latest gem [pandocomatic-0.1.1](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.1.gem) from github and install it as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.1.0.gem
+gem install pandocomatic-0.1.1.gem
 ```
 
 Pandocomatic builds on [paru](https://heerdebeer.org/Software/markdown/paru/), a Ruby wrapper around pandoc, and [pandoc](http://pandoc.org/) itself, of course.
@@ -97,17 +97,23 @@ Pandocomatic builds on [paru](https://heerdebeer.org/Software/markdown/paru/), a
 Examples
 --------
 
+### Convert a single file
+
 Convert `hello.md` to `hello.html` according to the configuration in `pandocomatic.yaml`:
 
 ``` bash
 pandocomatic --config pandocomatic.yaml -o hello.html -i hello.md
 ```
 
+### Convert a directory
+
 Generate a static site using data directory `assets`, but only convert files that have been updated since the last time pandocomatic has been run:
 
 ``` bash
 pandocomatic --data-dir assets/ -o website/ -i source/ -m
 ```
+
+### Generating pandocomatic's manual and README files
 
 Generate the markdown files for pandocomatic's [manual](https://heerdebeer.org/Software/markdown/pandocomatic/) and its [github repository](https://github.com/htdebeer/pandocomatic) README:
 
@@ -178,6 +184,18 @@ typical use cases of pandocomatic:
 ```
 
 Here you see that the README uses the `mddoc` template and it overwrites the `to` property with `markdown_github`.
+
+Similarly, in the input file [`manual.md`](https://github.com/htdebeer/pandocomatic/blob/master/documentation/manual.md), an extra filter is specified, ['number\_chapters\_and\_sections\_and\_figures.rb'](https://github.com/htdebeer/pandocomatic/blob/master/documentation/data-dir/filters/number_chapters_and_sections_and_figures.rb), to number the chapters and sections in the manual, which is not needed for the README, by using the following pandocomatic metadata in the manual input file:
+
+``` yaml
+pandocomatic:
+  use-template: mddoc
+  pandoc:
+    filter: 
+    - 'filters/number_chapters_and_sections_and_figures.rb'
+```
+
+Pandocomatic allows you to generalize common aspects of running pandoc while still offering the ability to be as specific as needed.
 
 More information
 ----------------
