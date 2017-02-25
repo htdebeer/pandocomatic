@@ -10,6 +10,9 @@ keywords:
 - static site generator
 pandocomatic:
   use-template: mddoc
+  pandoc:
+    filter: 
+    - 'filters/number_chapters_and_sections_and_figures.rb'
 ...
 
 

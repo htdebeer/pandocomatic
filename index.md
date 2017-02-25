@@ -10,8 +10,8 @@ subtitle: Automating the use of pandoc
 title: Pandocomatic
 ---
 
-Introduction
-============
+Chapter 1. Introduction {#introduction}
+=======================
 
 Pandocomatic is a tool to automate using [pandoc](http://pandoc.org/).
 With pandocomatic you can express common patterns of using pandoc for
@@ -19,12 +19,12 @@ generating your documents. Applied to a directory, pandocomatic can act
 as a static site generator. For example, this manual and the website it
 is put on are generated using pandocomatic!
 
-Why pandocomatic?
------------------
+1.1 Why pandocomatic?
+---------------------
 
 I use [pandoc](http://pandoc.org/) a lot. I use it to write all my
-papers, notes, reports, outlines, summaries, and books. Time and again I
-was invoking pandoc like:
+papers, notes, websites, reports, outlines, summaries, and books. Time
+and again I was invoking pandoc like:
 
 ``` {.bash}
 pandoc --from markdown \
@@ -37,10 +37,10 @@ pandoc --from markdown \
   source.md
 ```
 
-Sure, when I write about history, the csl file and bibliography changes.
-And I do not need the `--mathjax` option like I do when I am writing
-about mathematics education. Still, all these invocations are quite
-similar.
+Sure, when I write about history, the [CSL](http://citationstyles.org/)
+file and bibliography changes. And I do not need the `--mathjax` option
+like I do when I am writing about mathematics education. Still, all
+these invocations are quite similar.
 
 I already wrote the program *do-pandoc.rb* as part of a
 [Ruby](https://www.ruby-lang.org/en/) wrapper around pandoc,
@@ -118,8 +118,8 @@ The last two chapters of this manual describe two typical use cases for
 pandocomatic: i) automating setting up and running pandoc for a series
 of related papers and ii) using pandocomatic as a static site generator.
 
-Licence
--------
+1.2 Licence
+-----------
 
 Pandocomatic is [free
 sofware](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic
@@ -128,8 +128,8 @@ is released under the
 pandocomatic's source code on
 [github](https://github.com/htdebeer/pandocomatic).
 
-Installation
-------------
+1.3 Installation
+----------------
 
 Pandocomatic is installed through [RubyGems](https://rubygems.org/) as
 follows:
@@ -151,8 +151,8 @@ Pandocomatic builds on
 [paru](https://heerdebeer.org/Software/markdown/paru/), a Ruby wrapper
 around pandoc, and [pandoc](http://pandoc.org/) itself, of course.
 
-Using pandocomatic
-==================
+Chapter 2. Using pandocomatic {#using-pandocomatic}
+=============================
 
 You run pandocomatic like:
 
@@ -170,8 +170,8 @@ The required and optional arguments are discussed next, followed by some
 examples. See next chapter for a more in-depth coverage of the
 configuration of pandocomatic.
 
-Required arguments
-------------------
+2.1 Required arguments
+----------------------
 
 Two arguments are required when running pandocomatic: the input file or
 directory and the output file or directory:
@@ -191,8 +191,8 @@ directory and the output file or directory:
 
 The input and output should both be files or both be directories.
 
-Optional arguments
-------------------
+2.2 Optional arguments
+----------------------
 
 Besides the two required arguments, there are two arguments to configure
 pandocomatic, three arguments to change how pandocomatic operates, and
@@ -251,8 +251,8 @@ the conventional help and version arguments.
 :   Show a short help message. If this options is used, all other
     options except `--version` or `-v` are ignored.
 
-Examples
---------
+2.3 Examples
+------------
 
 Convert `hello.md` to `hello.html` according to the configuration in
 `pandocomatic.yaml`:
@@ -275,7 +275,7 @@ Generate the markdown files for pandocomatic's
 
 ``` {.bash}
 git clone https://github.com/htdebeer/pandocomatic.git
-cd docoumentation
+cd documentation
 pandocomatic --data-dir data-dir --config config.yaml -i README.md -o ../README.md
 pandocomatic --data-dir data-dir --config config.yaml -i manual.md -o ../index.md
 ```
@@ -300,12 +300,12 @@ templates:
 
 The `mddoc` template tells pandocomatic to convert a markdown file to a
 standalone markdown file using three filters: `insert_document.rb`,
-`insert_code~block.rb`, and `remove_pandocomatic_metadata.rb`. The first
+`insert_code_block.rb`, and `remove_pandocomatic_metadata.rb`. The first
 two filters allow you to include another markdown file or to include a
 source code file (see the README listing below). The last filter removes
 the pandocomatic metadata block from the file so the settings in it do
-not interfere with the translation of the manual to HTML when it is
-generated as part of the website. These filters are located in the
+not interfere when, later on, `manual.md` is converted to HTML. These
+filters are located in the
 [`filters`](https://github.com/htdebeer/pandocomatic/tree/master/documentation/data-dir/filters)
 subdirectory in the specified data directory `data-dir`.
 
@@ -364,8 +364,8 @@ See Chapters 4 & 5 for more extensive examples of using pandocomatic.
 
 In the next chapter the configuration of pandocomatic is elaborated.
 
-Configuring pandocomatic
-========================
+Chapter 3. Configuring pandocomatic {#configuring-pandocomatic}
+===================================
 
 Pandocomatic is configured by command line options and configuration
 files. Each input file that is converted by pandocomatic is processed as
@@ -415,14 +415,42 @@ use to convert that file.
 See the next two chapters for more extensive examples of using and
 configuring pandocomatic.
 
-Use case I: Automating setting up and running pandoc for a series of related papers
-===================================================================================
+Chapter 4. Use case I: Automating setting up and running pandoc for a series of related papers {#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers}
+==============================================================================================
 
-In this chapter I will elaborate the example from the Introduction about
-using pandocomatic to configure and run pandoc for a series of related
-research papers.
+In this chapter I will elaborate on the example from the
+[Introduction](#why-pandocomatic) about using pandocomatic to configure
+and run pandoc for a series of related research papers.
 
-Use case II: Use pandocomatic as a static site generator
-========================================================
+In 2010 I started a PhD project in mathematics education on [exploring
+instantaneous speed in grade 5](https://heerdebeer.org/DR/). Before I
+started this project I used [LaTeX](https://www.latex-project.org/) for
+all my writings in history, computer science, science education, and
+also to create educational materials I used when I taught computer
+science in high school. I like LaTeX, in particular because of its
+readable plain text formal and the ability to create my own commands and
+environments. And so long as I was writing papers for print, I could not
+think of better tool for me.
+
+However, times were changing and print became more and more a secondary
+output format. The web took precedence. Generating a well-formatted HTML
+page from a LaTeX source document appeared harder than it ought to be. I
+tried tools like [latex2html](http://www.latex2html.org/) and
+[tex4ht](https://tug.org/applications/tex4ht/mn.html), but it was always
+a hassle to use and the output not that great.
+
+Meanwhile I started collaborating on papers. Most of of my colleagues
+had not heard of LaTeX, and, to be honest, why would they care? I was
+the one using "odd software" in my field and even if I could convince
+them to go the LaTeX route, the frustration that would cause is not
+worth the trouble. In the end writing is about *writing* not about tools
+or processes.
+
+Still, I did not want to give up on my workflow either: I like working
+with plain text with tools like [vim](http://www.vim.org/), version
+control, [grep](https://www.gnu.org/software/grep/), and so on.
+
+Chapter 5. Use case II: Use pandocomatic as a static site generator {#use-case-ii-use-pandocomatic-as-a-static-site-generator}
+===================================================================
 
 to be done

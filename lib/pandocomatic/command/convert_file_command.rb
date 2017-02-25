@@ -72,7 +72,16 @@ module Pandocomatic
 
         template = @config.get_template template_name
 
-        pandoc_options = (template['pandoc'] || {}).merge(pandoc_options)
+        pandoc_options = (template['pandoc'] || {}).merge(pandoc_options) do |key, oldval, newval| 
+          # Options that can occur more than once, such as 'filter' or
+          # 'metadata' are merged, not replaced like options that can occur
+          # only once, such as 'toc' or 'from'
+          if oldval.is_a? Array
+            oldval + newval
+          else
+            newval
+          end
+        end
       end
 
       input = File.read @src

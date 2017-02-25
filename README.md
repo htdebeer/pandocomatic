@@ -6,7 +6,7 @@ Pandocomatic is a tool to automate using [pandoc](http://pandoc.org/). With pand
 Why pandocomatic?
 -----------------
 
-I use [pandoc](http://pandoc.org/) a lot. I use it to write all my papers, notes, reports, outlines, summaries, and books. Time and again I was invoking pandoc like:
+I use [pandoc](http://pandoc.org/) a lot. I use it to write all my papers, notes, websites, reports, outlines, summaries, and books. Time and again I was invoking pandoc like:
 
 ``` bash
 pandoc --from markdown \
@@ -19,7 +19,7 @@ pandoc --from markdown \
   source.md
 ```
 
-Sure, when I write about history, the csl file and bibliography changes. And I do not need the `--mathjax` option like I do when I am writing about mathematics education. Still, all these invocations are quite similar.
+Sure, when I write about history, the [CSL](http://citationstyles.org/) file and bibliography changes. And I do not need the `--mathjax` option like I do when I am writing about mathematics education. Still, all these invocations are quite similar.
 
 I already wrote the program *do-pandoc.rb* as part of a [Ruby](https://www.ruby-lang.org/en/) wrapper around pandoc, [paru](https://heerdebeer.org/Software/markdown/paru/). Using *do-pandoc.rb* I can specify the options to pandoc as pandoc metadata in the source file itself. The above pandoc invocation then becomes:
 
@@ -113,7 +113,7 @@ Generate the markdown files for pandocomatic's [manual](https://heerdebeer.org/S
 
 ``` bash
 git clone https://github.com/htdebeer/pandocomatic.git
-cd docoumentation
+cd documentation
 pandocomatic --data-dir data-dir --config config.yaml -i README.md -o ../README.md
 pandocomatic --data-dir data-dir --config config.yaml -i manual.md -o ../index.md
 ```
@@ -133,7 +133,7 @@ templates:
       - filters/remove_pandocomatic_metadata.rb
 ```
 
-The `mddoc` template tells pandocomatic to convert a markdown file to a standalone markdown file using three filters: `insert_document.rb`, `insert_code~block.rb`, and `remove_pandocomatic_metadata.rb`. The first two filters allow you to include another markdown file or to include a source code file (see the README listing below). The last filter removes the pandocomatic metadata block from the file so the settings in it do not interfere with the translation of the manual to HTML when it is generated as part of the website. These filters are located in the [`filters`](https://github.com/htdebeer/pandocomatic/tree/master/documentation/data-dir/filters) subdirectory in the specified data directory `data-dir`.
+The `mddoc` template tells pandocomatic to convert a markdown file to a standalone markdown file using three filters: `insert_document.rb`, `insert_code_block.rb`, and `remove_pandocomatic_metadata.rb`. The first two filters allow you to include another markdown file or to include a source code file (see the README listing below). The last filter removes the pandocomatic metadata block from the file so the settings in it do not interfere when, later on, `manual.md` is converted to HTML. These filters are located in the [`filters`](https://github.com/htdebeer/pandocomatic/tree/master/documentation/data-dir/filters) subdirectory in the specified data directory `data-dir`.
 
 However, the `mddoc` template converts from and to pandoc's markdown variant, which differs slightly from the markdown variant used by [Github](https://github.com/) for README files. Luckily, pandoc does support writing Github's markdown variant. There is no need to create and use a different template for generating the README, though, as you can override all template's settings inside a pandocomatic block in a markdown file:
 
