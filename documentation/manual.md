@@ -29,9 +29,9 @@ described, followed by its license.  After that, in the next chapters, using
 pandocomatic and configuring pandocomatic are described in detail. The last
 two chapters of this manual describe two typical use cases of pandocomatic:
 
-1.  [automating setting up and running pandoc for a series of related papers](http://localhost:8080/Software/markdown/pandocomatic/#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
+1.  [automating setting up and running pandoc for a series of related papers](#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
 2.  [using pandocomatic as a static site
-    generator](http://localhost:8080/Software/markdown/pandocomatic/#use-case-ii-use-pandocomatic-as-a-static-site-generator).
+    generator](#use-case-ii-use-pandocomatic-as-a-static-site-generator).
 
 ## Licence
 
@@ -51,9 +51,9 @@ two chapters of this manual describe two typical use cases of pandocomatic:
 
 
 See Chapters
-[4](http://localhost:8080/Software/markdown/pandocomatic/#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers)
+[4](#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers)
 and
-[5](http://localhost:8080/Software/markdown/pandocomatic/#use-case-ii-use-pandocomatic-as-a-static-site-generator)
+[5](#use-case-ii-use-pandocomatic-as-a-static-site-generator)
 for more extensive examples on how to use pandocomatic.
 
 In the next chapter the configuration of pandocomatic is elaborated.
