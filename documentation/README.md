@@ -1,17 +1,11 @@
 ---
 pandocomatic:
+  use-template: mddoc
   pandoc:
-    from: markdown
     to: markdown_github
-    standalone: true
-    filter: 
-    - filters/insert_document.rb
-    - filters/insert_code_block.rb
-    - filters/remove_pandocomatic_metadata.rb
 ...
 
 # Pandocomatic—Automating the use of pandoc
-
 
 ::paru::insert introduction.md
 

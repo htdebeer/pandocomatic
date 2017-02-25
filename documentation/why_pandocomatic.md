@@ -1,6 +1,6 @@
 I use [pandoc](http://pandoc.org/) a lot. I use it to write all my papers,
-notes, reports, outlines, summaries, and books. Time and again I was invoking
-pandoc like: 
+notes, websites, reports, outlines, summaries, and books. Time and again I was
+invoking pandoc like: 
 
 ~~~{.bash}
 pandoc --from markdown \
@@ -13,15 +13,16 @@ pandoc --from markdown \
   source.md
 ~~~
 
-Sure, when I write about history, the csl file and bibliography changes. And I
-do not need the `--mathjax` option like I do when I am writing about
-  mathematics education. Still, all these invocations are quite similar. 
+Sure, when I write about history, the [CSL](http://citationstyles.org/) file
+and bibliography changes. And I do not need the `--mathjax` option like I do
+when I am writing about mathematics education. Still, all these invocations
+are quite similar. 
   
 I already wrote the program *do-pandoc.rb* as part of a
-[Ruby](https://www.ruby-lang.org/en/) wrapper around
-pandoc, [paru](https://heerdebeer.org/Software/markdown/paru/). Using
-*do-pandoc.rb* I can specify the options to pandoc as pandoc metadata in the
-source file itself. The above pandoc invocation then becomes:
+[Ruby](https://www.ruby-lang.org/en/) wrapper around pandoc,
+[paru](https://heerdebeer.org/Software/markdown/paru/). Using *do-pandoc.rb* I
+can specify the options to pandoc as pandoc metadata in the source file
+itself. The above pandoc invocation then becomes:
 
 ~~~{.bash}
 do-pandoc.rb source.md

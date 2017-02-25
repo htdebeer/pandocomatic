@@ -16,24 +16,24 @@ the use of pandoc.
 Configuration files are [YAML](http://www.yaml.org/) files and can contain the
 following properties:
 
--   *settings*:
-    -   *skip*: An array of glob patterns of files and directories to not
+-   **settings**:
+    -   **skip**: An array of glob patterns of files and directories to not
         convert. By default hidden files (starting with a ".") and
         "pandocomatic.yaml" are skipped.
-    -   *recursive*: A boolean telling pandocomatic to convert the
+    -   **recursive**: A boolean telling pandocomatic to convert the
         subdirectories of a directory as well. By default this setting is
         `true`.
-    -   *follow_links*: A boolean telling pandocomatic to follow symbolic
+    -   **follow_links**: A boolean telling pandocomatic to follow symbolic
         links. By default is `true`. Note, links that point outside the input
         source's directory tree will not be visited.
--   *templates*:
-    -   *glob*: An array of glob patterns of files to convert using this
+-   **templates**:
+    -   **glob**: An array of glob patterns of files to convert using this
         template.
-    -   *preprocessors*: An array of scripts to run on an input file before
+    -   **preprocessors**: An array of scripts to run on an input file before
         converting the output of those scripts with pandoc.
-    -   *pandoc*: Pandoc options to use when converting an input file using
+    -   **pandoc**: Pandoc options to use when converting an input file using
         this template.
-    -   *postprocessors*: An array of scripts to run on the result of the
+    -   **postprocessors**: An array of scripts to run on the result of the
         pandoc conversion. The output of these scripts will be written to the
         output file.
 

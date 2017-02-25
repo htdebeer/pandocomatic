@@ -9,15 +9,7 @@ keywords:
 - pandocomatic
 - static site generator
 pandocomatic:
-  pandoc:
-    from: markdown
-    to: markdown
-    standalone: true
-    filter: 
-    - filters/insert_document.rb
-    - filters/number_chapters_and_sections_and_figures.rb
-    - filters/insert_code_block.rb
-    - filters/remove_pandocomatic_metadata.rb
+  use-template: mddoc
 ...
 
 
