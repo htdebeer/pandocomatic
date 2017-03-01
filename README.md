@@ -178,9 +178,9 @@ manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more
 extensive examples of using pandocomatic. Notably, the manual contains two
 typical use cases of pandocomatic:
 
-1.  [automating setting up and running pandoc for a series of related papers](http://localhost:8080/Software/markdown/pandocomatic/#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
+1.  [automating setting up and running pandoc for a series of related papers](https://heerdebeer.org/Software/markdown/pandocomatic/#automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
 2.  [using pandocomatic as a static site
-    generator](http://localhost:8080/Software/markdown/pandocomatic/#use-case-ii-use-pandocomatic-as-a-static-site-generator).
+    generator](https://heerdebeer.org/Software/markdown/pandocomatic/#using-pandocomatic-as-a-static-site-generator).
 ```
 
 Here you see that the README uses the `mddoc` template and it overwrites the `to` property with `markdown_github`.
@@ -202,5 +202,5 @@ More information
 
 See [pandocomatic's manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more extensive examples of using pandocomatic. Notably, the manual contains two typical use cases of pandocomatic:
 
-1.  [automating setting up and running pandoc for a series of related papers](http://localhost:8080/Software/markdown/pandocomatic/#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and
-2.  [using pandocomatic as a static site generator](http://localhost:8080/Software/markdown/pandocomatic/#use-case-ii-use-pandocomatic-as-a-static-site-generator).
+1.  [automating setting up and running pandoc for a series of related papers](https://heerdebeer.org/Software/markdown/pandocomatic/#automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and
+2.  [using pandocomatic as a static site generator](https://heerdebeer.org/Software/markdown/pandocomatic/#using-pandocomatic-as-a-static-site-generator).

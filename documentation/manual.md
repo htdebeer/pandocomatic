@@ -2,6 +2,7 @@
 title: Pandocomatic
 subtitle: Automating the use of pandoc
 author: Huub de Beer
+date: March 1st, 2017
 keywords:
 - pandoc
 - ruby
@@ -29,9 +30,9 @@ described, followed by its license.  After that, in the next chapters, using
 pandocomatic and configuring pandocomatic are described in detail. The last
 two chapters of this manual describe two typical use cases of pandocomatic:
 
-1.  [automating setting up and running pandoc for a series of related papers](#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
+1.  [automating setting up and running pandoc for a series of related papers](#automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
 2.  [using pandocomatic as a static site
-    generator](#use-case-ii-use-pandocomatic-as-a-static-site-generator).
+    generator](#using-pandocomatic-as-a-static-site-generator).
 
 ## Licence
 
@@ -62,11 +63,11 @@ In the next chapter the configuration of pandocomatic is elaborated.
 
 ::paru::insert configuration.md
 
-# Use case I: Automating setting up and running pandoc for a series of related papers
+# Automating setting up and running pandoc for a series of related papers
 
 ::paru::insert use_pandocomatic_to_automate_pandoc.md
 
-# Use case II: Use pandocomatic as a static site generator
+# Using pandocomatic as a static site generator
 
 ::paru::insert use_pandocomatic_as_a_static_site_generator.md
 

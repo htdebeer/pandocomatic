@@ -1,0 +1,4 @@
+templates:
+    page:
+        pandoc:
+            csl: 'chicago-fullnote-bibliography.csl'

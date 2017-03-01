@@ -1,0 +1,17 @@
+settings:
+    recursive: true
+    follow-links: false
+    skip: ['.*', 'pandocomatic.yaml']
+templates:
+    page:
+        glob: ['*.markdown', '*.md']
+        preprocessors: ['preprocessors/site_menu.rb']
+        pandoc:
+            from: markdown
+            to: html5
+            standalone: true
+            template: 'templates/page.html'
+            csl: 'apa.csl'
+            toc: true
+            mathjax: true
+        postprocessors: ['postprocessors/tidy.sh']
