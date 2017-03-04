@@ -26,18 +26,6 @@ module Pandocomatic
   require_relative './error/io_error.rb'
 
   class PandocMetadata < Hash
-  
-    # Paru converters:
-    # Note. When converting metadata back to the pandoc markdown format, you have
-    # to use the option 'standalone', otherwise the metadata is skipped
-    PANDOC_2_JSON = Paru::Pandoc.new {from 'markdown'; to 'json'}
-    JSON_2_PANDOC = Paru::Pandoc.new {from 'json'; to 'markdown'; standalone}
-
-    # When converting a pandoc document to JSON, or vice versa, the JSON object
-    # has the following three properties:
-    VERSION = 'pandoc-api-version'
-    META = 'meta'
-    BLOCKS = 'blocks'
 
     def self.extract_metadata input_document
       begin
@@ -48,31 +36,17 @@ module Pandocomatic
     end
 
     def self.pandoc2yaml(input)
-      yaml = ""
-      begin
-        json = JSON.parse(PANDOC_2_JSON << input)
-
-        version, metadata = json.values_at(VERSION, META)
-
-        if not metadata.empty? then
-          metadata_document = {
-            VERSION => version, 
-            META => metadata, 
-            BLOCKS => []
-          }
-
-          yaml = JSON_2_PANDOC << JSON.generate(metadata_document)
-        end
-      rescue Paru::Error => e
-        raise PandocError.new(:error_running_pandoc, e, input_document)
-      end
-
-      yaml
+      input
+        .scan(/^---\n(.+?)^(?:---|\.\.\.)\n/m)
+        .flatten
+        .map{|yaml| yaml.strip}
+        .join("\n")
     end
 
     # Collect the metadata embedded in the src file
     def self.load_file src
       yaml_metadata = extract_metadata src
+
       if yaml_metadata.empty? then
         return PandocMetadata.new
       else
@@ -85,14 +59,13 @@ module Pandocomatic
       merge! hash
     end
 
-    def has_template?
-      self['pandocomatic'] and self['pandocomatic']['use-template'] and 
-          not self['pandocomatic']['use-template'].empty?
+    def has_template?()
+      has_pandocomatic? and pandocomatic.has_key? 'use-template' and not pandocomatic['use-template'].empty?
     end
 
-    def template_name
+    def template_name()
       if has_template? then
-        self['pandocomatic']['use-template']
+        pandocomatic['use-template']
       else
         ''
       end
@@ -101,16 +74,25 @@ module Pandocomatic
     # TODO: allow a pandoc block outside a pandocomatic block to make
     # pandocomatic work like paru's do-pandoc.rb.
 
-    def has_pandoc_options?
-      self['pandocomatic'] and self['pandocomatic']['pandoc']
+    def has_pandoc_options?()
+      has_pandocomatic? and pandocomatic.has_key? 'pandoc'
     end
 
-    def pandoc_options
+    def pandoc_options()
       if has_pandoc_options? then
-        self['pandocomatic']['pandoc']
+        pandocomatic['pandoc']
       else
         {}
       end
+    end
+
+    def has_pandocomatic?()
+      has_key? 'pandocomatic' or has_key? 'pandocomatic_'
+    end
+
+    def pandocomatic()
+      return self['pandocomatic'] if has_key? 'pandocomatic'
+      return self['pandocomatic_'] if has_key? 'pandocomatic_'
     end
 
   end

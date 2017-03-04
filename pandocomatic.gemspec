@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.name = 'pandocomatic'
-  s.version = '0.1.1'
+  s.version = '0.1.2'
   s.license = 'GPL-3.0'
-  s.date = '2017-03-01'
+  s.date = '2017-03-04'
   s.summary = 'Automating the use of pandoc'
   s.description = 'Automating the use of pandoc <http://pandoc.org>: use pandocomatic to convert one file or a directory with files and sub directories.'
   s.author = ['Huub de Beer']

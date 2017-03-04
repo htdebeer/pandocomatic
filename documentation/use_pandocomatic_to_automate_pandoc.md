@@ -201,7 +201,7 @@ postprocessors. Using the *research-to-html* template is easy. Just put the
 following metadata block in an input file:
 
 ~~~{.yaml}
-pandocomatic:
+pandocomatic_:
   use-template: research-to-html
 ~~~
 
@@ -215,7 +215,7 @@ If you write your output to the same file each time you convert
 the input file, you can **extend** the template in the input file as follows:
 
 ~~~{.yaml}
-pandocomatic:
+pandocomatic_:
   use-template: research-to-html
   pandoc:
     to: draft_manuscript.html
@@ -271,3 +271,9 @@ Using pandocomatic has simplified my workflow for writing papers with pandoc
 significantly. Over the years, I have collected a set of templates,
 preprocessors, postprocessors, and filters I use over and over.
 
+Note that the pandocomatic YAML property is named `pandocomatic_`. Pandoc has
+the [convention](http://pandoc.org/MANUAL.html#metadata-blocks) that YAML
+property names ending with an underscore will be ignored by pandoc and can be
+used by programs like pandocomatic. Pandocomatic adheres to this convention.
+However, for backwards compatibility the property name `pandocomatic` still
+works, it just will not be ignored by pandoc.

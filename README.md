@@ -52,7 +52,7 @@ I now can create a new document that uses that configuration by using the follow
 ---
 title: On teaching mathematics
 author: Huub de Beer
-pandocomatic:
+pandocomatic_:
   use-template: education-research
   pandoc:
     output: on_teaching_mathematics.html
@@ -67,7 +67,9 @@ To convert this file to `on_teaching_mathematics.html` I now run pandocomatic as
 pandocomatic -i on_teaching_maths.md
 ```
 
-With just two lines of pandoc metadata, I can tell pandocomatic what template to use when converting a file. Adding file-specific pandoc options to the conversion process is as easy as adding a `pandoc` property with those options to the `pandocomatic` metadata property in the source file.
+With just two lines of pandoc metadata, I can tell pandocomatic what template to use when converting a file. Adding file-specific pandoc options to the conversion process is as easy as adding a `pandoc` property with those options to the `pandocomatic_` metadata property in the source file.
+
+Note that the pandocomatic YAML property is named `pandocomatic_`. Pandoc has the [convention](http://pandoc.org/MANUAL.html#metadata-blocks) that YAML property names ending with an underscore will be ignored by pandoc and can be used by programs like pandocomatic. Pandocomatic adheres to this convention. However, for backwards compatibility the property name `pandocomatic` still works, it just will not be ignored by pandoc.
 
 Once I had written a number of related documents this way, it was a small step to enable pandocomatic to convert directories as well as files. Just like that, pandocomatic can be used as a *static site generator*!
 
@@ -85,11 +87,11 @@ Pandocomatic is installed through [RubyGems](https://rubygems.org/) as follows:
 gem install pandocomatic
 ```
 
-You can also download the latest gem [pandocomatic-0.1.1](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.1.gem) from github and install it as follows:
+You can also download the latest gem [pandocomatic-0.1.2](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.2.gem) from github and install it as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.1.1.gem
+gem install pandocomatic-0.1.2.gem
 ```
 
 Pandocomatic builds on [paru](https://heerdebeer.org/Software/markdown/paru/), a Ruby wrapper around pandoc, and [pandoc](http://pandoc.org/) itself, of course.
@@ -145,7 +147,7 @@ However, the `mddoc` template converts from and to pandoc's markdown variant, wh
 
 ``` markdown
 ---
-pandocomatic:
+pandocomatic_:
   use-template: mddoc
   pandoc:
     to: markdown_github
@@ -188,7 +190,7 @@ Here you see that the README uses the `mddoc` template and it overwrites the `to
 Similarly, in the input file [`manual.md`](https://github.com/htdebeer/pandocomatic/blob/master/documentation/manual.md), an extra filter is specified, ['number\_chapters\_and\_sections\_and\_figures.rb'](https://github.com/htdebeer/pandocomatic/blob/master/documentation/data-dir/filters/number_chapters_and_sections_and_figures.rb), to number the chapters and sections in the manual, which is not needed for the README, by using the following pandocomatic metadata in the manual input file:
 
 ``` yaml
-pandocomatic:
+pandocomatic_:
   use-template: mddoc
   pandoc:
     filter: 

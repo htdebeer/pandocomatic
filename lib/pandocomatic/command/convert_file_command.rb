@@ -57,7 +57,6 @@ module Pandocomatic
 
     def convert_file
       metadata = PandocMetadata.load_file @src
-
       pandoc_options = metadata.pandoc_options || {}
       template = {}
 

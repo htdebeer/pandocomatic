@@ -1,5 +1,5 @@
 ---
-pandocomatic:
+pandocomatic_:
   use-template: mddoc
   pandoc:
     to: markdown_github

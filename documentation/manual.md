@@ -9,7 +9,7 @@ keywords:
 - paru
 - pandocomatic
 - static site generator
-pandocomatic:
+pandocomatic_:
   use-template: mddoc
   pandoc:
     filter: 

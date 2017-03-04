@@ -67,7 +67,7 @@ Similarly, in the input file
 an extra filter is specified, ['number_chapters_and_sections_and_figures.rb'](https://github.com/htdebeer/pandocomatic/blob/master/documentation/data-dir/filters/number_chapters_and_sections_and_figures.rb), to number the chapters and sections in the manual, which is not needed for the README, by using the following pandocomatic metadata in the manual input file:
 
 ~~~{.yaml}
-pandocomatic:
+pandocomatic_:
   use-template: mddoc
   pandoc:
     filter: 

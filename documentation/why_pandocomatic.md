@@ -60,7 +60,7 @@ following metadata in my source file, `on_teaching_maths.md`:
 ---
 title: On teaching mathematics
 author: Huub de Beer
-pandocomatic:
+pandocomatic_:
   use-template: education-research
   pandoc:
     output: on_teaching_mathematics.html
@@ -79,7 +79,14 @@ pandocomatic -i on_teaching_maths.md
 With just two lines of pandoc metadata, I can tell pandocomatic what template
 to use when converting a file. Adding file-specific pandoc options to the
 conversion process is as easy as adding a `pandoc` property with those options
-to the `pandocomatic` metadata property in the source file.
+to the `pandocomatic_` metadata property in the source file. 
+
+Note that the pandocomatic YAML property is named `pandocomatic_`. Pandoc has
+the [convention](http://pandoc.org/MANUAL.html#metadata-blocks) that YAML
+property names ending with an underscore will be ignored by pandoc and can be
+used by programs like pandocomatic. Pandocomatic adheres to this convention.
+However, for backwards compatibility the property name `pandocomatic` still
+works, it just will not be ignored by pandoc.
 
 Once I had written a number of related documents this way, it was a small step
 to enable pandocomatic to convert directories as well as files. Just like

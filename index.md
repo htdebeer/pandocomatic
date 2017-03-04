@@ -85,7 +85,7 @@ the following metadata in my source file, `on_teaching_maths.md`:
 ---
 title: On teaching mathematics
 author: Huub de Beer
-pandocomatic:
+pandocomatic_:
   use-template: education-research
   pandoc:
     output: on_teaching_mathematics.html
@@ -104,8 +104,16 @@ pandocomatic -i on_teaching_maths.md
 With just two lines of pandoc metadata, I can tell pandocomatic what
 template to use when converting a file. Adding file-specific pandoc
 options to the conversion process is as easy as adding a `pandoc`
-property with those options to the `pandocomatic` metadata property in
+property with those options to the `pandocomatic_` metadata property in
 the source file.
+
+Note that the pandocomatic YAML property is named `pandocomatic_`.
+Pandoc has the
+[convention](http://pandoc.org/MANUAL.html#metadata-blocks) that YAML
+property names ending with an underscore will be ignored by pandoc and
+can be used by programs like pandocomatic. Pandocomatic adheres to this
+convention. However, for backwards compatibility the property name
+`pandocomatic` still works, it just will not be ignored by pandoc.
 
 Once I had written a number of related documents this way, it was a
 small step to enable pandocomatic to convert directories as well as
@@ -145,12 +153,12 @@ gem install pandocomatic
 ```
 
 You can also download the latest gem
-[pandocomatic-0.1.1](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.1.gem)
+[pandocomatic-0.1.2](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.2.gem)
 from github and install it as follows:
 
 ``` {.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.1.1.gem
+gem install pandocomatic-0.1.2.gem
 ```
 
 Pandocomatic builds on
@@ -331,7 +339,7 @@ markdown file:
 
 ``` {.markdown}
 ---
-pandocomatic:
+pandocomatic_:
   use-template: mddoc
   pandoc:
     to: markdown_github
@@ -381,7 +389,7 @@ for the README, by using the following pandocomatic metadata in the
 manual input file:
 
 ``` {.yaml}
-pandocomatic:
+pandocomatic_:
   use-template: mddoc
   pandoc:
     filter: 
@@ -673,7 +681,7 @@ directory. That directory also contains my postprocessors. Using the
 block in an input file:
 
 ``` {.yaml}
-pandocomatic:
+pandocomatic_:
   use-template: research-to-html
 ```
 
@@ -688,7 +696,7 @@ input file, you can **extend** the template in the input file as
 follows:
 
 ``` {.yaml}
-pandocomatic:
+pandocomatic_:
   use-template: research-to-html
   pandoc:
     to: draft_manuscript.html
@@ -744,6 +752,14 @@ Using pandocomatic has simplified my workflow for writing papers with
 pandoc significantly. Over the years, I have collected a set of
 templates, preprocessors, postprocessors, and filters I use over and
 over.
+
+Note that the pandocomatic YAML property is named `pandocomatic_`.
+Pandoc has the
+[convention](http://pandoc.org/MANUAL.html#metadata-blocks) that YAML
+property names ending with an underscore will be ignored by pandoc and
+can be used by programs like pandocomatic. Pandocomatic adheres to this
+convention. However, for backwards compatibility the property name
+`pandocomatic` still works, it just will not be ignored by pandoc.
 
 Chapter 5. Using pandocomatic as a static site generator {#using-pandocomatic-as-a-static-site-generator}
 ========================================================
