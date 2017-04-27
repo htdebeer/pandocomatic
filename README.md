@@ -49,7 +49,7 @@ templates:
 I now can create a new document that uses that configuration by using the following metadata in my source file, `on_teaching_maths.md`:
 
 ``` pandoc
----
+ ---
 title: On teaching mathematics
 author: Huub de Beer
 pandocomatic_:
