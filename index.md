@@ -71,7 +71,7 @@ templates:
       from: markdown
       to: html5
       standalone: true
-      cls: 'apa.csl'
+      csl: 'apa.csl'
       toc: true
       bibliography: /path/to/bibliography.bib
       mathjax: true
@@ -238,8 +238,8 @@ the conventional help and version arguments.
 
 `-q, --quiet`
 
-:   By default pandocomatic is quite verbose when you convert
-    a directory. It tells you about the number of commands to execute.
+:   By default pandocomatic is quite verbose when you convert a
+    directory. It tells you about the number of commands to execute.
     When executing these commands, pandocomatic tells you what it is
     doing, and how many commands still have to be executed. Finally,
     when pandocomatic is finished, it tells you how long it took to
@@ -257,8 +257,8 @@ the conventional help and version arguments.
 
 `-v, --version`
 
-:   Show the version. If this option is used, all other options
-    are ignored.
+:   Show the version. If this option is used, all other options are
+    ignored.
 
 `-h, --help`
 
@@ -728,7 +728,7 @@ templates:
       toc: true
       csl: 'apa.csl'
       bibliography: '~/Documents/bibliography.bib'
-      reference-docx: 'apa-formatted-paper.docx'
+      reference_docx: 'apa-formatted-paper.docx'
   research-to-html:
     pandoc:
       from: markdown
@@ -875,8 +875,8 @@ you can configure:
     `true`.
 2.  **follow-links**, which tells pandocomatic to treat a symbolic link
     as its target, i.e., to follow a link. The default value is `false`,
-    in which case pandocomatic tries to recreate a symbolic link in
-    the output. In this example, the `ALGOL` link in the sub directory
+    in which case pandocomatic tries to recreate a symbolic link in the
+    output. In this example, the `ALGOL` link in the sub directory
     `History/` is recreated in the destintion tree.
 3.  **skip**, a list of glob patterns of files and directories not to
     process with pandocomatic. By default *hidden files*, those starting
@@ -908,8 +908,8 @@ follows:
     destination tree if `follow-links` is false. Otherwise treat the
     links as a file or directory, or
 -   if the item is a director:
-    -   convert it following these steps if the setting `recursive`
-        is true.
+    -   convert it following these steps if the setting `recursive` is
+        true.
 -   if the item is a file:
     -   convert all files that are matched by one of the glob patterns
         of any of the templates, or

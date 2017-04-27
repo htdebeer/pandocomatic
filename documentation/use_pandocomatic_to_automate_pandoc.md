@@ -247,7 +247,7 @@ templates:
       toc: true
       csl: 'apa.csl'
       bibliography: '~/Documents/bibliography.bib'
-      reference-docx: 'apa-formatted-paper.docx'
+      reference_docx: 'apa-formatted-paper.docx'
   research-to-html:
     pandoc:
       from: markdown

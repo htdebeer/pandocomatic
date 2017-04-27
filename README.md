@@ -39,7 +39,7 @@ templates:
       from: markdown
       to: html5
       standalone: true
-      cls: 'apa.csl'
+      csl: 'apa.csl'
       toc: true
       bibliography: /path/to/bibliography.bib
       mathjax: true
