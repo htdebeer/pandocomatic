@@ -146,7 +146,7 @@ The `mddoc` template tells pandocomatic to convert a markdown file to a standalo
 However, the `mddoc` template converts from and to pandoc's markdown variant, which differs slightly from the markdown variant used by [Github](https://github.com/) for README files. Luckily, pandoc does support writing Github's markdown variant. There is no need to create and use a different template for generating the README, though, as you can override all template's settings inside a pandocomatic block in a markdown file:
 
 ``` markdown
----
+ ---
 pandocomatic_:
   use-template: mddoc
   pandoc:

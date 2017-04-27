@@ -338,7 +338,7 @@ can override all template's settings inside a pandocomatic block in a
 markdown file:
 
 ``` {.markdown}
----
+ ---
 pandocomatic_:
   use-template: mddoc
   pandoc:
