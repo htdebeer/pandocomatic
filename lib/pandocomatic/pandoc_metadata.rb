@@ -37,7 +37,7 @@ module Pandocomatic
 
     def self.pandoc2yaml(input)
       input
-        .scan(/^---\n(.+?)^(?:---|\.\.\.)\n/m)
+        .scan(/^---[^\n]*\n(.+?)^(?:---|\.\.\.)[^\n]*\n/m)
         .flatten
         .map{|yaml| yaml.strip}
         .join("\n")
