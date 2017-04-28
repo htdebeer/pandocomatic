@@ -24,6 +24,8 @@ module Pandocomatic
   require_relative '../processor.rb'
   require_relative '../fileinfo_preprocessor'
 
+  require_relative '../configuration.rb'
+
   require_relative '../error/io_error.rb'
   require_relative '../error/configuration_error.rb'
   require_relative '../error/processor_error.rb'
@@ -131,9 +133,9 @@ module Pandocomatic
 
         if PANDOC_OPTIONS_WITH_PATH.include? option
           if value.is_a? Array
-            value = value.map {|v| @config.update_path v, src_dir}
+              value = value.map {|v| @config.update_path(v, src_dir, option == "filter")}
           else
-            value = @config.update_path value, src_dir
+              value = @config.update_path(value, src_dir, option == "filter")
           end
         end
 
@@ -164,8 +166,13 @@ module Pandocomatic
         output = input
         processors.each do |processor|
           script = @config.update_path(processor, File.dirname(@src))
-          
-          raise ProcessorError.new(:script_does_not_exist, nil, script) unless File.exist? script
+
+          if not File.exists? script
+            script = Configuration.which(script)
+
+            raise ProcessorError.new(:script_does_not_exist, nil, script) if script.nil?
+          end
+
           raise ProcessorError.new(:script_is_not_executable, nil, script) unless File.executable? script
 
           begin
@@ -179,6 +186,5 @@ module Pandocomatic
         input
       end
     end
-
   end
 end

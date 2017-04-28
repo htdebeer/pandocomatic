@@ -171,16 +171,23 @@ module Pandocomatic
       end.keys.first
     end
 
-    def update_path(path, src_dir)
+    def update_path(path, src_dir, check_executable = false)
+      updated_path = path
       if path.start_with? './' 
         # refers to a local (to file) dir
-        File.join src_dir, path
-      elsif path.start_with? '/' then
-        path
+        updated_path = File.join src_dir, path
       else
-        # refers to data-dir
-        File.join @data_dir, path
+        if check_executable
+            updated_path = Configuration.which path
+        end
+
+        if not updated_path.start_with? '/' then
+            # refers to data-dir
+            updated_path = File.join @data_dir, updated_path
+        end
       end
+
+      updated_path
     end
 
     private 
@@ -232,6 +239,24 @@ module Pandocomatic
       if template.has_key? 'glob' then
         @convert_patterns[name] = template['glob']
       end
+    end
+
+    # Cross-platform way of finding an executable in the $PATH.
+    # 
+    # which('ruby') #=> /usr/bin/ruby
+    #
+    # Taken from:
+    # http://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby#5471032
+    def self.which(cmd)
+        exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+        ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+            exts.each { |ext|
+                exe = File.join(path, "#{cmd}#{ext}")
+                return exe if File.executable?(exe) &&
+                    !File.directory?(exe)
+            }
+        end
+        return nil
     end
 
   end
