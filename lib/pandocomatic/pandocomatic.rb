@@ -151,6 +151,7 @@ module Pandocomatic
         # No data-dir option given: try to find the default one from pandoc
         begin
           data_dir = Paru::Pandoc.info()[:data_dir]
+          puts Paru::Pandoc.info()
         rescue Paru::Error => e
           # If pandoc cannot be run, continuing probably does not work out
           # anyway, so raise pandoc error
@@ -173,7 +174,9 @@ module Pandocomatic
 
     def self.configure(options)
       data_dir = determine_data_dir options
+      puts data_dir
       config_file = determine_config_file options, data_dir
+      puts config_file
       Configuration.new options, data_dir, config_file
     end
 

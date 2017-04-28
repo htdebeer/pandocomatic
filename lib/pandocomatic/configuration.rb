@@ -188,22 +188,26 @@ module Pandocomatic
     end
 
     def update_path(path, src_dir, check_executable = false)
-      updated_path = path
-      if path.start_with? './' 
-        # refers to a local (to file) dir
-        updated_path = File.join src_dir, path
-      else
-        if check_executable
-            updated_path = Configuration.which path
+        updated_path = path
+        if path.start_with? './' 
+            # refers to a local (to file) dir
+            updated_path = File.join src_dir, path
+        else
+            if path.start_with? '/'
+                updated_path = path
+            else 
+                if check_executable
+                    updated_path = Configuration.which path
+                end
+
+                if updated_path.nil? or not updated_path.start_with? '/' then
+                    # refers to data-dir
+                    updated_path = File.join @data_dir, path
+                end
+            end
         end
 
-        if not updated_path.start_with? '/' then
-            # refers to data-dir
-            updated_path = File.join @data_dir, updated_path
-        end
-      end
-
-      updated_path
+        updated_path
     end
 
     private 
