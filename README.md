@@ -50,15 +50,15 @@ I now can create a new document that uses that configuration by using the follow
 
 ``` pandoc
  ---
-title: On teaching mathematics
-author: Huub de Beer
-pandocomatic_:
-  use-template: education-research
-  pandoc:
-    output: on_teaching_mathematics.html
-...
-
-and here follows the contents of my new paper...
+ title: On teaching mathematics
+ author: Huub de Beer
+ pandocomatic_:
+   use-template: education-research
+   pandoc:
+     output: on_teaching_mathematics.html
+ ...
+ 
+ and here follows the contents of my new paper...
 ```
 
 To convert this file to `on_teaching_mathematics.html` I now run pandocomatic as follows:
@@ -67,7 +67,7 @@ To convert this file to `on_teaching_mathematics.html` I now run pandocomatic as
 pandocomatic -i on_teaching_maths.md
 ```
 
-With just two lines of pandoc metadata, I can tell pandocomatic what template to use when converting a file. Adding file-specific pandoc options to the conversion process is as easy as adding a `pandoc` property with those options to the `pandocomatic_` metadata property in the source file.
+With just two lines of pandoc metadata, I can tell pandocomatic what template to use when converting a file. You can also use multiple templates in a document, for example to convert a markdown file to both HTML and PDF. Adding file-specific pandoc options to the conversion process is as easy as adding a `pandoc` property with those options to the `pandocomatic_` metadata property in the source file.
 
 Note that the pandocomatic YAML property is named `pandocomatic_`. Pandoc has the [convention](http://pandoc.org/MANUAL.html#metadata-blocks) that YAML property names ending with an underscore will be ignored by pandoc and can be used by programs like pandocomatic. Pandocomatic adheres to this convention. However, for backwards compatibility the property name `pandocomatic` still works, it just will not be ignored by pandoc.
 
@@ -147,42 +147,42 @@ However, the `mddoc` template converts from and to pandoc's markdown variant, wh
 
 ``` markdown
  ---
-pandocomatic_:
-  use-template: mddoc
-  pandoc:
-    to: markdown_github
-...
-
-# Pandocomatic—Automating the use of pandoc
-
-::paru::insert introduction.md
-
-## Why pandocomatic?
-
-::paru::insert why_pandocomatic.md
-
-## Licence
-
-::paru::insert license.md
-
-## Installation
-
-::paru::insert install.md
-
-## Examples
-
-::paru::insert usage_examples.md
-
-## More information
-
-See [pandocomatic's
-manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more
-extensive examples of using pandocomatic. Notably, the manual contains two
-typical use cases of pandocomatic:
-
-1.  [automating setting up and running pandoc for a series of related papers](https://heerdebeer.org/Software/markdown/pandocomatic/#automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
-2.  [using pandocomatic as a static site
-    generator](https://heerdebeer.org/Software/markdown/pandocomatic/#using-pandocomatic-as-a-static-site-generator).
+ pandocomatic_:
+   use-template: mddoc
+   pandoc:
+     to: markdown_github
+ ...
+ 
+ # Pandocomatic—Automating the use of pandoc
+ 
+ ::paru::insert introduction.md
+ 
+ ## Why pandocomatic?
+ 
+ ::paru::insert why_pandocomatic.md
+ 
+ ## Licence
+ 
+ ::paru::insert license.md
+ 
+ ## Installation
+ 
+ ::paru::insert install.md
+ 
+ ## Examples
+ 
+ ::paru::insert usage_examples.md
+ 
+ ## More information
+ 
+ See [pandocomatic's
+ manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more
+ extensive examples of using pandocomatic. Notably, the manual contains two
+ typical use cases of pandocomatic:
+ 
+ 1.  [automating setting up and running pandoc for a series of related papers](https://heerdebeer.org/Software/markdown/pandocomatic/#automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
+ 2.  [using pandocomatic as a static site
+      generator](https://heerdebeer.org/Software/markdown/pandocomatic/#using-pandocomatic-as-a-static-site-generator).
 ```
 
 Here you see that the README uses the `mddoc` template and it overwrites the `to` property with `markdown_github`.

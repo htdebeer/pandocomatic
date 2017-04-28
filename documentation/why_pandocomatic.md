@@ -58,15 +58,15 @@ following metadata in my source file, `on_teaching_maths.md`:
 
 ~~~{.pandoc}
  ---
-title: On teaching mathematics
-author: Huub de Beer
-pandocomatic_:
-  use-template: education-research
-  pandoc:
-    output: on_teaching_mathematics.html
-...
-
-and here follows the contents of my new paper...
+ title: On teaching mathematics
+ author: Huub de Beer
+ pandocomatic_:
+   use-template: education-research
+   pandoc:
+     output: on_teaching_mathematics.html
+ ...
+ 
+ and here follows the contents of my new paper...
 ~~~
     
 To convert this file to `on_teaching_mathematics.html` I now run pandocomatic
@@ -77,9 +77,11 @@ pandocomatic -i on_teaching_maths.md
 ~~~
 
 With just two lines of pandoc metadata, I can tell pandocomatic what template
-to use when converting a file. Adding file-specific pandoc options to the
-conversion process is as easy as adding a `pandoc` property with those options
-to the `pandocomatic_` metadata property in the source file. 
+to use when converting a file. You can also use multiple templates in a
+document, for example to convert a markdown file to both HTML and PDF. Adding
+file-specific pandoc options to the conversion process is as easy as adding a
+`pandoc` property with those options to the `pandocomatic_` metadata property
+in the source file. 
 
 Note that the pandocomatic YAML property is named `pandocomatic_`. Pandoc has
 the [convention](http://pandoc.org/MANUAL.html#metadata-blocks) that YAML
