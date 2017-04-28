@@ -96,6 +96,10 @@ module Pandocomatic
       false
     end
 
+    def multiple?()
+      false
+    end
+
     def skip?()
       false
     end

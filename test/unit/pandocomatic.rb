@@ -7,7 +7,7 @@ class TestPandocomaticRun < Minitest::Test
   def assert_files_equal(expected, generated)
     assert File.exist?(generated), generated
     assert_equal File.basename(expected), File.basename(generated), generated
-    assert_equal File.read(expected), File.read(generated), generated
+    assert_equal File.read(expected).strip, File.read(generated).strip, generated
   end
 
   def assert_directories_equal(expected, generated)

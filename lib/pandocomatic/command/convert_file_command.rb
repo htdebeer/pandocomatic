@@ -32,15 +32,23 @@ module Pandocomatic
 
   require_relative 'command.rb'
 
+  OUTPUT_FORMATS = ["docx", "odt", "pdf", "beamer"]
+
   class ConvertFileCommand < Command
 
     attr_reader :config, :src, :dst
 
-    def initialize(config, src, dst)
+    def initialize(config, src, dst, template_name = nil)
       super()
       @config = config
       @src = src
       @dst = dst
+
+      if template_name.nil? or template_name.empty?
+          @template_name = @config.determine_template @src
+      else
+          @template_name = template_name
+      end
 
       @errors.push IOError.new(:file_does_not_exist, nil, @src) unless File.exist? @src
       @errors.push IOError.new(:file_is_not_a_file, nil, @src) unless File.file? @src
@@ -62,16 +70,9 @@ module Pandocomatic
       pandoc_options = metadata.pandoc_options || {}
       template = {}
 
-      if metadata.has_template? then
-        template_name = metadata.template_name
-      else
-        template_name = @config.determine_template @src
-      end
-
-      if not template_name.nil? and not template_name.empty?
-        raise ConfigurationError.new(:no_such_template, nil, template_name) unless @config.has_template? template_name
-
-        template = @config.get_template template_name
+      if not @template_name.nil? and not @template_name.empty?
+        raise ConfigurationError.new(:no_such_template, nil, @template_name) unless @config.has_template? @template_name
+        template = @config.get_template @template_name
 
         pandoc_options = (template['pandoc'] || {}).merge(pandoc_options) do |key, oldval, newval| 
           # Options that can occur more than once, such as 'filter' or
@@ -96,11 +97,13 @@ module Pandocomatic
       end
 
       begin
-        File.open(@dst, 'w') do |file| 
-          raise IOError.new(:file_is_not_a_file, nil, @dst) unless File.file? @dst
-          raise IOError.new(:file_is_not_writable, nil, @dst) unless File.writable? @dst
-          file << output
-        end
+          unless OUTPUT_FORMATS.include? pandoc_options["to"] then
+              File.open(@dst, 'w') do |file| 
+                  raise IOError.new(:file_is_not_a_file, nil, @dst) unless File.file? @dst
+                  raise IOError.new(:file_is_not_writable, nil, @dst) unless File.writable? @dst
+                  file << output
+              end
+          end
       rescue StandardError => e
         raise IOError.new(:error_writing_file, e, @dst)
       end
@@ -139,9 +142,15 @@ module Pandocomatic
           end
         end
 
+        # There is no "pdf" output format; change it to latex but keep the
+        # extension.
+        value = "latex" if option == "to" and value == "pdf"
+
         converter.send option, value unless option == 'output'
         # don't let pandoc write the output to enable postprocessing
       end
+
+      converter.send "output", @dst if OUTPUT_FORMATS.include? options["to"]
 
       begin
         converter << input

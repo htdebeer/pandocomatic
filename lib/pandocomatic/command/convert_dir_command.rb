@@ -23,12 +23,14 @@ module Pandocomatic
   require_relative 'command.rb'
   require_relative 'create_link_command.rb'
   require_relative 'convert_file_command.rb'
+  require_relative 'convert_list_command.rb'
+  require_relative 'convert_file_multiple_command.rb'
   require_relative 'copy_file_command.rb'
   require_relative 'skip_command.rb'
 
-  class ConvertDirCommand < Command
+  class ConvertDirCommand < ConvertListCommand
 
-    attr_reader :config, :src_dir, :dst_dir, :subcommands
+    attr_reader :config, :src_dir, :dst_dir
 
     def initialize(current_config, src_dir, dst_dir)
       super()
@@ -49,8 +51,6 @@ module Pandocomatic
         @errors.push IOError.new(:directory_is_not_a_directory, nil, @dst_dir) unless File.directory? @dst_dir
       end
 
-      @subcommands = []
-
       Dir.foreach @src_dir do |filename|
         src = File.join @src_dir, filename
 
@@ -70,10 +70,7 @@ module Pandocomatic
           end
         elsif File.file? src 
           if config.convert? src then
-            dst = config.set_extension dst
-            if not modified_only? or file_modified? src, dst then
-              subcommand = ConvertFileCommand.new(config, src, dst)
-            end
+              subcommand = ConvertFileMultipleCommand.new(config, src, dst)
           else
             if not modified_only? or file_modified? src, dst then
               subcommand = CopyFileCommand.new(src, dst)
@@ -83,7 +80,7 @@ module Pandocomatic
           subcommand = SkipCommand.new(src, :unclear_what_to_do)
         end
 
-        @subcommands.push subcommand unless subcommand.nil? or subcommand.skip?
+        push subcommand unless subcommand.nil? or subcommand.skip?
       end
 
       # Empty commands do not count to the total amount of commands to execute
@@ -92,18 +89,6 @@ module Pandocomatic
 
     def skip?()
       @subcommands.empty?
-    end
-
-    def count()
-      @subcommands.reduce(if skip? then 0 else 1 end) do |total, subcommand|
-        total += subcommand.count
-      end
-    end
-
-    def all_errors()
-      @subcommands.reduce(@errors) do |total, subcommand|
-        total += subcommand.all_errors
-      end
     end
 
     def directory?()
@@ -119,17 +104,6 @@ module Pandocomatic
         Dir.mkdir @dst_dir if create_directory?
       rescue SystemError => e
         raise IOError.new(:error_creating_directory, e, @dst_dir)
-      end
-    end
-
-    def execute()
-      if not @subcommands.empty?
-        CommandPrinter.new(self).print unless quiet?
-        run if not dry_run? and runnable?
-
-        @subcommands.each do |subcommand|
-          subcommand.execute
-        end
       end
     end
 

@@ -675,6 +675,8 @@ directory and then the default data directory.
 
 ### Using a pandocomatic template
 
+#### Using a single pandocomatic template
+
 I have saved the above `pandocomatic.yaml` file in my default data
 directory. That directory also contains my postprocessors. Using the
 *research-to-html* template is easy. Just put the following metadata
@@ -760,6 +762,37 @@ property names ending with an underscore will be ignored by pandoc and
 can be used by programs like pandocomatic. Pandocomatic adheres to this
 convention. However, for backwards compatibility the property name
 `pandocomatic` still works, it just will not be ignored by pandoc.
+
+### Using multiple pandocomatic templates
+
+From pandocomatic version 0.1.13 onwards, pandocomatic supports using
+more than one template. For each template used, a conversion is
+performed. For example, assuming you have specified templates "web" and
+"print", which convert an input markdown file to a HTML or PDF file
+respectively, passing the following markdown file to pandocomatic will
+generate two output files: a HTML and a PDF file!
+
+``` {.pandoc}
+ ---
+ title: Using two templates
+ pandocomatic_:
+    use-template: 
+    - web
+    - print
+ ...
+
+ This file is **converted** to both:
+
+ 1. a HTML file
+ 2. a PDF file
+```
+
+The rules for multiple templates are the same as for using a single
+template.
+
+A common use case for using multiple templates is when generating a web
+site. Alongside the generated HTML you can also generate a print-ready
+PDF and link to it in the HTML file to boot.
 
 Chapter 5. Using pandocomatic as a static site generator {#using-pandocomatic-as-a-static-site-generator}
 ========================================================

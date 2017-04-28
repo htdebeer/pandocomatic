@@ -139,22 +139,38 @@ module Pandocomatic
       @settings['follow_links']
     end
 
-    def set_extension(dst)
+    def set_extension(dst, template_name, metadata)
       dir = File.dirname dst
       ext = File.extname dst
       basename = File.basename dst, ext
-      File.join dir, "#{basename}.#{find_extension dst}"
+      File.join dir, "#{basename}.#{find_extension(dst, template_name, metadata)}"
     end
 
-    def find_extension(dst)
-      template = determine_template dst
-      if template.nil? then
-        extension = 'html'
+    def find_extension(dst, template_name, metadata)
+      extension = "html"
+      if template_name.nil? or template_name.empty? then
+        if metadata.has_pandocomatic? 
+            pandocomatic = metadata.pandocomatic
+            if pandocomatic.has_key? "pandoc"
+                pandoc = pandocomatic["pandoc"]
+
+                if pandoc.has_key? "to"
+                    extension = pandoc["to"]
+                end
+            end
+        end 
       else
         # TODO: what if there is no pandoc.to?
-        to = @templates[template]['pandoc']['to']
-        extension = FORMAT_TO_EXT[to] || to
+        if @templates[template_name].has_key? "pandoc"
+            pandoc = @templates[template_name]["pandoc"]
+            if pandoc.has_key? "to"
+                extension = pandoc["to"]
+            end
+        end
       end
+
+      extension = FORMAT_TO_EXT[extension] || extension
+      return extension
     end
 
     def has_template?(template_name)

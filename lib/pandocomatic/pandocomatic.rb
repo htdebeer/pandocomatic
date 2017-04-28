@@ -37,7 +37,9 @@ module Pandocomatic
 
   require_relative './command/command.rb'
   require_relative './command/convert_dir_command.rb'
+  require_relative './command/convert_list_command.rb'
   require_relative './command/convert_file_command.rb'
+  require_relative './command/convert_file_multiple_command.rb'
 
   class Pandocomatic
     VERSION = [0, 1, 2]
@@ -79,8 +81,10 @@ module Pandocomatic
           if File.directory? input
             command = ConvertDirCommand.new(configuration, input, output)
           else
-            command = ConvertFileCommand.new(configuration, input, output)
-            command.make_quiet
+            destination = if output.nil? or output.empty? then File.basename input else output end
+
+            command = ConvertFileMultipleCommand.new(configuration, input, destination)
+            command.make_quiet unless command.subcommands.size > 1
           end
 
           # Notify the user about all configuration errors collected when

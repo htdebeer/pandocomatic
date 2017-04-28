@@ -63,6 +63,18 @@ module Pandocomatic
       has_pandocomatic? and pandocomatic.has_key? 'use-template' and not pandocomatic['use-template'].empty?
     end
 
+    def templates() 
+        if has_template?
+            if pandocomatic['use-template'].is_a? Array
+                pandocomatic['use-template']
+            else
+                [pandocomatic['use-template']]
+            end
+        else
+            [""]
+        end
+    end
+
     def template_name()
       if has_template? then
         pandocomatic['use-template']
@@ -87,7 +99,12 @@ module Pandocomatic
     end
 
     def has_pandocomatic?()
-      has_key? 'pandocomatic' or has_key? 'pandocomatic_'
+      config = nil
+      if has_key? 'pandocomatic' or has_key? 'pandocomatic_'
+        config = self['pandocomatic'] if has_key? 'pandocomatic'
+        config = self['pandocomatic_'] if has_key? 'pandocomatic_'
+      end
+      config.is_a? Hash
     end
 
     def pandocomatic()
