@@ -220,7 +220,7 @@ the input file, you can **extend** the template in the input file as follows:
 pandocomatic_:
   use-template: research-to-html
   pandoc:
-    to: draft_manuscript.html
+    output: draft_manuscript.html
 ~~~
 
 Running pandocomatic becomes even simpler:
