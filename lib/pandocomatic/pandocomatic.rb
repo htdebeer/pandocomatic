@@ -17,7 +17,9 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-
+  Encoding.default_external = Encoding::UTF_8 #ensure unicode encoding
+  Encoding.default_internal = Encoding::UTF_8
+  
   require 'paru'
 
   require_relative './error/pandocomatic_error.rb'
