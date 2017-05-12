@@ -26,12 +26,12 @@ module Pandocomatic
       created_at = File.stat(path).ctime
       modified_at = File.stat(path).mtime
       output = input
-      output << "\n---\n"
+      output << "\n\n---\n"
       output << "fileinfo:\n"
       output << "  path: '#{path}'\n"
       output << "  created: #{created_at.strftime '%Y-%m-%d'}\n"
       output << "  modified: #{modified_at.strftime '%Y-%m-%d'}\n"
-      output << "..."
+      output << "...\n\n"
     end
   end
 end
