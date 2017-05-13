@@ -44,7 +44,7 @@ module Pandocomatic
   require_relative './command/convert_file_multiple_command.rb'
 
   class Pandocomatic
-    VERSION = [0, 1, 3]
+    VERSION = [0, 1, 4]
     CONFIG_FILE = 'pandocomatic.yaml'
 
     def self.run(args)
@@ -74,9 +74,10 @@ module Pandocomatic
           src_root = File.absolute_path input
           dry_run = if options[:dry_run_given] then options[:dry_run] else false end
           quiet = if options[:quiet_given] then options[:quiet] else false end
+          debug = if options[:debug_given] and not quiet then options[:debug] else false end
           modified_only = if options[:modified_only_given] then options[:modified_only_given] else false end
 
-          Command.reset(src_root, dry_run, quiet, modified_only)
+          Command.reset(src_root, dry_run, quiet, debug, modified_only)
 
           # Pandocomatic has two modes: converting a directory tree or
           # converting a single file. The mode is selected by the input.

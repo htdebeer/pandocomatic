@@ -54,6 +54,7 @@ module Pandocomatic
         # General options 
         opt :dry_run, 'Do a dry run', :short => '-y'
         opt :quiet, 'Run quietly', :short => '-q'
+        opt :debug, 'Debug mode, shows pandoc invocations', :short => '-b'
         opt :modified_only, 'Modified files only', :short => '-m'
 
         # Configuration of the converter

@@ -153,6 +153,7 @@ module Pandocomatic
       converter.send "output", @dst if OUTPUT_FORMATS.include? options["to"]
 
       begin
+        puts converter.to_command if debug?
         converter << input
       rescue Paru::Error => e
         raise PandocError.new(:error_running_pandoc, e, input_document)

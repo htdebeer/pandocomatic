@@ -122,6 +122,7 @@ class TestPandocomaticCLI < Minitest::Test
     assert_includes cli('-i test/files/readable_test_file -y'), :dry_run
     assert_includes cli('-i test/files/readable_test_file -q'), :quiet
     assert_includes cli('-i test/files/readable_test_file -m'), :modified_only
+    assert_includes cli('-i test/files/readable_test_file -b'), :debug
   end
 
   def test_problematic_invocation

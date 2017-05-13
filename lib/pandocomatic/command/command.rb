@@ -27,6 +27,7 @@ module Pandocomatic
     @@total = 0
     @@dry_run = false
     @@quiet = false
+    @@debug = false
     @@src_root = "."
     @@modified_only = false
 
@@ -36,10 +37,11 @@ module Pandocomatic
       @index = @@total
     end
 
-    def self.reset(src_root = ".", dry_run = false, quiet = false, modified_only)
+    def self.reset(src_root = ".", dry_run = false, quiet = false, debug = false, modified_only)
       @@src_root = src_root
       @@dry_run = dry_run
       @@quiet = quiet
+      @@debug = debug
       @@modified_only = modified_only
       @@total = 0
     end
@@ -54,6 +56,10 @@ module Pandocomatic
 
     def quiet?()
       @@quiet
+    end
+
+    def debug?()
+      @@debug
     end
 
     def modified_only?()

@@ -82,6 +82,10 @@ OPTIONS
 
   -q, --quiet     Run pandocomatic quietly. Default is FALSE.
 
+  -b, --debug     Run pandocomatic in debug mode: show the pandoc invocations
+                  before each conversion. Default is FALSE. Only works
+                  when not quiet.
+
   -y, --dry-run   Configure pandocomatic to run the conversion process, but do
                   not actually run it. Default is FALSE.
 
