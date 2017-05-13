@@ -200,12 +200,12 @@ preprocessor.</p>
   <span class='id identifier rubyid_created_at'>created_at</span> <span class='op'>=</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_stat'>stat</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_ctime'>ctime</span>
   <span class='id identifier rubyid_modified_at'>modified_at</span> <span class='op'>=</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_stat'>stat</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_mtime'>mtime</span>
   <span class='id identifier rubyid_output'>output</span> <span class='op'>=</span> <span class='id identifier rubyid_input'>input</span>
-  <span class='id identifier rubyid_output'>output</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n---\n</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_output'>output</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n\n---\n</span><span class='tstring_end'>&quot;</span></span>
   <span class='id identifier rubyid_output'>output</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>fileinfo:\n</span><span class='tstring_end'>&quot;</span></span>
   <span class='id identifier rubyid_output'>output</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>  path: &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_path'>path</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;\n</span><span class='tstring_end'>&quot;</span></span>
   <span class='id identifier rubyid_output'>output</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>  created: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_created_at'>created_at</span><span class='period'>.</span><span class='id identifier rubyid_strftime'>strftime</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>%Y-%m-%d</span><span class='tstring_end'>&#39;</span></span><span class='embexpr_end'>}</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span>
   <span class='id identifier rubyid_output'>output</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>  modified: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_modified_at'>modified_at</span><span class='period'>.</span><span class='id identifier rubyid_strftime'>strftime</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>%Y-%m-%d</span><span class='tstring_end'>&#39;</span></span><span class='embexpr_end'>}</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span>
-  <span class='id identifier rubyid_output'>output</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>...</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_output'>output</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>...\n\n</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -217,7 +217,7 @@ preprocessor.</p>
 </div>
 
       <div id="footer">
-  Generated on Sat May 13 08:09:01 2017 by
+  Generated on Sat May 13 08:10:16 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.3.3).
 </div>
