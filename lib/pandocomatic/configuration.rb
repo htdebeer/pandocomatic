@@ -45,7 +45,7 @@ module Pandocomatic
     # Read a configuration file and create a pandocomatic configuration object
     #
     # @param [String] filename Path to the configuration yaml file
-    # @returns [Configuration] a pandocomatic configuration object
+    # @return [Configuration] a pandocomatic configuration object
     def load(filename)
       begin
         path = File.absolute_path filename
@@ -79,7 +79,7 @@ module Pandocomatic
     #
     # @param [String] filename path to the configuration file
     #
-    # @returns [Configuration] a new configuration
+    # @return [Configuration] a new configuration
     def reconfigure(filename)
       begin
         settings = YAML.load_file filename

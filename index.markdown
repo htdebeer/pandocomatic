@@ -154,12 +154,12 @@ gem install pandocomatic
 ```
 
 You can also download the latest gem
-[pandocomatic-0.1.4](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.gem)
+[pandocomatic-0.1.4.1](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.1.gem)
 from github and install it as follows:
 
 ``` {.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.1.4.gem
+gem install pandocomatic-0.1.4.1.gem
 ```
 
 Pandocomatic builds on
