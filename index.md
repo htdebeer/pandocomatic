@@ -154,12 +154,12 @@ gem install pandocomatic
 ```
 
 You can also download the latest gem
-[pandocomatic-0.1.3](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.3.gem)
+[pandocomatic-0.1.4.1](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.1.gem)
 from github and install it as follows:
 
 ``` {.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.1.3.gem
+gem install pandocomatic-0.1.4.1.gem
 ```
 
 Pandocomatic builds on
@@ -317,6 +317,7 @@ templates:
       - filters/insert_document.rb
       - filters/insert_code_block.rb
       - filters/remove_pandocomatic_metadata.rb
+      - filters/insert_pandocomatic_version.rb
 ```
 
 The `mddoc` template tells pandocomatic to convert a markdown file to a
@@ -702,7 +703,7 @@ follows:
 pandocomatic_:
   use-template: research-to-html
   pandoc:
-    to: draft_manuscript.html
+    output: draft_manuscript.html
 ```
 
 Running pandocomatic becomes even simpler:

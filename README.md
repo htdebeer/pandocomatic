@@ -87,11 +87,11 @@ Pandocomatic is installed through [RubyGems](https://rubygems.org/) as follows:
 gem install pandocomatic
 ```
 
-You can also download the latest gem [pandocomatic-0.1.3](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.3.gem) from github and install it as follows:
+You can also download the latest gem [pandocomatic-0.1.4.1](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.1.gem) from github and install it as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.1.3.gem
+gem install pandocomatic-0.1.4.1.gem
 ```
 
 Pandocomatic builds on [paru](https://heerdebeer.org/Software/markdown/paru/), a Ruby wrapper around pandoc, and [pandoc](http://pandoc.org/) itself, of course.
@@ -139,6 +139,7 @@ templates:
       - filters/insert_document.rb
       - filters/insert_code_block.rb
       - filters/remove_pandocomatic_metadata.rb
+      - filters/insert_pandocomatic_version.rb
 ```
 
 The `mddoc` template tells pandocomatic to convert a markdown file to a standalone markdown file using three filters: `insert_document.rb`, `insert_code_block.rb`, and `remove_pandocomatic_metadata.rb`. The first two filters allow you to include another markdown file or to include a source code file (see the README listing below). The last filter removes the pandocomatic metadata block from the file so the settings in it do not interfere when, later on, `manual.md` is converted to HTML. These filters are located in the [`filters`](https://github.com/htdebeer/pandocomatic/tree/master/documentation/data-dir/filters) subdirectory in the specified data directory `data-dir`.

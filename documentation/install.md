@@ -6,12 +6,12 @@ gem install pandocomatic
 ~~~
 
 You can also download the latest gem
-[pandocomatic-0.1.4.1](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.1.gem) from github and
+[pandocomatic-::pandocomatic::version](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-::pandocomatic::version.gem) from github and
 install it as follows:
 
 ~~~{.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.1.4.1.gem
+gem install pandocomatic-::pandocomatic::version.gem
 ~~~ 
 
 Pandocomatic builds on [paru](https://heerdebeer.org/Software/markdown/paru/),

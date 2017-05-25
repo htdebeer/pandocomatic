@@ -25,9 +25,10 @@ module Pandocomatic
 
   FORMAT_TO_EXT = {
     'native' => 'hs',
-    'markdown_strict' => 'markdown',
-    'markdown_phpextra' => 'markdown',
-    'markdown_github' => 'markdown',
+    'markdown' => 'md',
+    'markdown_strict' => 'md',
+    'markdown_phpextra' => 'md',
+    'markdown_github' => 'md',
     'html5' => 'html',
     'docx' => 'docx',
     'latex' => 'tex'
