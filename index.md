@@ -7,6 +7,12 @@ keywords:
 - paru
 - pandocomatic
 - static site generator
+pandocomatic-fileinfo:
+  created: '2017-05-25'
+  from: markdown
+  modified: '2017-05-25'
+  path: 'manual.md'
+  to: markdown
 subtitle: Automating the use of pandoc
 title: Pandocomatic
 ---
