@@ -87,7 +87,7 @@ module Pandocomatic
       end
 
       input = File.read @src
-      input = FileInfoPreprocessor.run input, @src
+      input = FileInfoPreprocessor.run input, @src, pandoc_options
       input = preprocess input, template
       input = pandoc input, pandoc_options, File.dirname(@src)
       output = postprocess input, template
