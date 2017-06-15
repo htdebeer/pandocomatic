@@ -27,7 +27,7 @@ module Pandocomatic
       modified_at = File.stat(path).mtime
       output = input
       output << "\n\n---\n"
-      output << "pandocomatic_fileinfo:\n"
+      output << "pandocomatic-fileinfo:\n"
       output << "  from: #{options['from']}\n" if options.has_key? 'from'
       output << "  to: #{options['to']}\n" if options.has_key? 'to'
       output << "  template: #{options['template']}\n" if options.has_key? 'template'
