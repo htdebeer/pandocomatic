@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.name = 'pandocomatic'
-  s.version = '0.1.4.1'
+  s.version = '0.1.4.2'
   s.license = 'GPL-3.0'
-  s.date = '2017-05-13'
+  s.date = '2017-06-15'
   s.summary = 'Automating the use of pandoc'
   s.description = 'Automating the use of pandoc <http://pandoc.org>: use pandocomatic to convert one file or a directory with files and sub directories.'
   s.author = ['Huub de Beer']
@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.files += Dir['lib/pandocomatic/error/*.rb']
   s.files += Dir['lib/pandocomatic/printer/*.rb']
   s.files += Dir['lib/pandocomatic/printer/views/*.txt']
-  s.add_runtime_dependency 'paru', '~> 0.2.4.7', '>= 0.2.4.7'
+  s.add_runtime_dependency 'paru', '~> 0.2.4.9', '>= 0.2.4.7'
   s.add_runtime_dependency 'trollop', '~> 2.1.2', '>= 2.1.0'
   s.add_development_dependency 'minitest-reporters', '~> 0'
   s.add_development_dependency 'yard', '~> 0.9.8'
