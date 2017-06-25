@@ -123,6 +123,7 @@ module Pandocomatic
       'epub-cover-image',
       'epub-metadata',
       'epub-embed-font',
+      'epub-subdirectory',
       'bibliography',
       'csl',
       'syntax-definition',
