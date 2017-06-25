@@ -1,0 +1,5 @@
+--title Pandocomatic API documentation
+--embed-mixins
+--output-dir documentation/api-doc
+--readme documentation/README.md
+--no-private

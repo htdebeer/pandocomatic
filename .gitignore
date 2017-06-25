@@ -2,3 +2,6 @@
 ~*
 *.swp
 *.bak
+
+documentation/api
+.yardoc
