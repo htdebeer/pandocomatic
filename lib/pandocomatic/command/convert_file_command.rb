@@ -124,7 +124,15 @@ module Pandocomatic
       'epub-metadata',
       'epub-embed-font',
       'bibliography',
-      'csl'
+      'csl',
+      'syntax-definition',
+      'reference-doc',
+      'lua-filter',
+      'extract-media',
+      'resource-path',
+      'citation-abbreviations',
+      'abbreviations',
+      'log'
     ]
 
     def pandoc(input, options, src_dir)
