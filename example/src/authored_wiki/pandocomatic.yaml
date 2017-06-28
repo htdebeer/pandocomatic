@@ -1,0 +1,17 @@
+settings:
+  recursive: true
+  follow-links: false
+templates:
+  wiki-page:
+    glob: ['*.md']
+    preprocessors:
+      - 'preprocessors/now.rb'
+    metadata:
+        author: Huub de Beer <Huub@heerdebeer.org>
+    pandoc:
+      from: markdown
+      to: html5
+      standalone: true
+      template: 'templates/authored_wiki.html'
+    postprocessors:
+      - 'postprocessors/branding.rb'

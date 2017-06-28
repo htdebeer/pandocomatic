@@ -99,6 +99,7 @@ module Pandocomatic
           full_template = {
             'glob' => [],
             'preprocessors' => [],
+            'metadata' => {},
             'pandoc' => {},
             'postprocessors' => []
           }
@@ -241,7 +242,7 @@ module Pandocomatic
                 @templates[name][field] = template[field]
               end
             end
-          when 'pandoc'
+          when 'pandoc', 'metadata'
             if @templates[name][field] then
               if template[field] then
                 @templates[name][field].merge! template[field]

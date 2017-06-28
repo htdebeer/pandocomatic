@@ -18,9 +18,16 @@
 #++
 module Pandocomatic
 
+  require_relative '../processor.rb'
+
   # FileInfoPreprocessor collects information about a file to be converted and
   # mixes that information into that file's metadata. It is a default
   # preprocessor.
+  #
+  # @param input [String] the contents of the document being preprocessed
+  # @param path [String] the path to the input document
+  # @param options [Hash] pandoc options collected by pandocomatic to run on
+  #   this file
   class FileInfoPreprocessor < Processor
     def self.run input, path, options
       created_at = File.stat(path).ctime

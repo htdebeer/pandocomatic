@@ -44,7 +44,7 @@ module Pandocomatic
   require_relative './command/convert_file_multiple_command.rb'
 
   class Pandocomatic
-    VERSION = [0, 1, 4, 3]
+    VERSION = [0, 1, 4, 5]
     CONFIG_FILE = 'pandocomatic.yaml'
 
     def self.run(args)

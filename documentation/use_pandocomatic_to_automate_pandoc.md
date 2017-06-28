@@ -146,6 +146,7 @@ Specifying a template is easy:
 -   add a **templates** property, and for each template:
     -   add the template's **name** as a property containing:
     -   a list of **preprocessors**,
+    -   a **metadata block**,
     -   a **pandoc configuration**, and
     -   a list or **postprocessors**.
 
@@ -155,6 +156,8 @@ look like:
 ~~~{.yaml}
 templates:
   research-to-html:
+    metadata:
+      author: Huub de Beer
     pandoc:
       from: markdown
       to: html5
@@ -166,6 +169,10 @@ templates:
       - 'postprocessors/tidy.sh'
       - 'postprocessors/linkchecker.sh'
 ~~~
+
+It would mix-in the metadata block in each and every file it converts with the
+"research-to-html" template. As a result, all these files would have set the
+author to my name.
 
 For paths in a template, such as for the CSL file, bibliography, and postprocessors, are looked up according to the following rules:
 

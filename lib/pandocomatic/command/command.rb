@@ -20,6 +20,17 @@ module Pandocomatic
 
   require_relative '../printer/command_printer.rb'
 
+  # Command is a base class of all actions pandocomatic executes while
+  # converting a file or a directory of files.
+  #
+  # @!attribute errors
+  #   @return [Error[]] list of errors created while preparing and running a
+  #     command
+  #
+  # @!attribute index
+  #   @return [Number] the index of this Command in the list with all commands
+  #     to run when running pandocomatic.
+      
   class Command
 
     attr_reader :errors, :index
@@ -31,13 +42,22 @@ module Pandocomatic
     @@src_root = "."
     @@modified_only = false
 
+    # Create a new Command
     def initialize()
       @errors = []
       @@total += 1
       @index = @@total
     end
 
-    def self.reset(src_root = ".", dry_run = false, quiet = false, debug = false, modified_only)
+    # Reset all Commands
+    #
+    # @param src_root [String = "."] the root directory to convert
+    # @param dry_run [Boolean = false] should Commands actually run or not?
+    # @param quiet [Boolean = false] should Commands run silently?
+    # @param debug [Boolean = false] should Commands be run in debug mode?
+    # @param modified_only [Boolean = false] should only modified files be
+    #   converted?
+    def self.reset(src_root = ".", dry_run = false, quiet = false, debug = false, modified_only = false)
       @@src_root = src_root
       @@dry_run = dry_run
       @@quiet = quiet
@@ -46,79 +66,133 @@ module Pandocomatic
       @@total = 0
     end
 
+    # Get the root directory of this Command's conversion process
+    #
+    # @return [String]
     def src_root()
       @@src_root
     end
 
+    # Does this Command not actually execute?
+    #
+    # @return [Boolean]
     def dry_run?()
       @@dry_run
     end
 
+    # Is this Command executed silently?
+    #
+    # @return [Boolean]
     def quiet?()
       @@quiet
     end
 
+    # Is this Command executed in debug mode?
+    #
+    # @return [Boolean]
     def debug?()
       @@debug
     end
 
+    # Is this Command only executed on modified files?
+    #
+    # @return [Boolean]
     def modified_only?()
       @@modified_only
     end
 
+    # The number of commands executed by this Command; a Command can have sub
+    # commands as well.
+    #
+    # @return [Number]
     def count()
       1
     end
 
+    # Get all the errors generated while executing this Command
+    #
+    # @return [Error[]]
     def all_errors()
       @errors
     end
 
+    # Make this Command run quietly
     def make_quiet()
       @@quiet = true
     end
 
+    # Convert this Command's index to a string representation
+    #
+    # @return [String]
     def index_to_s()
       "#{@@total - @index + 1}".rjust(@@total.to_s.size)
     end
 
+    # Execute this Command. A Command can be dry-run as well, in which it is
+    # not actually run.
     def execute()
       CommandPrinter.new(self).print unless quiet?
       run if not dry_run? and runnable?
     end
 
+    # Actually run this Command
     def run()
     end
 
+    # Are there any errors while configuring this Command? If not, this
+    # Command is runnable.
+    #
+    # @return [Boolean]
     def runnable?()
       not has_errors?
     end
 
+    # Create a String representation of this Command
+    #
+    # @return [String]
     def to_s()
       'command'
     end
     
+    # Is this Command converting a directory?
+    #
+    # @return [Boolean] false
     def directory?()
       false
     end
 
+    # Does this Command convert a file multiple times?
+    #
+    # @return [Boolean] false
     def multiple?()
       false
     end
 
+    # Will this Command be skipped, thus not executed?
+    #
+    # @return [Boolean] false
     def skip?()
       false
     end
 
+    # Decrement the total number of conversion commands by 1
     def uncount()
       @@total -= 1
     end
 
+    # Has this Command run in any errors?
+    #
+    # @return [Error[]]
     def has_errors?()
       not @errors.empty?
     end
 
-    # src file is newer than the dstination file?
+    # Is the source file newer than the destination file?
+    #
+    # @param src [String] the source file
+    # @param dst [String] the destination file
+    #
+    # @return [Boolean] True if src has been modified after dst has been last
     def file_modified?(src, dst)
       not File.exist? dst or File.mtime(src) > File.mtime(dst)
     end

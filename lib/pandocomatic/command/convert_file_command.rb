@@ -21,8 +21,10 @@ module Pandocomatic
   require 'paru'
 
   require_relative '../pandoc_metadata.rb'
+
   require_relative '../processor.rb'
-  require_relative '../fileinfo_preprocessor'
+  require_relative '../processors/fileinfo_preprocessor'
+  require_relative '../processors/metadata_preprocessor'
 
   require_relative '../configuration.rb'
 
@@ -38,6 +40,13 @@ module Pandocomatic
 
     attr_reader :config, :src, :dst
 
+    # Create a new ConvertFileCommand
+    #
+    # @param config [Configuration] pandocomatic's configuration
+    # @param src [String] the path to the file to convert
+    # @param dst [String] the path to save the output of the conversion
+    # @param template_name [String = nil] the template to use while converting
+    #   this file
     def initialize(config, src, dst, template_name = nil)
       super()
       @config = config
@@ -55,10 +64,14 @@ module Pandocomatic
       @errors.push IOError.new(:file_is_not_readable, nil, @src) unless File.readable? @src
     end
 
+    # Execute this ConvertFileCommand
     def run
       convert_file
     end
 
+    # Create a string representation of this ConvertFileCommand
+    #
+    # @return [String]
     def to_s
       "convert #{File.basename @src} #{"-> #{File.basename @dst}" unless @dst.nil?}"
     end
@@ -70,6 +83,8 @@ module Pandocomatic
       pandoc_options = metadata.pandoc_options || {}
       template = {}
 
+      # Determine the actual options and settings to use when converting this
+      # file.
       if not @template_name.nil? and not @template_name.empty?
         raise ConfigurationError.new(:no_such_template, nil, @template_name) unless @config.has_template? @template_name
         template = @config.get_template @template_name
@@ -86,12 +101,22 @@ module Pandocomatic
         end
       end
 
+      # Read in the file to convert
       input = File.read @src
+
+      # Run the default preprocessors to mix-in information about the file
+      # that is being converted and mix-in the template's metadata section as
+      # well
       input = FileInfoPreprocessor.run input, @src, pandoc_options
+      input = MetadataPreprocessor.run input, template['metadata'] if template.has_key? 'metadata' and not template['metadata'].empty?
+
+      # Convert the file by preprocessing it, run pandoc on it, and
+      # postprocessing the output
       input = preprocess input, template
       input = pandoc input, pandoc_options, File.dirname(@src)
       output = postprocess input, template
 
+      # Write out the results of the conversion process to file.
       if @dst.to_s.empty? and metadata.pandoc_options.has_key? 'output'
         @dst = metadata.pandoc_options['output']
       end

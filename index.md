@@ -160,12 +160,12 @@ gem install pandocomatic
 ```
 
 You can also download the latest gem
-[pandocomatic-0.1.4.3](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.3.gem)
+[pandocomatic-0.1.4.5](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.5.gem)
 from github and install it as follows:
 
 ``` {.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.1.4.3.gem
+gem install pandocomatic-0.1.4.5.gem
 ```
 
 Pandocomatic builds on
@@ -632,6 +632,7 @@ Specifying a template is easy:
 -   add a **templates** property, and for each template:
     -   add the template's **name** as a property containing:
     -   a list of **preprocessors**,
+    -   a **metadata block**,
     -   a **pandoc configuration**, and
     -   a list or **postprocessors**.
 
@@ -641,6 +642,8 @@ could look like:
 ``` {.yaml}
 templates:
   research-to-html:
+    metadata:
+      author: Huub de Beer
     pandoc:
       from: markdown
       to: html5
@@ -652,6 +655,10 @@ templates:
       - 'postprocessors/tidy.sh'
       - 'postprocessors/linkchecker.sh'
 ```
+
+It would mix-in the metadata block in each and every file it converts
+with the "research-to-html" template. As a result, all these files would
+have set the author to my name.
 
 For paths in a template, such as for the CSL file, bibliography, and
 postprocessors, are looked up according to the following rules:

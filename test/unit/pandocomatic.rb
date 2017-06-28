@@ -69,6 +69,20 @@ class TestPandocomaticRun < Minitest::Test
       assert_directories_equal example_output, output
     end
   end
+  
+  def test_convert_authored_wiki
+    Dir.mktmpdir('auhtorized_wiki') do |dir|
+      input = File.join ['example', 'src', 'authored_wiki']
+      data_dir = File.join ['example', 'data-dir']
+      config = File.join ['example', 'authored_wiki.yaml']
+      output = File.join [dir, 'authored_wiki']
+
+      Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
+
+      example_output = File.join ['example', 'dst', 'authored_wiki']
+      assert_directories_equal example_output, output
+    end
+  end
 
   def test_convert_site
     Dir.mktmpdir('site') do |dir|
