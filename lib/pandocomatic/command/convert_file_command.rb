@@ -164,9 +164,10 @@ module Pandocomatic
     def pandoc(input, options, src_dir)
       converter = Paru::Pandoc.new
       options.each do |option, value|
-        # Pandoc multi-word options can have the multiple words separated by
-        # both underscore (_) and dash (-).
-        option= option.gsub "-", "_"
+        # Pandocomatic multi-word options can have the multiple words separated by
+        # both underscore (_) and dash (-); but Pandoc uses — so standardise 
+        # to use it.
+        option= option.gsub "_", "-"
 
         if PANDOC_OPTIONS_WITH_PATH.include? option
           if value.is_a? Array
