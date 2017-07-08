@@ -101,6 +101,9 @@ module Pandocomatic
         end
       end
 
+      # Run setup scripts
+      setup template
+
       # Read in the file to convert
       input = File.read @src
 
@@ -132,6 +135,9 @@ module Pandocomatic
       rescue StandardError => e
         raise IOError.new(:error_writing_file, e, @dst)
       end
+
+      # run cleanup scripts
+      cleanup template
     end
     
     # TODO: update this list
@@ -200,6 +206,14 @@ module Pandocomatic
 
     def postprocess(input, config = {})
       process input, 'postprocessors', config
+    end
+
+    def setup(config = {})
+        process "", 'setup', config
+    end
+
+    def cleanup(config = {})
+        process "", 'cleanup', config
     end
 
     # Run the input string through a list of filters called processors. There

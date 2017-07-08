@@ -1,0 +1,15 @@
+settings:
+  recursive: true
+  follow-links: false
+templates:
+  wiki-page:
+    glob: ['*.md']
+    preprocessors:
+      - 'preprocessors/now.rb'
+    pandoc:
+      from: markdown
+      to: html5
+      standalone: true
+      template: 'templates/wiki.html'
+    postprocessors:
+      - 'postprocessors/branding.rb'

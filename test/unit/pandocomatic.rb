@@ -83,6 +83,42 @@ class TestPandocomaticRun < Minitest::Test
       assert_directories_equal example_output, output
     end
   end
+  
+  def test_convert_setup_cleanup
+    temp_file_name = 'pandocomatic_temporary_file.txt'
+    temp_file_name_path = File.join ['/tmp', temp_file_name]
+
+
+    # remove temp file
+    if File.exist? temp_file_name_path
+        File.delete temp_file_name_path
+    end
+
+    Dir.mktmpdir('setup_cleanup') do |dir|
+      input = File.join ['example', 'src', 'setup-cleanup-wiki']
+      data_dir = File.join ['example', 'data-dir']
+      # setup.yaml is configured to create temp file
+      config = File.join ['example', 'setup.yaml']
+      output = File.join [dir, 'setup-cleanup-wiki']
+
+      Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
+
+      example_output = File.join ['example', 'dst', 'setup-cleanup-wiki']
+      assert_directories_equal example_output, output
+
+      assert File.exist? temp_file_name_path
+
+      # cleanup.yaml is configured to remove temp file
+      config = File.join ['example', 'cleanup.yaml']
+
+      Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
+
+      assert_directories_equal example_output, output
+
+      refute File.exist? temp_file_name_path
+
+    end
+  end
 
   def test_convert_site
     Dir.mktmpdir('site') do |dir|

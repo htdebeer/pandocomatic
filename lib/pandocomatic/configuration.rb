@@ -98,10 +98,12 @@ module Pandocomatic
         settings['templates'].each do |name, template|
           full_template = {
             'glob' => [],
+            'setup' => [],
             'preprocessors' => [],
             'metadata' => {},
             'pandoc' => {},
-            'postprocessors' => []
+            'postprocessors' => [],
+            'cleanup' => []
           }
 
           reset_template name, full_template.merge(template)
@@ -114,7 +116,7 @@ module Pandocomatic
     end
 
     def marshal_load(array)
-      @data_dir, @settings, @templates, @convert_patterns  = array
+      @data_dir, @settings, @templates, @convert_patterns = array
     end
 
     def to_s()
@@ -229,10 +231,10 @@ module Pandocomatic
 
     def reset_template(name, template)
       if @templates.has_key? name then
-        fields = ['glob', 'preprocessors', 'pandoc', 'postprocessors']
+        fields = ['glob', 'cleanup', 'setup', 'preprocessors', 'pandoc', 'postprocessors']
         fields.each do |field|
           case field
-          when 'preprocessors', 'postprocessors', 'glob'
+          when 'cleanup', 'setup', 'preprocessors', 'postprocessors', 'glob'
             if @templates[name][field] then
               if template[field] then
                 @templates[name][field].concat(template[field]).uniq!
