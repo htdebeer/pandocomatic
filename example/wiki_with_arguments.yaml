@@ -1,0 +1,17 @@
+settings:
+  recursive: true
+  follow-links: false
+templates:
+  wiki-page:
+    glob: ['*.md']
+    preprocessors:
+      - 'preprocessors/now.rb'
+      - 'preprocessors/add_argument_to_metadata.rb --arg1 -arg2 arg3'
+      - 'preprocessors/add\ argument\ with\ spaces.rb with spaces'
+    pandoc:
+      from: markdown
+      to: html5
+      standalone: true
+      template: 'templates/wiki_with_arguments.html'
+    postprocessors:
+      - 'postprocessors/branding.rb'

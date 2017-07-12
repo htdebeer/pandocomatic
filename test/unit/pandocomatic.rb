@@ -84,6 +84,20 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
   
+  def test_convert_wiki_with_arguments
+    Dir.mktmpdir('wiki_with_arguments') do |dir|
+      input = File.join ['example', 'src', 'wiki_with_arguments']
+      data_dir = File.join ['example', 'data-dir']
+      config = File.join ['example', 'wiki_with_arguments.yaml']
+      output = File.join [dir, 'wiki_with_arguments']
+
+      Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
+
+      example_output = File.join ['example', 'dst', 'wiki_with_arguments']
+      assert_directories_equal example_output, output
+    end
+  end
+  
   def test_convert_setup_cleanup
     temp_file_name = 'pandocomatic_temporary_file.txt'
     temp_file_name_path = File.join ['/tmp', temp_file_name]
