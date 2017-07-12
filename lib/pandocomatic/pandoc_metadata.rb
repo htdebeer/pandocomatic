@@ -21,6 +21,7 @@ module Pandocomatic
   require 'json'
   require 'yaml'
   require 'paru'
+  require 'paru/pandoc2yaml'
 
   require_relative './error/pandoc_error.rb'
   require_relative './error/io_error.rb'
@@ -29,18 +30,10 @@ module Pandocomatic
 
     def self.extract_metadata input_document
       begin
-        pandoc2yaml File.read(input_document)
+        Paru::Pandoc2Yaml.extract_metadata(input_document)
       rescue StandardError => e
         raise IOError.new(:error_opening_file, e, input_document)
       end
-    end
-
-    def self.pandoc2yaml(input)
-      input
-        .scan(/^---[ \t]*\n(.+?)^(?:---|\.\.\.)[ \t]*\n/m)
-        .flatten
-        .map{|yaml| yaml.strip}
-        .join("\n")
     end
 
     # Collect the metadata embedded in the src file

@@ -147,43 +147,43 @@ The `mddoc` template tells pandocomatic to convert a markdown file to a standalo
 However, the `mddoc` template converts from and to pandoc's markdown variant, which differs slightly from the markdown variant used by [Github](https://github.com/) for README files. Luckily, pandoc does support writing Github's markdown variant. There is no need to create and use a different template for generating the README, though, as you can override all template's settings inside a pandocomatic block in a markdown file:
 
 ``` markdown
- ---
+---
  pandocomatic_:
    use-template: mddoc
    pandoc:
      to: markdown_github
- ...
+...
  
- # Pandocomatic—Automating the use of pandoc
- 
- ::paru::insert introduction.md
- 
- ## Why pandocomatic?
- 
- ::paru::insert why_pandocomatic.md
- 
- ## Licence
- 
- ::paru::insert license.md
- 
- ## Installation
- 
- ::paru::insert install.md
- 
- ## Examples
- 
- ::paru::insert usage_examples.md
- 
- ## More information
- 
- See [pandocomatic's
- manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more
- extensive examples of using pandocomatic. Notably, the manual contains two
- typical use cases of pandocomatic:
- 
- 1.  [automating setting up and running pandoc for a series of related papers](https://heerdebeer.org/Software/markdown/pandocomatic/#automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
- 2.  [using pandocomatic as a static site
-      generator](https://heerdebeer.org/Software/markdown/pandocomatic/#using-pandocomatic-as-a-static-site-generator).
+# Pandocomatic—Automating the use of pandoc
+
+::paru::insert introduction.md
+
+## Why pandocomatic?
+
+::paru::insert why_pandocomatic.md
+
+## Licence
+
+::paru::insert license.md
+
+## Installation
+
+::paru::insert install.md
+
+## Examples
+
+::paru::insert usage_examples.md
+
+## More information
+
+See [pandocomatic's
+manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more
+extensive examples of using pandocomatic. Notably, the manual contains two
+typical use cases of pandocomatic:
+
+1.  [automating setting up and running pandoc for a series of related papers](https://heerdebeer.org/Software/markdown/pandocomatic/#automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
+2.  [using pandocomatic as a static site
+  generator](https://heerdebeer.org/Software/markdown/pandocomatic/#using-pandocomatic-as-a-static-site-generator).
 ```
 
 Here you see that the README uses the `mddoc` template and it overwrites the `to` property with `markdown_github`.
