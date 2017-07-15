@@ -1,0 +1,22 @@
+settings:
+    recursive: true
+    follow-links: false
+templates:
+    now:
+        preprocessors:
+            - 'preprocessors/now.rb'
+    branding:
+        postprocessors:
+            - 'postprocessors/branding.rb'
+    wiki-page:
+        extends: ['now', 'branding']
+        glob: ['*.md']
+        pandoc:
+            from: markdown
+            to: html5
+            standalone: true
+            template: 'templates/wiki.html'
+    extended-wiki-page:
+        extends: 'wiki-page'
+        pandoc:
+            template: 'templates/extended_wiki.html'
