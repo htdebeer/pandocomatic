@@ -17,20 +17,27 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  
-  class Warning
 
-    # :skipping_link_because_it_points_outside_the_source_tree
-    
-    def initialize(message = :unknown, data = nil)
-      @message = message
-      @data = data
+    # A warning given during the conversion process.  
+    class Warning
+
+        # :skipping_link_because_it_points_outside_the_source_tree
+        
+        # Create a new Warning with message and some extra data
+        #
+        # @param message [Symbol = :unknown] the message translation key.
+        # @param data [Object = nil] optional data attached to the message.
+        def initialize(message = :unknown, data = nil)
+            @message = message
+            @data = data
+        end
+
+        # Does this Warning have any data associated with it?
+        #
+        # @return [Boolean] True if there is data attached, false otherwise.
+        def has_data?
+            not @data.nil?
+        end
+
     end
-
-    def has_data?
-      not @data.nil?
-    end
-
-  end
-
 end 

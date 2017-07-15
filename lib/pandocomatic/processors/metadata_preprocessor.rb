@@ -18,22 +18,23 @@
 #++
 module Pandocomatic
 
-  require 'yaml'
-  require_relative '../processor.rb'
+    require 'yaml'
+    require_relative '../processor.rb'
 
-  # MetadataPreprocessor mixes in the metadata section of a template into a
-  # document before pandoc is run to convert that document. It is a default
-  # preprocessor.
-  #
-  # @param input [String] the contents of the document that is being
-  #   preprocessed
-  # @param metadata [Hash = {}] the metadata to mix-in
-  class MetadataPreprocessor < Processor
-    def self.run input, metadata = {}
-      output = input
-      output << "\n\n"
-      output << YAML.dump(metadata)
-      output << "...\n\n"
+    # MetadataPreprocessor mixes in the metadata section of a template into a
+    # document before pandoc is run to convert that document. It is a default
+    # preprocessor.
+    class MetadataPreprocessor < Processor 
+        # Run this MetadataPreprocessor
+        # 
+        # @param input [String] the contents of the document that is being
+        #   preprocessed
+        # @param metadata [Hash = {}] the metadata to mix-in
+        def self.run input, metadata = {}
+            output = input
+            output << "\n\n"
+            output << YAML.dump(metadata)
+            output << "...\n\n"
+        end
     end
-  end
 end

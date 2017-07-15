@@ -17,17 +17,22 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './printer.rb'
+    require_relative './printer.rb'
 
-  class WarningPrinter < Printer
-    def initialize(warning)
-      template = 'warning.txt'
-      super template
-      @warning = warning
-    end
+    # Printer for warnings
+    class WarningPrinter < Printer
+        # Create a new WarningPrinter
+        #
+        # @param warning [Warning] the warning to print
+        def initialize(warning)
+            template = 'warning.txt'
+            super template
+            @warning = warning
+        end
 
-    def print
-      warn to_s
+        # Print warnings to STDERR rather than STDOUT
+        def print
+            warn to_s
+        end
     end
-  end
 end

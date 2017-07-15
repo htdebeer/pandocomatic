@@ -17,23 +17,37 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './printer.rb'
+    require_relative './printer.rb'
 
-  class SummaryPrinter < Printer
-    def initialize(command, input, output)
-      super 'summary.txt'
-      @command = command
-      @input = input
-      @output = output
+    # Printer for printing a summary of the conversion process in non-quiet mode
+    class SummaryPrinter < Printer
+
+        # Create a new SummaryPrinter
+        # 
+        # @param command [Command] the command to summarize
+        # @param input [String] the filename of the input file
+        # @param output [String] the filename of the output file
+        def initialize(command, input, output)
+            super 'summary.txt'
+            @command = command
+            @input = input
+            @output = output
+        end
+
+        # A string representation of the commands being executed
+        #
+        # @return [String]
+        def commands()
+            "#{@command.count} command#{'s' if @command.count != 1}"
+        end
+
+        # Is there an output file?
+        #
+        # @return [Boolean] True if there is an output defined in this
+        #   SummaryPrinter, false otherwise
+        def has_output?()
+            not @output.nil? and not @output.empty?
+        end
+
     end
-
-    def commands()
-      "#{@command.count} command#{'s' if @command.count != 1}"
-    end
-
-    def has_output?()
-      not @output.nil? and not @output.empty?
-    end
-
-  end
 end

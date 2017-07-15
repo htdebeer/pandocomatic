@@ -18,9 +18,11 @@
 #++
 module Pandocomatic
   require_relative './pandocomatic_error.rb'
-  
+
+  # An error when running pandoc  
   class PandocError < PandocomaticError
 
+    # The template to use to print this PandocError
     def template()
       'pandoc_error.txt'
     end

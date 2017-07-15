@@ -19,8 +19,10 @@
 module Pandocomatic
   require_relative './pandocomatic_error.rb'
 
+  # An IOError
   class IOError < PandocomaticError
 
+    # The template to use when printing this IOError
     def template()
       'io_error.txt'
     end

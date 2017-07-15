@@ -28,10 +28,26 @@ module Pandocomatic
   require_relative 'copy_file_command.rb'
   require_relative 'skip_command.rb'
 
+  # Commmand to convert a directory
+  #
+  # @!attribute config
+  #   @return [Configuration] configuration to use when converting directory
+  #
+  # @!attribute src_dir
+  #   @return [String] the source directory to convert from
+  #
+  # @!attribute dst_dir
+  #   @return [String] the destination directory to convert to
   class ConvertDirCommand < ConvertListCommand
 
     attr_reader :config, :src_dir, :dst_dir
 
+    # Create a new ConvertDirCommand
+    #
+    # @param current_config [Configuration] The configuration of pandocomatic
+    #   as it was before entering the source directory
+    # @param src_dir [String] the directory to convert
+    # @param dst_dir [String] the directory to convert to
     def initialize(current_config, src_dir, dst_dir)
       super()
       @src_dir = src_dir
@@ -87,18 +103,28 @@ module Pandocomatic
       uncount if skip?
     end
 
+    # Should this command be skipped?
+    #
+    # @return [Boolean] True if this command has no sub commands
     def skip?()
       @subcommands.empty?
     end
 
+    # Converts this command a directory?
+    #
+    # @return [Boolean] true
     def directory?()
       true
     end
 
+    # Convert this command to a String representation for a Printer
+    #
+    # @return [String]
     def to_s()
       "convert #{@src_dir}" + '; ' + if create_directory? then 'create and ' else '' end + "enter #{@dst_dir}"
     end
 
+    # Run this command
     def run()
       begin
         Dir.mkdir @dst_dir if create_directory?

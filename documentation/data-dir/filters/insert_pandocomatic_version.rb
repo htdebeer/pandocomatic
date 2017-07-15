@@ -4,6 +4,7 @@
 require_relative "../../../lib/pandocomatic/pandocomatic"
 require "paru/filter"
 
+# Get pandocomatic's version
 def version(str)
     str.gsub "::pandocomatic::version", Pandocomatic::Pandocomatic::VERSION.join(".")
 end

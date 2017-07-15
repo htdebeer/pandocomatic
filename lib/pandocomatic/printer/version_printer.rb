@@ -19,8 +19,10 @@
 module Pandocomatic
   require_relative './printer.rb'
 
+  # Printer to print pandocomatic's version
   class VersionPrinter < Printer
 
+    # Create a new VersionPrinter
     def initialize version
       super 'version.txt'
       @version = version

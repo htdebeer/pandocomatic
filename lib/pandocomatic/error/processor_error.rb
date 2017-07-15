@@ -19,8 +19,10 @@
 module Pandocomatic
   require_relative './pandocomatic_error.rb'
 
+  # An error while running a processor
   class ProcessorError < PandocomaticError
 
+    # The template to use when printing this ProcessorError
     def template()
       'processor_error.txt'
     end

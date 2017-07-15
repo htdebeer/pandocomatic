@@ -27,10 +27,21 @@ module Pandocomatic
   require_relative 'copy_file_command.rb'
   require_relative 'skip_command.rb'
 
+  # Create a command to convert one file multiple times
+  #
+  # @!attribute subcommands
+  #   @return [Command[]] the subcommands to execute when running this
+  #   ConvertFileMultipleCommand
   class ConvertFileMultipleCommand < ConvertListCommand
 
     attr_reader :subcommands
 
+    # Create a new ConvertFileMultipleCommand
+    #
+    # @param config [Configuration] Pandocomatic's configuration used to
+    #   convert the source file
+    # @param src [String] the file to convert
+    # @param dst [String] the output file
     def initialize(config, src, dst)
         super()
         @config = config
@@ -48,30 +59,15 @@ module Pandocomatic
         end
     end
 
-    def push(command)
-        @subcommands.push command
-    end
 
-    def skip?()
-      @subcommands.empty?
-    end
-
-    def count()
-      @subcommands.reduce(if skip? then 0 else 1 end) do |total, subcommand|
-        total += subcommand.count
-      end
-    end
-
-    def all_errors()
-      @subcommands.reduce(@errors) do |total, subcommand|
-        total += subcommand.all_errors
-      end
-    end
-
+    # A string representation of this command
+    #
+    # @return [String]
     def to_s()
         "converting #{@src} #{@subcommands.size} time#{'s' if @subcommands.size != 1}:"
     end
 
+    # Execute this ConvertFileMultipleCommand
     def execute()
       if not @subcommands.empty?
         CommandPrinter.new(self).print unless quiet? or @subcommands.size == 1

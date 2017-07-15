@@ -19,8 +19,10 @@
 module Pandocomatic
   require_relative './pandocomatic_error.rb'
 
+  # A command line error.
   class CLIError < PandocomaticError
 
+    # Get the template used to print this CLIError
     def template()
       'cli_error.txt'
     end

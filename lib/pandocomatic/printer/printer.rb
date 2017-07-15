@@ -17,27 +17,39 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require 'erb'
+    require 'erb'
 
-  class Printer
+    # Printer base class for printing information from pandocomatic
+    class Printer
 
-    def initialize(template_file = 'help.txt')
-      set_template template_file
+        # Create a new Printer
+        # 
+        # @param template_file [String = 'help.txt'] the template to use when
+        #   printing.
+        def initialize(template_file = 'help.txt')
+            set_template template_file
+        end
+
+        # Set the template used by this Printer
+        #
+        # @param template_file [String] the template to use
+        def set_template(template_file)
+            dir = File.dirname(__FILE__)
+            @template = File.absolute_path(File.join(dir, 'views', template_file))
+        end
+
+        # Create a string based on this printer's template
+        #
+        # @return [String]
+        def to_s()
+            erb = ERB.new(File.read(@template), 0, '>')
+            erb.result(binding())
+        end
+
+        # Print to STDOUT
+        def print()
+            puts to_s()
+        end
+
     end
-
-    def set_template(template_file)
-      dir = File.dirname(__FILE__)
-      @template = File.absolute_path(File.join(dir, 'views', template_file))
-    end
-
-    def to_s()
-      erb = ERB.new(File.read(@template), 0, '>')
-      erb.result(binding())
-    end
-
-    def print()
-      puts to_s()
-    end
-
-  end
 end

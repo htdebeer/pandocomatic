@@ -282,7 +282,7 @@ module Pandocomatic
 
         # Reset the settings for pandocomatic based on a new settings Hash
         #
-        # @settings [Hash] the new settings to use to reset the settings in
+        # @param settings [Hash] the new settings to use to reset the settings in
         #   this Configuration with.
         def reset_settings(settings)
             settings.each do |setting, value|

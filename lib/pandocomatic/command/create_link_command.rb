@@ -24,10 +24,24 @@ module Pandocomatic
   require_relative '../error/io_error.rb'
   require_relative '../printer/warning_printer.rb'
 
+  # A command to create a link to a file
+  #
+  # @!attribute src
+  #   @return [String] the path to the file to link to
+  #
+  # @!attribute dst
+  #   @return [String] the link name to create
+  #
+  # @!attribute dst_target
+  #   @return [String] the link in the destination tree to link to
   class CreateLinkCommand < Command
 
     attr_reader :src, :dst, :dst_target
 
+    # Create a new CreateLinkCommand
+    #
+    # @param src [String] the path to the file to link
+    # @param dst [String] the path to the name of the link to create
     def initialize(src, dst)
       super()
       @src = src
@@ -51,6 +65,7 @@ module Pandocomatic
       end
     end
 
+    # Run this CreateLinkCommand
     def run()
       begin
         File.symlink @dst_target, @dst unless File.exist? @dst
@@ -59,18 +74,29 @@ module Pandocomatic
       end
     end
 
+    # Can this CreateLinkCommand be run?
+    #
+    # @return [Boolean] True if there are no errors and both source and
+    #   destination do exist
     def runnable?()
       not (has_errors? or @dst.nil? or @dst_target.nil? or @src.nil?)
     end
 
+    # Create a string representation of this CreateLinkCommand
     def to_s()
       "link #{File.basename @dst} -> #{@dst_target}"
     end
 
+    # Should this CreateLinkCommand be skipped?
+    #
+    # @return [Boolean]
     def skip?()
       not modified_only? or not modified?
     end
     
+    # Has the source file been modified?
+    #
+    # @return [Boolean]
     def modified?()
       if File.exist? @dst then
         absolute_dst = File.realpath @dst

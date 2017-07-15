@@ -17,14 +17,26 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require 'open3'
+    require 'open3'
 
-  class Processor
+    # Generic class for processors used to preprocess, postproces, setup, and
+    # cleanup with external scripts or programs during the conversion process.
+    #
+    # For preprocessors and postprocessors it is assumed that the input is the
+    # contents of the file to convert and the output the processed input. In
+    # the end, the output will be put through pandoc.
+    class Processor
 
-    def self.run script, input
-      output, _ = Open3.capture2(script, :stdin_data => input)
-      output
+        # Run script on input and return captured output
+        #
+        # @param script [String] path to script to run
+        # @param input [String] input to process in the script
+        # 
+        # @return [String] output of script.
+        def self.run script, input
+            output, _ = Open3.capture2(script, :stdin_data => input)
+            output
+        end
+
     end
-
-  end
 end

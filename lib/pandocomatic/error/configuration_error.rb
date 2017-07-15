@@ -19,8 +19,10 @@
 module Pandocomatic
   require_relative './pandocomatic_error.rb'
 
+  # A ConfigurationError
   class ConfigurationError < PandocomaticError
     
+    # The template to print this ConfigurationError
     def template()
       'configuration_error.txt'
     end

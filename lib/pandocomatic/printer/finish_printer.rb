@@ -19,8 +19,12 @@
 module Pandocomatic
   require_relative './summary_printer.rb'
 
+  # Printer for the end of the conversion process in non-quiet mode
   class FinishPrinter < SummaryPrinter
-    MINUTE = 60 # seconds
+    # A minute has 60 seconds
+    MINUTE = 60
+
+    # Create a new FinishPrinter
     def initialize(command, input, output, start_time)
       super command, input, output
       set_template 'finish.txt'
@@ -29,6 +33,7 @@ module Pandocomatic
       @end_time = Time.now
     end
 
+    # Calculate the duration of the whole conversion process
     def duration()
       seconds = @end_time - @start_time
       if seconds > MINUTE

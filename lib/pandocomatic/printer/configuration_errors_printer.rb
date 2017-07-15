@@ -19,7 +19,9 @@
 module Pandocomatic
   require_relative './printer.rb'
 
+  # Printer for ConfigurationErrors in non-quiet mode
   class ConfigurationErrorsPrinter < Printer
+    # Create a new ConfigurationErrorsPrinter
     def initialize(errors)
       super 'configuration_errors.txt'
       @errors = errors

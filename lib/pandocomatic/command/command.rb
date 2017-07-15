@@ -30,7 +30,6 @@ module Pandocomatic
   # @!attribute index
   #   @return [Number] the index of this Command in the list with all commands
   #     to run when running pandocomatic.
-      
   class Command
 
     attr_reader :errors, :index

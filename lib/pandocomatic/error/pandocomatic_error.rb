@@ -19,8 +19,25 @@
 module Pandocomatic
   require_relative '../printer/error_printer.rb'
 
+  # General pandocomatic error
+  #
+  # @!attribute type
+  #   @return [Symbol] type of error
+  #
+  # @!attribute error
+  #   @return [Error] the underlying error, if any
+  #
+  # @!attribute data
+  #   @return [Object] attached data, if any
   class PandocomaticError < StandardError
     attr_reader :type, :error, :data
+
+    # Create a new PandocomaticError
+    #
+    # @param type [Symbol = :unknown] the type of error, defaults to :unknown
+    # @param error [Error = nil] the underlying error, optional
+    # @param data [Object = nil] extra information attached to this
+    #   PandocomaticError, if any; optional
     def initialize(type = :unknown, error = nil, data = nil)
       super type.to_s.gsub("_", " ").capitalize
       @type = type
@@ -28,18 +45,28 @@ module Pandocomatic
       @data = data
     end
 
+    # Has this PandocomaticError an underlying error?
+    #
+    # @return [Boolean]
     def has_error?()
       not @error.nil?
     end
 
+    # Has this PandocomaticError extra information associated to it?
+    #
+    # @return [Boolean]
     def has_data?()
       not @data.nil?
     end
 
+    # Print this error.
     def print()
       ErrorPrinter.new(self).print
     end
 
+    # Show this error
+    #
+    # @return [String] a string representation of this PandocomaticError
     def show()
       ErrorPrinter.new(self).to_s
     end

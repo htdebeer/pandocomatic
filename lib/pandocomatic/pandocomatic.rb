@@ -17,168 +17,176 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  Encoding.default_external = Encoding::UTF_8 #ensure unicode encoding
-  Encoding.default_internal = Encoding::UTF_8
-  
-  require 'paru'
+    Encoding.default_external = Encoding::UTF_8 #ensure unicode encoding
+    Encoding.default_internal = Encoding::UTF_8
 
-  require_relative './error/pandocomatic_error.rb'
-  require_relative './error/pandoc_error.rb'
-  require_relative './error/configuration_error.rb'
+    require 'paru'
 
-  require_relative './cli.rb'
+    require_relative './error/pandocomatic_error.rb'
+    require_relative './error/pandoc_error.rb'
+    require_relative './error/configuration_error.rb'
 
-  require_relative './configuration.rb'
+    require_relative './cli.rb'
 
-  require_relative './printer/help_printer.rb'
-  require_relative './printer/version_printer.rb'
-  require_relative './printer/error_printer.rb'
-  require_relative './printer/configuration_errors_printer.rb'
-  require_relative './printer/finish_printer.rb'
-  require_relative './printer/summary_printer.rb'
+    require_relative './configuration.rb'
 
-  require_relative './command/command.rb'
-  require_relative './command/convert_dir_command.rb'
-  require_relative './command/convert_list_command.rb'
-  require_relative './command/convert_file_command.rb'
-  require_relative './command/convert_file_multiple_command.rb'
+    require_relative './printer/help_printer.rb'
+    require_relative './printer/version_printer.rb'
+    require_relative './printer/error_printer.rb'
+    require_relative './printer/configuration_errors_printer.rb'
+    require_relative './printer/finish_printer.rb'
+    require_relative './printer/summary_printer.rb'
 
-  class Pandocomatic
-    VERSION = [0, 1, 4, 10]
-    CONFIG_FILE = 'pandocomatic.yaml'
+    require_relative './command/command.rb'
+    require_relative './command/convert_dir_command.rb'
+    require_relative './command/convert_list_command.rb'
+    require_relative './command/convert_file_command.rb'
+    require_relative './command/convert_file_multiple_command.rb'
 
-    def self.run(args)
-      begin
-        start_time = Time.now
-        options = CLI.parse args
+    # The Pandocomatic class controlls the pandocomatic conversion process
+    class Pandocomatic
 
-        if options[:version_given]
-          # The version option has precedence over all other options; if
-          # given, the version is printed
-          VersionPrinter.new(VERSION).print
-        elsif options[:help_given]
-          # The help option has precedence over all other options except the
-          # version option. If given, the help is printed.
-          HelpPrinter.new().print
-        else
-          # Run the pandocomatic converter configured according to the options
-          # given.
-          input = options[:input]
-          output = options[:output]
-          configuration = configure options
+        # Pandocomatic's current version
+        VERSION = [0, 1, 4, 10]
 
-          # Extend the command classes by setting the source tree root
-          # directory, and the options quiet and dry-run, which are used when
-          # executing a command: if dry-run the command is not actually
-          # executed and if quiet the command is not printed to STDOUT
-          src_root = File.absolute_path input
-          dry_run = if options[:dry_run_given] then options[:dry_run] else false end
-          quiet = if options[:quiet_given] then options[:quiet] else false end
-          debug = if options[:debug_given] and not quiet then options[:debug] else false end
-          modified_only = if options[:modified_only_given] then options[:modified_only_given] else false end
+        # Pandocomatic's default configuration file
+        CONFIG_FILE = 'pandocomatic.yaml'
 
-          Command.reset(src_root, dry_run, quiet, debug, modified_only)
+        # Run pandocomatic given options
+        #
+        # @param args [String[]] list of options to configure pandocomatic
+        def self.run(args)
+            begin
+                start_time = Time.now
+                options = CLI.parse args
 
-          # Pandocomatic has two modes: converting a directory tree or
-          # converting a single file. The mode is selected by the input.
-          if File.directory? input
-            command = ConvertDirCommand.new(configuration, input, output)
-          else
-            destination = if output.nil? or output.empty? then File.basename input else output end
+                if options[:version_given]
+                    # The version option has precedence over all other options; if
+                    # given, the version is printed
+                    VersionPrinter.new(VERSION).print
+                elsif options[:help_given]
+                    # The help option has precedence over all other options except the
+                    # version option. If given, the help is printed.
+                    HelpPrinter.new().print
+                else
+                    # Run the pandocomatic converter configured according to the options
+                    # given.
+                    input = options[:input]
+                    output = options[:output]
+                    configuration = configure options
 
-            command = ConvertFileMultipleCommand.new(configuration, input, destination)
-            command.make_quiet unless command.subcommands.size > 1
-          end
+                    # Extend the command classes by setting the source tree root
+                    # directory, and the options quiet and dry-run, which are used when
+                    # executing a command: if dry-run the command is not actually
+                    # executed and if quiet the command is not printed to STDOUT
+                    src_root = File.absolute_path input
+                    dry_run = if options[:dry_run_given] then options[:dry_run] else false end
+                    quiet = if options[:quiet_given] then options[:quiet] else false end
+                    debug = if options[:debug_given] and not quiet then options[:debug] else false end
+                    modified_only = if options[:modified_only_given] then options[:modified_only_given] else false end
 
-          # Notify the user about all configuration errors collected when
-          # determining the commands to run to perform this pandocomatic
-          # conversion.
-          if command.all_errors.size > 0
-            ConfigurationErrorsPrinter.new(command.all_errors).print
-            exit
-          end
+                    Command.reset(src_root, dry_run, quiet, debug, modified_only)
 
-          # Pandocomatic is successfully configured: running the
-          # actual conversion now.
-          SummaryPrinter.new(command, input, output).print unless quiet or not command.directory?
+                    # Pandocomatic has two modes: converting a directory tree or
+                    # converting a single file. The mode is selected by the input.
+                    if File.directory? input
+                        command = ConvertDirCommand.new(configuration, input, output)
+                    else
+                        destination = if output.nil? or output.empty? then File.basename input else output end
 
-          # Depending on the options dry-run and quiet, the command.execute
-          # method will actually performing the commands (dry-run = false) and
-          # print the command to STDOUT (quiet = false)
-          command.execute()
+                        command = ConvertFileMultipleCommand.new(configuration, input, destination)
+                        command.make_quiet unless command.subcommands.size > 1
+                    end
 
-          FinishPrinter.new(command, input, output, start_time).print unless quiet
+                    # Notify the user about all configuration errors collected when
+                    # determining the commands to run to perform this pandocomatic
+                    # conversion.
+                    if command.all_errors.size > 0
+                        ConfigurationErrorsPrinter.new(command.all_errors).print
+                        exit
+                    end
+
+                    # Pandocomatic is successfully configured: running the
+                    # actual conversion now.
+                    SummaryPrinter.new(command, input, output).print unless quiet or not command.directory?
+
+                    # Depending on the options dry-run and quiet, the command.execute
+                    # method will actually performing the commands (dry-run = false) and
+                    # print the command to STDOUT (quiet = false)
+                    command.execute()
+
+                    FinishPrinter.new(command, input, output, start_time).print unless quiet
+                end
+            rescue PandocomaticError => e
+                # Report the error and break off the conversion process.
+                ErrorPrinter.new(e).print
+            rescue StandardError => e
+                # An unexpected error has occurred; break off the program drastically
+                # for now
+                raise e
+            end
         end
-      rescue PandocomaticError => e
-        # Report the error and break off the conversion process.
-        ErrorPrinter.new(e).print
-      rescue StandardError => e
-        # An unexpected error has occurred; break off the program drastically
-        # for now
-        raise e
-      end
-    end
 
-    private
+        private
 
-    def self.determine_config_file(options, data_dir = Dir.pwd)
-      config_file = ''
+        def self.determine_config_file(options, data_dir = Dir.pwd)
+            config_file = ''
 
-      if options[:config_given]
-        config_file = options[:config]
-      elsif Dir.entries(data_dir).include? CONFIG_FILE
-        config_file = File.join(data_dir, CONFIG_FILE)
-      elsif Dir.entries(Dir.pwd()).include? CONFIG_FILE
-        config_file = File.join(Dir.pwd(), CONFIG_FILE)
-      else
-        # Fall back to default configuration file distributed with
-        # pandocomatic
-        config_file = File.join(__dir__, 'default_configuration.yaml')
-      end
+            if options[:config_given]
+                config_file = options[:config]
+            elsif Dir.entries(data_dir).include? CONFIG_FILE
+                config_file = File.join(data_dir, CONFIG_FILE)
+            elsif Dir.entries(Dir.pwd()).include? CONFIG_FILE
+                config_file = File.join(Dir.pwd(), CONFIG_FILE)
+            else
+                # Fall back to default configuration file distributed with
+                # pandocomatic
+                config_file = File.join(__dir__, 'default_configuration.yaml')
+            end
 
-      path = File.absolute_path config_file
+            path = File.absolute_path config_file
 
-      raise ConfigurationError.new(:config_file_does_not_exist, nil, path) unless File.exist? path
-      raise ConfigurationError.new(:config_file_is_not_a_file, nil, path) unless File.file? path
-      raise ConfigurationError.new(:config_file_is_not_readable, nil, path) unless File.readable? path
+            raise ConfigurationError.new(:config_file_does_not_exist, nil, path) unless File.exist? path
+            raise ConfigurationError.new(:config_file_is_not_a_file, nil, path) unless File.file? path
+            raise ConfigurationError.new(:config_file_is_not_readable, nil, path) unless File.readable? path
 
-      path
-    end
-
-    def self.determine_data_dir(options)
-      data_dir = ''
-
-      if options[:data_dir_given]
-        data_dir = options[:data_dir]
-      else
-        # No data-dir option given: try to find the default one from pandoc
-        begin
-          data_dir = Paru::Pandoc.info()[:data_dir]
-        rescue Paru::Error => e
-          # If pandoc cannot be run, continuing probably does not work out
-          # anyway, so raise pandoc error
-          raise PandocError.new(:error_running_pandoc, e, data_dir)
-        rescue StandardError => e
-          # Ignore error and use the current working directory as default working directory
-          data_dir = Dir.pwd
+            path
         end
-      end
 
-      # check if data directory does exist and is readable
-      path = File.absolute_path data_dir
+        def self.determine_data_dir(options)
+            data_dir = ''
 
-      raise ConfigurationError.new(:data_dir_does_not_exist, nil, path) unless File.exist? path
-      raise ConfigurationError.new(:data_dir_is_not_a_directory, nil, path) unless File.directory? path
-      raise ConfigurationError.new(:data_dir_is_not_readable, nil, path) unless File.readable? path
+            if options[:data_dir_given]
+                data_dir = options[:data_dir]
+            else
+                # No data-dir option given: try to find the default one from pandoc
+                begin
+                    data_dir = Paru::Pandoc.info()[:data_dir]
+                rescue Paru::Error => e
+                    # If pandoc cannot be run, continuing probably does not work out
+                    # anyway, so raise pandoc error
+                    raise PandocError.new(:error_running_pandoc, e, data_dir)
+                rescue StandardError => e
+                    # Ignore error and use the current working directory as default working directory
+                    data_dir = Dir.pwd
+                end
+            end
 
-      path
+            # check if data directory does exist and is readable
+            path = File.absolute_path data_dir
+
+            raise ConfigurationError.new(:data_dir_does_not_exist, nil, path) unless File.exist? path
+            raise ConfigurationError.new(:data_dir_is_not_a_directory, nil, path) unless File.directory? path
+            raise ConfigurationError.new(:data_dir_is_not_readable, nil, path) unless File.readable? path
+
+            path
+        end
+
+        def self.configure(options)
+            data_dir = determine_data_dir options
+            config_file = determine_config_file options, data_dir
+            Configuration.new options, data_dir, config_file
+        end
+
     end
-
-    def self.configure(options)
-      data_dir = determine_data_dir options
-      config_file = determine_config_file options, data_dir
-      Configuration.new options, data_dir, config_file
-    end
-
-  end
 end

@@ -18,30 +18,32 @@
 #++
 module Pandocomatic
 
-  require_relative '../processor.rb'
+    require_relative '../processor.rb'
 
-  # FileInfoPreprocessor collects information about a file to be converted and
-  # mixes that information into that file's metadata. It is a default
-  # preprocessor.
-  #
-  # @param input [String] the contents of the document being preprocessed
-  # @param path [String] the path to the input document
-  # @param options [Hash] pandoc options collected by pandocomatic to run on
-  #   this file
-  class FileInfoPreprocessor < Processor
-    def self.run input, path, options
-      created_at = File.stat(path).ctime
-      modified_at = File.stat(path).mtime
-      output = input
-      output << "\n\n---\n"
-      output << "pandocomatic-fileinfo:\n"
-      output << "  from: #{options['from']}\n" if options.has_key? 'from'
-      output << "  to: #{options['to']}\n" if options.has_key? 'to'
-      output << "  template: #{options['template']}\n" if options.has_key? 'template'
-      output << "  path: '#{path}'\n"
-      output << "  created: #{created_at.strftime '%Y-%m-%d'}\n"
-      output << "  modified: #{modified_at.strftime '%Y-%m-%d'}\n"
-      output << "...\n\n"
+    # FileInfoPreprocessor collects information about a file to be converted and
+    # mixes that information into that file's metadata. It is a default
+    # preprocessor.
+    #
+    class FileInfoPreprocessor < Processor
+        # Run this FileInfoPreprocessor
+        #
+        # @param input [String] the contents of the document being preprocessed
+        # @param path [String] the path to the input document
+        # @param options [Hash] pandoc options collected by pandocomatic to run on
+        #   this file
+        def self.run input, path, options
+            created_at = File.stat(path).ctime
+            modified_at = File.stat(path).mtime
+            output = input
+            output << "\n\n---\n"
+            output << "pandocomatic-fileinfo:\n"
+            output << "  from: #{options['from']}\n" if options.has_key? 'from'
+            output << "  to: #{options['to']}\n" if options.has_key? 'to'
+            output << "  template: #{options['template']}\n" if options.has_key? 'template'
+            output << "  path: '#{path}'\n"
+            output << "  created: #{created_at.strftime '%Y-%m-%d'}\n"
+            output << "  modified: #{modified_at.strftime '%Y-%m-%d'}\n"
+            output << "...\n\n"
+        end
     end
-  end
 end

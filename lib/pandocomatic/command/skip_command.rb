@@ -20,26 +20,48 @@ module Pandocomatic
 
   require_relative 'command.rb'
 
+  # A command to skip a file or directory
+  #
+  # @!attribute src
+  #   @return [String] the file or directory to skip
+  #
+  # @!attribute message
+  #   @return [String] message explaining why the file or directory is being skipped.
   class SkipCommand < Command
     attr_reader :src, :message
 
+    # Create a new SkipCommand
+    #
+    # @param src [String] path to the file to skip
+    # @param message [String] the message explaining why this file is being
+    #   skipped
     def initialize(src, message)
       super()
       @src = src
       @message = message
     end
 
+    # Has this SkipCommand a message?
+    #
+    # @return [Boolean]
     def has_message?()
       not(@message.nil? or @message.empty?)
     end
 
+    # 'Run' this SkipCommand by doing nothing
     def run()
     end
 
+    # Skip this command
+    #
+    # @return [Boolean] true
     def skip?()
       true
     end
 
+    # A string representation of this SkipCommand
+    #
+    # @return [String]
     def to_s
       "skipping #{File.basename @src}" + if has_message?
         ": #{@message.to_s}"

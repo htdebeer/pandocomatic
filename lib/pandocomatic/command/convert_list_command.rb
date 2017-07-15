@@ -26,43 +26,66 @@ module Pandocomatic
   require_relative 'copy_file_command.rb'
   require_relative 'skip_command.rb'
 
+  # A Command with sub commands
+  #
+  # @!attribute subcommands
+  #   @return [Command[]] the subcommands of this ConvertListCommand
   class ConvertListCommand < Command
 
     attr_reader :subcommands
 
+    # Create a new ConvertListCommand
     def initialize()
       super()
       @subcommands = []
     end
 
+    # Push a command to this ConvertListCommand
+    #
+    # @param command [Command] command to add
     def push(command)
         @subcommands.push command
     end
 
+    # Skip this ConvertListCommand when there are no sub commands
+    #
+    # @return [Boolean]
     def skip?()
       @subcommands.empty?
     end
 
+    # The number of commands to execute when this ConvertListCommand
+    # is executed.
     def count()
       @subcommands.reduce(if skip? then 0 else 1 end) do |total, subcommand|
         total += subcommand.count
       end
     end
 
+    # Get a list of all errors generated while running this command
+    #
+    # @return [Error[]]  
     def all_errors()
       @subcommands.reduce(@errors) do |total, subcommand|
         total += subcommand.all_errors
       end
     end
 
+    # A string representation of this ConvertListCommand
+    #
+    # @return [String]
     def to_s()
         "converting #{@subcommands.size} items:"
     end
 
+    # Can this command have multiple commands?
+    #
+    # @return [Boolean] true
     def multiple?
         true
     end
 
+    # Execute this ConvertListCommand
     def execute()
       if not @subcommands.empty?
         CommandPrinter.new(self).print unless quiet?

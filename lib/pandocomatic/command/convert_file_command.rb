@@ -35,8 +35,20 @@ module Pandocomatic
 
     require_relative 'command.rb'
 
+    # Output formats used in pandocomatic
     OUTPUT_FORMATS = ["docx", "odt", "pdf", "beamer"]
 
+    # Command to convert a file
+    #
+    # @!attribute config
+    #   @return [Configuration] the configuration of pandocomatic used to
+    #     convert the file
+    #
+    # @!attribute src
+    #   @return [String] the path to the file to convert
+    #
+    # @!attribute dst
+    #   @return [String] the path to the output file
     class ConvertFileCommand < Command
 
         attr_reader :config, :src, :dst

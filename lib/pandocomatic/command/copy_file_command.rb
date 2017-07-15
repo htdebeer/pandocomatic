@@ -22,9 +22,17 @@ module Pandocomatic
   require_relative '../error/io_error.rb'
   require_relative 'command.rb'
 
+  # A command to copy a file
+  #
+  # @!attribute src
+  #   @return [String] path to the file to copy
   class CopyFileCommand < Command
     attr_reader :src
 
+    # Create a new CopyFileCommand
+    #
+    # @param src [String] path to the file to copy
+    # @param dst [String] path to the place to copy the source file to
     def initialize(src, dst)
       super()
       @src = src
@@ -33,6 +41,7 @@ module Pandocomatic
       @errors.push IOError.new(:file_is_not_writable, nil, @dst) unless not File.exist?(@dst) or File.writable?(@dst)
     end
 
+    # Run this CopyFileCommand
     def run()
       begin
         FileUtils.cp(@src, @dst) if file_modified?(@src, @dst)
@@ -41,6 +50,9 @@ module Pandocomatic
       end
     end
 
+    # A string representation of this CopyFileCommand
+    #
+    # @return [String]
     def to_s()
       "copy #{File.basename @src}"
     end

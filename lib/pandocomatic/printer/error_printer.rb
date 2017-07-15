@@ -19,13 +19,16 @@
 module Pandocomatic
   require_relative './printer.rb'
 
+  # Printer for Errors in non-quiet mode
   class ErrorPrinter < Printer
+    # Create a new ErrorPrinter
     def initialize(error)
       template = if error.respond_to? :template then error.template else 'error.txt' end
       super template
       @error = error
     end
 
+    # Print an Error to STDERR rather than STDOUT
     def print
       warn to_s
     end

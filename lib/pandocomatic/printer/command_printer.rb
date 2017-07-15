@@ -19,7 +19,9 @@
 module Pandocomatic
   require_relative './printer.rb'
 
+  # Printer for Commands in non-quiet mode
   class CommandPrinter < Printer
+    # Create a new CommandPrinter
     def initialize(command)
       super 'command.txt'
       @command = command
