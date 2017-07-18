@@ -8,9 +8,9 @@ keywords:
 - pandocomatic
 - static site generator
 pandocomatic-fileinfo:
-  created: '2017-03-04'
+  created: '2017-05-25'
   from: markdown
-  modified: '2017-03-04'
+  modified: '2017-05-25'
   path: 'manual.md'
   to: markdown
 subtitle: Automating the use of pandoc
@@ -160,12 +160,12 @@ gem install pandocomatic
 ```
 
 You can also download the latest gem
-[pandocomatic-0.1.4.10](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.10.gem)
+[pandocomatic-0.1.4.11](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.11.gem)
 from github and install it as follows:
 
 ``` {.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.1.4.10.gem
+gem install pandocomatic-0.1.4.11.gem
 ```
 
 Pandocomatic builds on

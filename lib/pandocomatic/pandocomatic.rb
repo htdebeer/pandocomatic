@@ -47,7 +47,7 @@ module Pandocomatic
     class Pandocomatic
 
         # Pandocomatic's current version
-        VERSION = [0, 1, 4, 10]
+        VERSION = [0, 1, 4, 11]
 
         # Pandocomatic's default configuration file
         CONFIG_FILE = 'pandocomatic.yaml'

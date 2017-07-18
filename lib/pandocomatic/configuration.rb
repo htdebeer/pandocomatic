@@ -297,6 +297,14 @@ module Pandocomatic
             end
         end
 
+        # Deep copy a template
+        #
+        # @param template [Hash]  the template to clone
+        # @return [Hash]
+        def clone_template(template)
+            Marshal.load(Marshal.dump(template))
+        end
+
         # Merge two templates
         #
         # @param base_template [Hash] the base template
@@ -370,7 +378,7 @@ module Pandocomatic
 
                 to_extend.each do |name|
                     if @templates.has_key? name
-                        resolved_template = merge resolved_template, @templates[name]
+                        merge resolved_template, clone_template(@templates[name])
                     else 
                         warn "Cannot find template with name '#{parent_template_name}'. Skipping this template while extending: '#{template.to_s}'."
                     end
@@ -392,7 +400,7 @@ module Pandocomatic
             extended_template = extend_template template
             
             if @templates.has_key? name then
-                @templates[name] = merge @templates[name], extended_template
+                merge @templates[name], extended_template
             else
                 @templates[name] = extended_template
             end
