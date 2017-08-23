@@ -47,7 +47,7 @@ module Pandocomatic
         # @return [String] the YAML data embedded in the input string
         def self.pandoc2yaml(input)
             input
-                .scan(/^---[ \t]*\n(.+?)^(?:---|\.\.\.)[ \t]*\n/m)
+                .scan(/^---[ \t]*\r?\n?(.+?)^(?:---|\.\.\.)[ \t]*\r?\n?/m)
                 .flatten
                 .map{|yaml| yaml.strip}
                 .join("\n")
@@ -61,6 +61,7 @@ module Pandocomatic
         #   one if no such metadata is contained in the source file.
         def self.load_file src
             yaml_metadata = extract_metadata src
+            puts "#{src} - '#{yaml_metadata}'."
 
             if yaml_metadata.empty? then
                 return PandocMetadata.new

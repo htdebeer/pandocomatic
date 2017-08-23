@@ -41,6 +41,17 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
 
+  def test_convert_with_dos_line_endings
+    Dir.mktmpdir('dos') do |dir|
+      input = File.join ['example', 'dos.md']
+      output = File.join [dir, 'dos.tex']
+      
+      Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
+
+      example_output = File.join ['example', 'dos.tex']
+      assert_files_equal example_output, output
+    end
+  end
 
   def test_convert_blog
     Dir.mktmpdir('blog') do |dir|
