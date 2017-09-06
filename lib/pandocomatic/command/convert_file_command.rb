@@ -199,8 +199,12 @@ module Pandocomatic
                 # extension.
                 value = "latex" if option == "to" and value == "pdf"
 
-                converter.send option, value unless option == 'output'
-                # don't let pandoc write the output to enable postprocessing
+                begin
+                    converter.send option, value unless option == 'output'
+                    # don't let pandoc write the output to enable postprocessing
+                rescue
+                    warn "The pandoc option '#{option}' (with value '#{value}') is not recognized by paru. This option is skipped." if debug?
+                end
             end
 
             converter.send "output", @dst if OUTPUT_FORMATS.include? options["to"]
