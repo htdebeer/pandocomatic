@@ -213,7 +213,7 @@ module Pandocomatic
                 puts converter.to_command if debug?
                 converter << input
             rescue Paru::Error => e
-                raise PandocError.new(:error_running_pandoc, e, input_document)
+                raise PandocError.new(:error_running_pandoc, e, input)
             end
         end
 

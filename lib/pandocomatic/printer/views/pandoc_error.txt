@@ -1,1 +1,1 @@
-<%=@error.message%>: '<%= @error.error.message %>'.
+<%=@error.message%> => <%= @error.error.message %>
