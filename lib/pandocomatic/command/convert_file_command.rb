@@ -153,8 +153,8 @@ module Pandocomatic
             cleanup template
         end
 
-        # TODO: update this list
         PANDOC_OPTIONS_WITH_PATH = [
+            'data-dir',
             'filter', 
             'template', 
             'css', 
@@ -177,29 +177,30 @@ module Pandocomatic
             'resource-path',
             'citation-abbreviations',
             'abbreviations',
-            'log'
+            'log',
+            'resource-path'
         ]
 
         def pandoc(input, options, src_dir)
             converter = Paru::Pandoc.new
             options.each do |option, value|
-                # Pandoc multi-word options can have the multiple words separated by
-                # both underscore (_) and dash (-).
-                option= option.gsub "-", "_"
-
                 if PANDOC_OPTIONS_WITH_PATH.include? option
+                    is_executable = option == "filter"
                     if value.is_a? Array
-                        value = value.map {|v| @config.update_path(v, src_dir, option == "filter")}
+                        value = value.map {|v| @config.update_path(v, src_dir, is_executable)}
                     else
-                        value = @config.update_path(value, src_dir, option == "filter")
+                        value = @config.update_path(value, src_dir, is_executable)
                     end
                 end
-
+                
                 # There is no "pdf" output format; change it to latex but keep the
                 # extension.
                 value = "latex" if option == "to" and value == "pdf"
 
                 begin
+                    # Pandoc multi-word options can have the multiple words separated by
+                    # both underscore (_) and dash (-).
+                    option = option.gsub "-", "_"
                     converter.send option, value unless option == 'output'
                     # don't let pandoc write the output to enable postprocessing
                 rescue
