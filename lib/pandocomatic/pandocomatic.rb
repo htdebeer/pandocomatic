@@ -45,6 +45,9 @@ module Pandocomatic
 
     # The Pandocomatic class controlls the pandocomatic conversion process
     class Pandocomatic
+        
+        # Pandocomatic error status codes start from ERROR_STATUS
+        ERROR_STATUS = 1266 # This is the sum of the ascii values of the characters in 'pandocomatic'
 
         # Pandocomatic's current version
         VERSION = [0, 1, 4, 15]
@@ -103,7 +106,7 @@ module Pandocomatic
                     # conversion.
                     if command.all_errors.size > 0
                         ConfigurationErrorsPrinter.new(command.all_errors).print
-                        exit 1266
+                        exit ERROR_STATUS
                     end
 
                     # Pandocomatic is successfully configured: running the
@@ -120,7 +123,7 @@ module Pandocomatic
             rescue PandocomaticError => e
                 # Report the error and break off the conversion process.
                 ErrorPrinter.new(e).print
-                exit 1267
+                exit ERROR_STATUS + 1
             rescue StandardError => e
                 # An unexpected error has occurred; break off the program drastically
                 # for now
