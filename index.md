@@ -191,8 +191,8 @@ The required and optional arguments are discussed next, followed by some
 examples. See next chapter for a more in-depth coverage of the
 configuration of pandocomatic.
 
-2.1 Required arguments
-----------------------
+Required arguments
+------------------
 
 Two arguments are required when running pandocomatic: the input file or
 directory and the output file or directory:
@@ -212,8 +212,8 @@ directory and the output file or directory:
 
 The input and output should both be files or both be directories.
 
-2.2 Optional arguments
-----------------------
+Optional arguments
+------------------
 
 Besides the two required arguments, there are two arguments to configure
 pandocomatic, three arguments to change how pandocomatic operates, and
@@ -272,7 +272,7 @@ the conventional help and version arguments.
 :   Show a short help message. If this options is used, all other
     options except `--version` or `-v` are ignored.
 
-2.3 Examples
+2.1 Examples
 ------------
 
 ### Convert a single file
@@ -505,8 +505,8 @@ Word](https://products.office.com/en/word), and would generate both
 print and HTML. I found [pandoc](http://pandoc.org) version 1.5 and I
 have been using it for all my writings since then.
 
-4.1 Starting using pandoc
--------------------------
+Starting using pandoc
+---------------------
 
 Using pandoc is quite straightforward. At the least, you need to specify
 the input format, the output format, the input file, and the output
@@ -584,8 +584,8 @@ becomes a hassle
 
 To improve upon this situation I created pandocomatic.
 
-4.2 Automating using pandocomatic
----------------------------------
+Automating using pandocomatic
+-----------------------------
 
 The basic concepts underlying pandocomatic are *templates* that contain
 a *pandoc configuration*, a list of *preprocessors*, and a list of
@@ -843,8 +843,8 @@ and then instruct pandoc to use that template while generating a
 standalone HTML file. And then tell pandocomatic to do that for all
 files in the source directory, recursively.
 
-5.1 Configuring pandocomatic to convert a directory tree
---------------------------------------------------------
+Configuring pandocomatic to convert a directory tree
+----------------------------------------------------
 
 The thing about generating a static site is that most input files are
 converted using the same pandoc setup. Although a feature that allows
@@ -963,8 +963,8 @@ follows:
         of any of the templates, or
     -   copy the file to the destination directory.
 
-5.2 Using pandocomatic templates
---------------------------------
+Using pandocomatic templates
+----------------------------
 
 Besides the *settings* property, there is a **templates** property in
 the configuration file. This property is configured as explained in the
