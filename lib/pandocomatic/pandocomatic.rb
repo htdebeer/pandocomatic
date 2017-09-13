@@ -124,6 +124,7 @@ module Pandocomatic
             rescue StandardError => e
                 # An unexpected error has occurred; break off the program drastically
                 # for now
+                warn "Unexpected error occurred. You can report this bug via https://github.com/htdebeer/pandocomatic/issues/new."
                 raise e
             end
         end
