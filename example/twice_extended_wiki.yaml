@@ -1,0 +1,43 @@
+settings:
+    recursive: true
+    follow-links: false
+templates:
+    now:
+        preprocessors:
+            - 'preprocessors/now.rb'
+    branding:
+        postprocessors:
+            - 'postprocessors/branding.rb'
+    wiki-page:
+        extends: ['now', 'branding']
+        glob: ['*.md']
+        pandoc:
+            from: markdown
+            to: html5
+            standalone: true
+            template: 'templates/wiki.html'
+            css:
+                - './public/wiki.css'
+                - './public/page.css'
+    extended-wiki-page:
+        glob: ['*.markdown']
+        extends: 'wiki-page'
+        pandoc:
+            template: 'templates/extended_wiki.html'
+            old-dashes: true
+            css:
+                - './public/footnote.css'
+    twice-extended-wiki-page:
+        glob:
+            remove: ['*.md', '*.markdown']
+        extends: 'extended-wiki-page'
+        preprocessors:
+            remove:
+            - 'preprocessors/now.rb'
+        pandoc:
+            old-dashes:
+            css:
+                remove:
+                - './public/page.css'
+                add:
+                - './public/site.css'

@@ -50,7 +50,7 @@ module Pandocomatic
         ERROR_STATUS = 1266 # This is the sum of the ascii values of the characters in 'pandocomatic'
 
         # Pandocomatic's current version
-        VERSION = [0, 1, 4, 15]
+        VERSION = [0, 1, 4, 16]
 
         # Pandocomatic's default configuration file
         CONFIG_FILE = 'pandocomatic.yaml'
@@ -110,7 +110,8 @@ module Pandocomatic
                     end
 
                     # Pandocomatic is successfully configured: running the
-                    # actual conversion now.
+                    # actual conversion now. But first a short summary of the
+                    # process to execute is printed.
                     SummaryPrinter.new(command, input, output).print unless quiet or not command.directory?
 
                     # Depending on the options dry-run and quiet, the command.execute
@@ -126,8 +127,8 @@ module Pandocomatic
                 exit ERROR_STATUS + 1
             rescue StandardError => e
                 # An unexpected error has occurred; break off the program drastically
-                # for now
-                warn "Unexpected error occurred. You can report this bug via https://github.com/htdebeer/pandocomatic/issues/new."
+                # for now. This is likely a bug: ask the user to report it.
+                warn "An unexpected error has occurred. You can report this bug via https://github.com/htdebeer/pandocomatic/issues/new."
                 raise e
             end
         end

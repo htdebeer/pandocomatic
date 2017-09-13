@@ -158,4 +158,18 @@ class TestPandocomaticRun < Minitest::Test
       assert_directories_equal example_output, output
     end
   end
+
+  def test_extending_templates
+    Dir.mktmpdir('twice_extended_wiki') do |dir|
+      input = File.join ['example', 'src', 'twice_extended_wiki']
+      data_dir = File.join ['example', 'data-dir']
+      config = File.join ['example', 'twice_extended_wiki.yaml']
+      output = File.join [dir, 'twice_extended_wiki']
+
+      Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
+
+      example_output = File.join ['example', 'dst', 'twice_extended_wiki']
+      assert_directories_equal example_output, output
+    end
+  end
 end
