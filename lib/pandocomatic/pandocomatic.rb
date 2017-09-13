@@ -103,7 +103,7 @@ module Pandocomatic
                     # conversion.
                     if command.all_errors.size > 0
                         ConfigurationErrorsPrinter.new(command.all_errors).print
-                        exit
+                        exit 1266
                     end
 
                     # Pandocomatic is successfully configured: running the
@@ -120,6 +120,7 @@ module Pandocomatic
             rescue PandocomaticError => e
                 # Report the error and break off the conversion process.
                 ErrorPrinter.new(e).print
+                exit 1267
             rescue StandardError => e
                 # An unexpected error has occurred; break off the program drastically
                 # for now
