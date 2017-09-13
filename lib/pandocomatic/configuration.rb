@@ -34,7 +34,8 @@ module Pandocomatic
         'markdown_github' => 'md',
         'html5' => 'html',
         'docx' => 'docx',
-        'latex' => 'tex'
+        'latex' => 'tex',
+        'context' => 'tex'
     }
 
     # A Configuration object models a pandocomatic configuration.

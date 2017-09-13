@@ -186,7 +186,7 @@ module Pandocomatic
                 
                 # There is no "pdf" output format; change it to latex but keep the
                 # extension.
-                value = "latex" if option == "to" and value == "pdf"
+                value = determine_output_for_pdf(options) if option == "to" and value == "pdf"
 
                 begin
                     # Pandoc multi-word options can have the multiple words separated by
@@ -254,6 +254,33 @@ module Pandocomatic
                 output
             else
                 input
+            end
+        end
+
+        private
+
+
+        # Pandoc version 2 supports multiple pdf engines. Determine which
+        # to use given the options.
+        #
+        # @param options [Hash] the options to a paru pandoc converter
+        # @return [String] the output format for the pdf engine to use.
+        def determine_output_for_pdf(options)
+            if options.has_key? 'pdf-engine'
+                engine = options['pdf-engine']
+                case engine
+                when 'context'
+                    'context'
+                when 'pdfroff'
+                    'ms'
+                when 'wkhtmltopdf', 'weasyprint', 'prince'
+                    'html'
+                else
+                    'latex'
+                end
+            else
+                # According to pandoc's manual, the default is LaTeX
+                'latex'
             end
         end
     end
