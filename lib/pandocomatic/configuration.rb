@@ -278,6 +278,92 @@ module Pandocomatic
             updated_path
         end
 
+        # Extend the current value with the parent value. Depending on the
+        # value and type of the current and parent values, the extension
+        # differs.
+        #
+        # For simple values, the current value takes precedence over the
+        # parent value
+        #
+        # For Hash values, each parent value's property is extended as well
+        #
+        # For Arrays, the current overwrites and adds to parent value's items
+        # unless the current value is a Hash with a 'remove' and 'add'
+        # property. Then the 'add' items are added to the parent value and the
+        # 'remove' items are removed from the parent value.
+        #
+        # @param current [Object] the current value
+        # @param parent [Object] the parent value the current might extend
+        # @return [Object] the extended value
+        def self.extend_value(current, parent)
+            if parent.nil?
+                # If no parent value is specified, the current takes
+                # precedence
+                current
+            else
+                if current.nil?
+                    # Current nil removes value of parent; follows YAML spec.
+                    # Note. take care to actually remove this value from a
+                    # Hash. (Like it is done in the next case)
+                    nil
+                else
+                    if parent.is_a? Hash
+                        if current.is_a? Hash
+                            # Mixin current and parent values
+                            parent.each_pair do |property, value|
+                                if current.has_key? property
+                                    extended_value = Configuration.extend_value(current[property], value)
+                                    if extended_value.nil?
+                                        current.delete property
+                                    else
+                                        current[property] = extended_value
+                                    end
+                                else
+                                    current[property] = value
+                                end
+                            end
+                        end
+                        current
+                    elsif parent.is_a? Array
+                        if current.is_a? Hash
+                            if current.has_key? 'remove'
+                                to_remove = current['remove']
+
+                                if to_remove.is_a? Array
+                                    parent = parent.delete_if {|v| current['remove'].include? v}
+                                else
+                                    parent = parent.delete to_remove
+                                end
+                            end
+
+                            if current.has_key? 'add'
+                                to_add = current['add']
+                                
+                                if to_add.is_a? Array
+                                    parent = current['add'].concat(parent).uniq
+                                else
+                                    parent.push(to_add).uniq
+                                end
+                            end
+
+                            parent
+                        elsif current.is_a? Array
+                            # Just combine parent and current arrays, current
+                            # values take precedence
+                            current.concat(parent).uniq
+                        else
+                            # Unknown what to do, assuming current should take
+                            # precedence
+                            current
+                        end
+                    else
+                        # Simple values: current replaces parent
+                        current
+                    end
+                end
+            end
+        end
+
         private 
 
         # Reset the settings for pandocomatic based on a new settings Hash
@@ -328,7 +414,7 @@ module Pandocomatic
             fields.each do |field|
                 parent = base_template[field]
                 current = mixin_template[field]
-                extended_value = extend_value current, parent
+                extended_value = Configuration.extend_value current, parent
 
                 if extended_value.nil?
                     base_template.delete field
@@ -338,92 +424,6 @@ module Pandocomatic
             end
 
             base_template
-        end
-
-        # Extend the current value with the parent value. Depending on the
-        # value and type of the current and parent values, the extension
-        # differs.
-        #
-        # For simple values, the current value takes precedence over the
-        # parent value
-        #
-        # For Hash values, each parent value's property is extended as well
-        #
-        # For Arrays, the current overwrites and adds to parent value's items
-        # unless the current value is a Hash with a 'remove' and 'add'
-        # property. Then the 'add' items are added to the parent value and the
-        # 'remove' items are removed from the parent value.
-        #
-        # @param current [Object] the current value
-        # @param parent [Object] the parent value the current might extend
-        # @return [Object] the extended value
-        def extend_value(current, parent)
-            if parent.nil?
-                # If no parent value is specified, the current takes
-                # precedence
-                current
-            else
-                if current.nil?
-                    # Current nil removes value of parent; follows YAML spec.
-                    # Note. take care to actually remove this value from a
-                    # Hash. (Like it is done in the next case)
-                    nil
-                else
-                    if parent.is_a? Hash
-                        if current.is_a? Hash
-                            # Mixin current and parent values
-                            parent.each_pair do |property, value|
-                                if current.has_key? property
-                                    extended_value = extend_value(current[property], value)
-                                    if extended_value.nil?
-                                        current.delete property
-                                    else
-                                        current[property] = extended_value
-                                    end
-                                else
-                                    current[property] = value
-                                end
-                            end
-                        end
-                        current
-                    elsif parent.is_a? Array
-                        if current.is_a? Hash
-                            if current.has_key? 'remove'
-                                to_remove = current['remove']
-
-                                if to_remove.is_a? Array
-                                    parent = parent.delete_if {|v| current['remove'].include? v}
-                                else
-                                    parent = parent.delete to_remove
-                                end
-                            end
-
-                            if current.has_key? 'add'
-                                to_add = current['add']
-                                
-                                if to_add.is_a? Array
-                                    parent = current['add'].concat(parent).uniq
-                                else
-                                    parent.push(to_add).uniq
-                                end
-                            end
-
-                            parent
-                        elsif current.is_a? Array
-                            # Just combine parent and current arrays, current
-                            # values take precedence
-                            current.concat(parent).uniq
-                        else
-                            # Unknown what to do, assuming current should take
-                            # precedence
-                            current
-                        end
-                    else
-                        # Simple values: current replaces parent
-                        current
-                    end
-                end
-            end
         end
 
         # Resolve the templates the templates extends and mixes them in, in

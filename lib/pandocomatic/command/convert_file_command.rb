@@ -102,16 +102,7 @@ module Pandocomatic
                 raise ConfigurationError.new(:no_such_template, nil, @template_name) unless @config.has_template? @template_name
                 template = @config.get_template @template_name
 
-                pandoc_options = (template['pandoc'] || {}).merge(pandoc_options) do |key, oldval, newval| 
-                    # Options that can occur more than once, such as 'filter' or
-                    # 'metadata' are merged, not replaced like options that can occur
-                    # only once, such as 'toc' or 'from'
-                    if oldval.is_a? Array
-                        oldval + newval
-                    else
-                        newval
-                    end
-                end
+                pandoc_options = Configuration.extend_value(pandoc_options, template['pandoc'])
             end
 
             # Run setup scripts
