@@ -20,18 +20,29 @@ title: Pandocomatic
 Chapter 1. Introduction {#introduction}
 =======================
 
-Pandocomatic is a tool to automate using [pandoc](http://pandoc.org/).
-With pandocomatic you can express common patterns of using pandoc for
-generating your documents. Applied to a directory, pandocomatic can act
-as a static site generator. For example, this manual and the website it
-is put on are generated using pandocomatic!
+Pandocomatic is a tool to automate the use of
+[pandoc](http://pandoc.org/). With pandocomatic you can express common
+patterns of using [pandoc](http://pandoc.org/) for generating your
+documents. Applied to a directory, pandocomatic can act as a static site
+generator. For example, this manual is generated with pandocomatic!
+
+Pandocomatic is [free
+software](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic
+is released under the
+[GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html). You'll find the
+source code of pandocomatic in its
+[repository](https://github.com/htdebeer/pandocomatic) on
+[Github](https://github.com).
 
 1.1 Why pandocomatic?
 ---------------------
 
-I use [pandoc](http://pandoc.org/) a lot. I use it to write all my
-papers, notes, websites, reports, outlines, summaries, and books. Time
-and again I was invoking pandoc like:
+Why pandocomatic? {#why-pandocomatic}
+-----------------
+
+I use pandoc a lot. I use it to write all my papers, notes, websites,
+reports, outlines, summaries, and books. Time and again I was invoking
+pandoc like:
 
 ``` {.bash}
 pandoc --from markdown \
@@ -45,7 +56,7 @@ pandoc --from markdown \
 ```
 
 Sure, when I write about history, the [CSL](http://citationstyles.org/)
-file and bibliography changes. And I do not need the `--mathjax` option
+file and bibliography change. And I do not need the `--mathjax` option
 like I do when I am writing about mathematics education. Still, all
 these invocations are quite similar.
 
@@ -114,14 +125,6 @@ HTML and PDF. Adding file-specific pandoc options to the conversion
 process is as easy as adding a `pandoc` property with those options to
 the `pandocomatic_` metadata property in the source file.
 
-Note that the pandocomatic YAML property is named `pandocomatic_`.
-Pandoc has the
-[convention](http://pandoc.org/MANUAL.html#metadata-blocks) that YAML
-property names ending with an underscore will be ignored by pandoc and
-can be used by programs like pandocomatic. Pandocomatic adheres to this
-convention. However, for backwards compatibility the property name
-`pandocomatic` still works, it just will not be ignored by pandoc.
-
 Once I had written a number of related documents this way, it was a
 small step to enable pandocomatic to convert directories as well as
 files. Just like that, pandocomatic can be used as a *static site
@@ -143,7 +146,7 @@ pandocomatic:
 -----------
 
 Pandocomatic is [free
-sofware](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic
+software](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic
 is released under the
 [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html). You find
 pandocomatic's source code on
@@ -152,25 +155,32 @@ pandocomatic's source code on
 1.3 Installation
 ----------------
 
-Pandocomatic is installed through [RubyGems](https://rubygems.org/) as
-follows:
+Installation {#installation}
+------------
+
+Pandocomatic is a [Ruby](https://www.ruby-lang.org/en/) program and can
+be installed through [RubyGems](https://rubygems.org/) as follows:
 
 ``` {.bash}
 gem install pandocomatic
 ```
 
-You can also download the latest gem
+This will install pandocomatic and
+[paru](https://heerdebeer.org/Software/markdown/paru/), a
+[Ruby](https://www.ruby-lang.org/en/) wrapper around
+[pandoc](http://pandoc.org/). To use pandocomatic, you also need a
+working pandoc installation. See [pandoc's installation
+guide](http://pandoc.org/installing.html) for more information about
+installing pandoc.
+
+You can also download the latest [gem](https://rubygems.org/)
 [pandocomatic-0.1.4.17](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.17.gem)
-from github and install it as follows:
+from [Github](https://github.com) and install it manually as follows:
 
 ``` {.bash}
 cd /directory/you/downloaded/the/gem/to
 gem install pandocomatic-0.1.4.17.gem
 ```
-
-Pandocomatic builds on
-[paru](https://heerdebeer.org/Software/markdown/paru/), a Ruby wrapper
-around pandoc, and [pandoc](http://pandoc.org/) itself, of course.
 
 Chapter 2. Using pandocomatic {#using-pandocomatic}
 =============================

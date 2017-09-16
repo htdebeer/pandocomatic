@@ -1,0 +1,9 @@
+templates:
+    hello:
+        pandoc:
+            to: html
+            css:
+                - ./style.css
+            template: hello-template.html
+        postprocessors:
+            - ./tidy.sh

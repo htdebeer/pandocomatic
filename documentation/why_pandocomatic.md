@@ -1,6 +1,7 @@
-I use [pandoc](http://pandoc.org/) a lot. I use it to write all my papers,
-notes, websites, reports, outlines, summaries, and books. Time and again I was
-invoking pandoc like: 
+## Why pandocomatic?
+
+I use pandoc a lot. I use it to write all my papers, notes, websites, reports,
+outlines, summaries, and books. Time and again I was invoking pandoc like: 
 
 ~~~{.bash}
 pandoc --from markdown \
@@ -14,9 +15,9 @@ pandoc --from markdown \
 ~~~
 
 Sure, when I write about history, the [CSL](http://citationstyles.org/) file
-and bibliography changes. And I do not need the `--mathjax` option like I do
+and bibliography change. And I do not need the `--mathjax` option like I do
 when I am writing about mathematics education. Still, all these invocations
-are quite similar. 
+are quite similar.
   
 I already wrote the program *do-pandoc.rb* as part of a
 [Ruby](https://www.ruby-lang.org/en/) wrapper around pandoc,
@@ -82,13 +83,6 @@ document, for example to convert a markdown file to both HTML and PDF. Adding
 file-specific pandoc options to the conversion process is as easy as adding a
 `pandoc` property with those options to the `pandocomatic_` metadata property
 in the source file. 
-
-Note that the pandocomatic YAML property is named `pandocomatic_`. Pandoc has
-the [convention](http://pandoc.org/MANUAL.html#metadata-blocks) that YAML
-property names ending with an underscore will be ignored by pandoc and can be
-used by programs like pandocomatic. Pandocomatic adheres to this convention.
-However, for backwards compatibility the property name `pandocomatic` still
-works, it just will not be ignored by pandoc.
 
 Once I had written a number of related documents this way, it was a small step
 to enable pandocomatic to convert directories as well as files. Just like
