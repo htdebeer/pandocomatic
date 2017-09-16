@@ -34,6 +34,33 @@ source code of pandocomatic in its
 [repository](https://github.com/htdebeer/pandocomatic) on
 [Github](https://github.com).
 
+Installation
+------------
+
+Pandocomatic is a [Ruby](https://www.ruby-lang.org/en/) program and can
+be installed through [RubyGems](https://rubygems.org/) as follows:
+
+``` {.bash}
+gem install pandocomatic
+```
+
+This will install pandocomatic and
+[paru](https://heerdebeer.org/Software/markdown/paru/), a
+[Ruby](https://www.ruby-lang.org/en/) wrapper around
+[pandoc](http://pandoc.org/). To use pandocomatic, you also need a
+working pandoc installation. See [pandoc's installation
+guide](http://pandoc.org/installing.html) for more information about
+installing pandoc.
+
+You can also download the latest [gem](https://rubygems.org/)
+[pandocomatic-0.1.4.17](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.17.gem)
+from [Github](https://github.com) and install it manually as follows:
+
+``` {.bash}
+cd /directory/you/downloaded/the/gem/to
+gem install pandocomatic-0.1.4.17.gem
+```
+
 Why pandocomatic?
 -----------------
 
@@ -129,33 +156,6 @@ generator*!
 
 Chapter 2. Using pandocomatic: Quick start and overview {#using-pandocomatic-quick-start-and-overview}
 =======================================================
-
-Installation
-------------
-
-Pandocomatic is a [Ruby](https://www.ruby-lang.org/en/) program and can
-be installed through [RubyGems](https://rubygems.org/) as follows:
-
-``` {.bash}
-gem install pandocomatic
-```
-
-This will install pandocomatic and
-[paru](https://heerdebeer.org/Software/markdown/paru/), a
-[Ruby](https://www.ruby-lang.org/en/) wrapper around
-[pandoc](http://pandoc.org/). To use pandocomatic, you also need a
-working pandoc installation. See [pandoc's installation
-guide](http://pandoc.org/installing.html) for more information about
-installing pandoc.
-
-You can also download the latest [gem](https://rubygems.org/)
-[pandocomatic-0.1.4.17](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.17.gem)
-from [Github](https://github.com) and install it manually as follows:
-
-``` {.bash}
-cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.1.4.17.gem
-```
 
 Converting a single document
 ----------------------------
@@ -490,17 +490,65 @@ convention. However, for backwards compatibility the property name
 Chapter 4. Appendix {#appendix}
 ===================
 
-4.1 Glossary
-------------
+Glossary
+--------
 
-**pandocomatic template** **internal pandocomatic template** **external
-pandocomatic template** **preprocessors** **postprocessors**
-**pandocomatic data directory** **pandocomatic configuration file**
-**extending pandocomatic templates** **static-site generator**
+pandocomatic template
 
-Links:
+:   A pandocomatic template specified the conversion process executed by
+    pandocomatic. It can contain the following sections:
 
--   pandocomatic-templates
--   extending-pandocomatic-template
--   pandocomatic-cli
--   specifying-paths
+-   glob
+-   extends
+-   setup
+-   preprocessors
+-   metadata
+-   pandoc
+-   postprocessors
+-   cleanup
+
+internal pandocomatic template
+
+:   A pandocomatic template specified in a pandoc markdown file itself
+    via the YAML metadata property `pandocomatic_`.
+
+external pandocomatic template
+
+:   A pandocomatic template specified in a *pandocomatic configuration
+    file*.
+
+preprocessors
+
+:   A preprocessor applied to an input document before running pandoc.
+
+postprocessors
+
+:   A postprocessor applied to an input document after running pandoc.
+
+pandocomatic data directory
+
+:   The directory used by pandocomatic to resolve relative paths. Use
+    this directory to store preprocessors, pandoc templates, pandoc
+    filters, postprocessors, setup scripts, and cleanup scripts.
+    Defaults to pandoc's data directory.
+
+pandocomatic configuration file
+
+:   The configuration file specifying *external pandocomatic templates*
+    as well as settings for converting a directory tree. Defaults to
+    `pandocomatic.yaml`.
+
+extending pandocomatic templates
+
+:   *External pandocomatic templates* can extend other *external
+    pandocomatic templates*. By using multiple smaller *external
+    pandocomatic templates* it is possible to setup your templates in a
+    modular way. Pandocomatic supports extending from multiple *external
+    pandocomatic templates*.
+
+static-site generator
+
+:   Pandocomatic can be used as a static-site generator by running
+    pandocomatic recursivel on a directory. Pandocomatic has some
+    specific congiguration options to be used as a static-site
+    generator.

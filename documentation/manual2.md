@@ -20,11 +20,11 @@ pandocomatic_:
 
 ::paru::insert introduction.md
 
+::paru::insert install.md
+
 ::paru::insert why_pandocomatic.md
 
 # Using pandocomatic: Quick start and overview
-
-::paru::insert install.md
 
 ::paru::insert convert_a_document.md
 
@@ -47,23 +47,4 @@ pandocomatic_:
 
 # Appendix
 
-
-## Glossary
-
-**pandocomatic template**
-**internal pandocomatic template**
-**external pandocomatic template**
-**preprocessors**
-**postprocessors**
-**pandocomatic data directory**
-**pandocomatic configuration file**
-**extending pandocomatic templates**
-**static-site generator**
-
-
-Links:
-
-- pandocomatic-templates
-- extending-pandocomatic-template
-- pandocomatic-cli
-- specifying-paths
+::paru::insert glossary.md
