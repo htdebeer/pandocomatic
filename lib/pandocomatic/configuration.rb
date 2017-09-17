@@ -331,9 +331,9 @@ module Pandocomatic
                                 to_remove = current['remove']
 
                                 if to_remove.is_a? Array
-                                    parent = parent.delete_if {|v| current['remove'].include? v}
+                                    parent.delete_if {|v| current['remove'].include? v}
                                 else
-                                    parent = parent.delete to_remove
+                                    parent.delete to_remove
                                 end
                             end
 

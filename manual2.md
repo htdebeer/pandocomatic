@@ -53,12 +53,12 @@ guide](http://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest [gem](https://rubygems.org/)
-[pandocomatic-0.1.4.17](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.17.gem)
+[pandocomatic-0.1.4.18](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.1.4.18.gem)
 from [Github](https://github.com) and install it manually as follows:
 
 ``` {.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.1.4.17.gem
+gem install pandocomatic-0.1.4.18.gem
 ```
 
 Why pandocomatic?
@@ -487,8 +487,8 @@ pandocomatic options [INPUT]
 
 `-h, --help`
 
-:   Show a short help message. If this options is used, all other
-    options except `--version` or `-v` are ignored.
+:   Show a short help message. If this option is used, all other options
+    except `--version` or `-v` are ignored.
 
 ### Input/output arguments
 
