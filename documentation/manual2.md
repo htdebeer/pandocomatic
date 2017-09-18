@@ -11,12 +11,10 @@ keywords:
 - static site generator
 pandocomatic_:
   use-template: mddoc
-  pandoc:
-    filter: 
-    - 'filters/number_chapters_and_sections_and_figures.rb'
+  postprocessors: ['postprocessors/setup_for_website.rb']
 ...
 
-# Introduction
+# Introduction {#introduction}
 
 ::paru::insert introduction.md
 
@@ -24,7 +22,7 @@ pandocomatic_:
 
 ::paru::insert why_pandocomatic.md
 
-# Using pandocomatic: Quick start and overview
+# Using pandocomatic: Quick start and overview {#using-pandocomatic}
 
 ::paru::insert convert_a_document.md
 
@@ -34,10 +32,12 @@ pandocomatic_:
 
 ------------------------------------------
 
-# Reference: All about pandocomatic
+# Reference: All about pandocomatic {#reference}
 
 
 ::paru::insert pandocomatic_cli.md
+
+::paru::insert pandocomatic_configuration.md
 
 ::paru::insert pandocomatic_templates.md
 
@@ -45,6 +45,6 @@ pandocomatic_:
 
 ------------------------------------------
 
-# Appendix
+# Appendix {#appendix}
 
 ::paru::insert glossary.md

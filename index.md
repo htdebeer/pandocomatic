@@ -7,12 +7,6 @@ keywords:
 - paru
 - pandocomatic
 - static site generator
-pandocomatic-fileinfo:
-  created: '2017-03-04'
-  from: markdown
-  modified: '2017-03-04'
-  path: 'manual.md'
-  to: markdown
 subtitle: Automating the use of pandoc
 title: Pandocomatic
 ---
@@ -142,9 +136,6 @@ pandocomatic:
 2.  [using pandocomatic as a static site
     generator](#using-pandocomatic-as-a-static-site-generator).
 
-1.2 Licence
------------
-
 Pandocomatic is [free
 software](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic
 is released under the
@@ -152,10 +143,7 @@ is released under the
 pandocomatic's source code on
 [github](https://github.com/htdebeer/pandocomatic).
 
-1.3 Installation
-----------------
-
-Installation {#installation}
+Installation
 ------------
 
 Pandocomatic is a [Ruby](https://www.ruby-lang.org/en/) program and can
@@ -323,17 +311,19 @@ Looking more closely to the pandocomatic configuration file
 `config.yaml`, we see it contains one template, `mddoc`:
 
 ``` {.yaml}
-templates:
-  mddoc:
-    pandoc:
-      from: markdown
-      to: markdown
-      standalone: true
-      filter: 
-      - filters/insert_document.rb
-      - filters/insert_code_block.rb
-      - filters/remove_pandocomatic_metadata.rb
-      - filters/insert_pandocomatic_version.rb
+ templates:
+   mddoc:
+     pandoc:
+       from: markdown
+       to: markdown
+       standalone: true
+       filter: 
+       - filters/insert_document.rb
+       - filters/insert_code_block.rb
+       - filters/remove_pandocomatic_metadata.rb
+       - filters/insert_pandocomatic_version.rb
+     postprocessors:
+         - postprocessors/setup_for_website.rb
 ```
 
 The `mddoc` template tells pandocomatic to convert a markdown file to a
@@ -612,8 +602,8 @@ generated HTML work. I have created simple shell scripts for these
 tasks. For running `tidy` that script looks like:
 
 ``` {.bash}
-#!/bin/bash
-tidy -quiet -clean -indent -wrap 78 -utf8
+ #!/bin/bash
+ tidy -quiet -clean -indent -wrap 78 -utf8
 ```
 
 For running `linkchecker` that script is slightly more involved because
@@ -621,12 +611,12 @@ it does not read a HTML file from standard input, nor does it write that
 file to standard output like `tidy` does:
 
 ``` {.bash}
-#!/bin/bash
-INPUT=`cat`
-file_to_check="/tmp/FILE_TO_LINK_CHECK.html"
-echo "$INPUT" > $file_to_check
-linkchecker --no-status --anchors --check-extern $file_to_check 1>&2
-cat $file_to_check
+ #!/bin/bash
+ INPUT=`cat`
+ file_to_check="/tmp/FILE_TO_LINK_CHECK.html"
+ echo "$INPUT" > $file_to_check
+ linkchecker --no-status --anchors --check-extern $file_to_check 1>&2
+ cat $file_to_check
 ```
 
 The important thing to remember about processors is that they read from
@@ -905,23 +895,23 @@ The configuration file `website-config.yaml` contains the following
 configuration:
 
 ``` {.yaml}
-settings:
-    recursive: true
-    follow-links: false
-    skip: ['.*', 'pandocomatic.yaml']
-templates:
-    page:
-        glob: ['*.markdown', '*.md']
-        preprocessors: ['preprocessors/site_menu.rb']
-        pandoc:
-            from: markdown
-            to: html5
-            standalone: true
-            template: 'templates/page.html'
-            csl: 'apa.csl'
-            toc: true
-            mathjax: true
-        postprocessors: ['postprocessors/tidy.sh']
+ settings:
+     recursive: true
+     follow-links: false
+     skip: ['.*', 'pandocomatic.yaml']
+ templates:
+     page:
+         glob: ['*.markdown', '*.md']
+         preprocessors: ['preprocessors/site_menu.rb']
+         pandoc:
+             from: markdown
+             to: html5
+             standalone: true
+             template: 'templates/page.html'
+             csl: 'apa.csl'
+             toc: true
+             mathjax: true
+         postprocessors: ['postprocessors/tidy.sh']
 ```
 
 Compared to the pandocomatic configuration files in the previous
@@ -1006,10 +996,10 @@ to extend a template. Just create a `pandocomatic.yaml` file in that
 directory and reconfigure a template:
 
 ``` {.yaml}
-templates:
-    page:
-        pandoc:
-            csl: 'chicago-fullnote-bibliography.csl'
+ templates:
+     page:
+         pandoc:
+             csl: 'chicago-fullnote-bibliography.csl'
 ```
 
 This works just like [extending templates in a source
@@ -1023,3 +1013,10 @@ site is as easy as rerunning pandocomatic. In that case, the
 `--modified-only` option is a great time saver as it only regenerates
 those files that have been changed since the last time you generated
 your web site.
+
+---
+pandocomatic_:
+    pandoc:
+        filter:
+        - './documentation/data-dir/filters/number_all_the_things.rb'
+...

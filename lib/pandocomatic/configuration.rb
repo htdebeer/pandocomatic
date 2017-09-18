@@ -259,8 +259,9 @@ module Pandocomatic
         def update_path(path, src_dir, check_executable = false)
             updated_path = path
             if path.start_with? './' 
-                # refers to a local dir
-                updated_path = File.join src_dir, path
+                # refers to a local dir; strip the './' before appending it to
+                # the source directory as to prevent /some/path/./to/path
+                updated_path = File.join src_dir, path[2..-1]
             else
                 if path.start_with? '/'
                     updated_path = path

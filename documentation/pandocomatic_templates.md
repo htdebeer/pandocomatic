@@ -1,6 +1,5 @@
 ## Pandocomatic templates {#pandocomatic-templates}
 
-
 Note that the pandocomatic YAML property is named `pandocomatic_`. Pandoc has
 the [convention](http://pandoc.org/MANUAL.html#metadata-blocks) that YAML
 property names ending with an underscore will be ignored by pandoc and can be

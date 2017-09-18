@@ -1,0 +1,14 @@
+settings:
+    data-dir: ~/my_data_dir
+    recursive: true
+    follow-links: false
+    skip: ['.*']
+templates:
+    webpage:
+        pandoc:
+            to: html
+            toc: true
+            css:
+                - assets/style.css
+        postprocessors:
+            - postprocessors/tidy.sh

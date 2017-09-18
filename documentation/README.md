@@ -9,15 +9,9 @@ pandocomatic_:
 
 ::paru::insert introduction.md
 
-## Why pandocomatic?
-
 ::paru::insert why_pandocomatic.md
 
-## Licence
-
 ::paru::insert license.md
-
-## Installation
 
 ::paru::insert install.md
 

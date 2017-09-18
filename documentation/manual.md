@@ -34,11 +34,7 @@ two chapters of this manual describe two typical use cases of pandocomatic:
 2.  [using pandocomatic as a static site
     generator](#using-pandocomatic-as-a-static-site-generator).
 
-## Licence
-
 ::paru::insert license.md
-
-## Installation
 
 ::paru::insert install.md
 
