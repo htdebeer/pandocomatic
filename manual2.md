@@ -148,6 +148,8 @@ small step to enable pandocomatic to convert directories as well as
 files. Just like that, pandocomatic can be used as a *static site
 generator*!
 
+------------------------------------------------------------------------
+
 Using pandocomatic: Quick start and overview {#using-pandocomatic}
 ============================================
 
@@ -572,6 +574,7 @@ valid *pandocomatic configuration file*:
      skip: ['.*']
  templates:
      webpage:
+         glob: ['*.md']
          pandoc:
              to: html
              toc: true
@@ -615,10 +618,10 @@ You can configure four optional global settings:
 The latter three are used only when running pandocomatic to convert a
 directory tree. These are discussed in the next sub section.
 
-The first setting, `data-dir`, tells pandocomatic where its *data
-directory* is. You can also specify the *pandocomatic data directory*
-via the command-line option `--data-dir`. For example, if you want to
-use `~/my-data-dir` as the *pandocomatic data directory*, invoke
+The first setting, `data-dir` (String), tells pandocomatic where its
+*data directory* is. You can also specify the *pandocomatic data
+directory* via the command-line option `--data-dir`. For example, if you
+want to use `~/my-data-dir` as the *pandocomatic data directory*, invoke
 pandocomatic as follows:
 
 ``` {.bash}
@@ -628,29 +631,350 @@ pandocomatic --data-dir ~/my-data-dir some-file-to-convert.md
 If no *pandocomatic data directory* is specified whatsoever,
 pandocomatic defaults to pandoc's data directory.
 
-#### Configuring converting a directory tree
+Any directory can be used as a *pandocomatic data directory*, there are
+no conventions or requirements for this directory other than being a
+directory. However, it is recommended to create a meaningful sub
+directory structure rather than to put everything together. For example,
+a sub directory for processors, filters, CSL files, and pandoc templates
+makes it easier to point to these assets.
+
+#### Configuring converting a directory tree {#global-settings}
+
+You can convert a directory tree with pandocomatic by invoking
+pandocomatic with a directory as input rather than a file. Of course,
+once you start converting directories, more fine-grained control over
+what files to convert than "convert all files" is required. There are
+four settings you can use to control which files to convert. Three of
+them are global settings, the other one is the `glob` property of an
+*external pandocomatic template*. The `glob` property is discussed
+later.
+
+The three global settings to control which files to convert are:
+
+1.  `recursive` (Boolean), which tells pandocomatic to convert sub
+    directories or not. This setting defaults to `true`.
+2.  `follow-links` (Boolean), which tells pandocomatic to treat symbolic
+    links as files and directories to convert or not. This setting
+    defaults to `false`.
+3.  `skip` (Array of glob patterns), which tells pandocomatic which
+    files not to convert at all. This setting defaults to
+    `['.*', 'pandocomatic.yaml']`: ignore all hidden files (starting
+    with a period) and also ignore default *pandocomatic configuration
+    files*.
+
+#### Default configuration
+
+Pandocomatic's default configuration file is defined in the file
+[`lib/pandocomatic/default_configuration.yaml`](https://github.com/htdebeer/pandocomatic/blob/master/lib/pandocomatic/default_configuration.yaml).
+This default configuration is used whenever
+
+-   no configuration is specified via the command-line option
+    `--config`, and
+-   no default configuration file (`pandocomatic.yaml`) can be found in
+    the *pandocomatic data directory*.
+
+When converting a directory tree, each time pandocomatic enters a
+directory, it also looks for a default configuration file to *update*
+the current settings. In other words, you can have pandocomatic behave
+differently in a sub directory than the current directory by putting a
+`pandocomatic.yaml` file in that sub directory that changes the global
+settings or *external pandocomatic templates*.
 
 ### Templates
+
+Besides the global `settings` section, a *pandocomatic configuration
+file* can also contain a `templates` section. In the `templates` section
+you define the *external pandocomatic templates* you want to use when
+converting files with pandocomatic. Pandocomatic templates are discussed
+in detail in the [Chapter on pandocomatic
+templates](#pandocomatic-templates). The `glob` property of *external
+pandocomatic templates* is related to configuring pandocomatic when
+converting a directory. It tells pandocomatic which files in a directory
+are to be converted with a template.
+
+If you look at the example *pandocomatic configuration file* at the
+start of this chapter, you see that the `webpage` template is configured
+with property `glob: ['*.md']`. This tells pandocomatic to apply the
+template `webpage` to all markdown files with extension `.md`. In other
+words, given a directory with the following files:
+
+    directory/
+    + sub directory/
+    | + index.md
+    - index.md
+    - image.png 
+
+Running pandocomatic with the example *pandocomatic configuration file*
+will result in the following result"
+
+    directory/
+    + sub directory/
+    | + index.html
+    - index.html
+    - image.png 
+
+That is, all `.md` files are converted to HTML and all other files are
+copied, recursively.
 
 Pandocomatic templates
 ----------------------
 
-Note that the pandocomatic YAML property is named `pandocomatic_`.
-Pandoc has the
-[convention](http://pandoc.org/MANUAL.html#metadata-blocks) that YAML
-property names ending with an underscore will be ignored by pandoc and
-can be used by programs like pandocomatic. Pandocomatic adheres to this
-convention. However, for backwards compatibility the property name
-`pandocomatic` still works, it just will not be ignored by pandoc.
+Pandocomatic automates the use of pandoc by extracting common usage
+patterns of pandoc into so called *pandocomatic templates*, which you
+can then apply to your documents. As described in [Part
+II](#using-pandocomatic), there are **internal** and **external**
+*pandocomatic templates*. The difference between these two types of
+templates is their scope: *internal pandocomatic templates* only affect
+the document they are defined in, whereas *external pandocomatic
+templates*, which are defined in a *pandocomatic configuration file*,
+affect all documents that use that template.
+
+Although you can create a one-off *internal pandocomatic template* for a
+document—sometimes you just have an odd writing project that differs too
+much from your regular writings—, most often you use an *external
+pandocomatic template* and customize it in the *internal pandocomatic
+template*.
+
+In this Chapter the definition, extension, customization, and use of
+templates are discussed in detail.
+
+### Defining a template
+
+An *external pandocomatic template* is defined in the `templates`
+section of a *pandocomatic configuration file*. For example, in the
+following YAML code, the template `webpage` is defined:
+
+``` {.yaml}
+ settings:
+     data-dir: ~/my_data_dir
+     recursive: true
+     follow-links: false
+     skip: ['.*']
+ templates:
+     webpage:
+         glob: ['*.md']
+         pandoc:
+             to: html
+             toc: true
+             css:
+                 - assets/style.css
+         postprocessors:
+             - postprocessors/tidy.sh
+```
+
+Each template is a YAML property in the `templates` section. The
+property name is the template name. The property value is the template's
+definition. A template definition can contain the following sections:
+
+-   `extends`
+-   `glob`
+-   `setup`
+-   `preprocessors`
+-   `metadata`
+-   `pandoc`
+-   \`postprocessors'
+-   `cleanup`
+
+Before discussing these sections in detail, the way pandocomatic
+resolves paths used in these sections is described first.
+
+#### Specifying paths
+
+Because templates can be used in any document, specifying paths to
+assets to use in the conversion process is not straightforward. Using
+global paths only could work, but has the disadvantage that the
+templates are no longer shareable with others. Using local paths works
+only if the assets and the document to convert are located in the same
+directory. As a third alternative, pandocomatic also supports paths that
+are relative to the *pandocomatic data directory*.
+
+You can specify these types of paths as follows:
+
+1.  All **local** paths start with a `./`. These paths are local to the
+    document being converted. When converting a directory tree, the
+    current directory is being prepended to the path minus the `./`.
+2.  **global** paths start with a `/`. These paths are resolved as is.
+3.  paths **relative** to the *pandocomatic data directory* do not start
+    with a `./` nor a `/`. These paths are resolved by prepending the
+    path to the *pandocomatic data directory*.
+
+#### Template sections
+
+##### `extends`
+
+A template can extend zero or more templates by supplying a list of
+template names to extend. The extension builds from left to right.
+
+For more detailed information about extending templates, see the
+[Section about extending templates](#extending-pandocomatic-templates)
+below.
+
+**Examples**
+
+-   Extend from template `webpage`:
+
+    ``` {.yaml}
+    extends: ['webpage']
+    ```
+
+    If only one template is extended, a string value is also allowed.
+    The following has the same effect as the example above:
+
+    ``` {.yaml}
+    extends: webpage
+    ```
+
+-   Extend from templates `webpage` and `overview`:
+
+    ``` {.yaml}
+    extends: ['webpage', 'overview']
+    ```
+
+    Note. If both templates have overlapping or contradictory
+    configuration, this extension can be different from:
+
+    ``` {.yaml}
+    extends: ['overview', 'webpage']
+    ```
+
+##### `glob`
+
+When a template is used for converting files in a directory tree, you
+can specify which files in the directory should be converted by a
+template. The `glob` section expects a list of [glob
+patterns](http://ruby-doc.org/core-2.4.1/Dir.html#method-c-glob). All
+files that match any of these glob patterns are converted using this
+template.
+
+When there are more templates that have matching glob patterns, the
+first one is used.
+
+If there is also a `skip` configured (see the [Section on global
+settings](#global-settings), the `skip` setting has precedence of the
+`glob` setting. Thus, if `skip` is `['*.md']` and `glob` is `['*.md']`,
+the template will not be applied.
+
+**Examples**
+
+-   Apply this template to all files with extension `.md` (i.e. all
+    markdown files):
+
+    ``` {.yaml}
+    glob: ['*.md']
+    ```
+
+-   Apply this template to all HTML files and all files starting with
+    `overview_`:
+
+    ``` {.yaml}
+    glob: ['overview_*', '*.html']
+    ```
+
+##### `setup`
+
+**Examples**
+
+-   the example:
+
+    ``` {.yaml}
+    ```
+
+##### `preprocessors`
+
+**Examples**
+
+-   the example:
+
+    ``` {.yaml}
+    ```
+
+##### `metadata`
+
+**Examples**
+
+-   the example:
+
+    ``` {.yaml}
+    ```
+
+##### `pandoc`
+
+**Examples**
+
+-   the example:
+
+    ``` {.yaml}
+    ```
+
+##### `postprocessors`
+
+**Examples**
+
+-   the example:
+
+    ``` {.yaml}
+    ```
+
+##### `cleanup`
+
+**Examples**
+
+-   the example:
+
+    ``` {.yaml}
+    ```
 
 ### Extending pandocomatic templates
 
-### Specifying paths
+### Extension rules
+
+#### Simple values
+
+#### Maps
+
+#### Lists (or rather sets)
+
+#### Modularity
+
+### Customizing a template
+
+#### `use-template`
+
+#### Multiple conversions
 
 ------------------------------------------------------------------------
 
 Appendix
 ========
+
+Frequently asked questions (FAQ) {#faq}
+--------------------------------
+
+### How do I use pandoc2 with pandocomatic?
+
+Pandocomatic uses [paru](https://heerdebeer.org/Software/markdown/paru/)
+to run pandoc. Paru itself uses the `pandoc` executable in your `PATH`.
+If that already is pandoc2, you do not need to do anything.
+
+If you have pandoc1 installed by default, however, and you want to run a
+[nightly version of
+pandoc2](https://github.com/pandoc-extras/pandoc-nightly), you have to
+set the `PARU_PANDOC_PATH` to point to the pandoc2 executable. For
+example:
+
+``` {.bash}
+export PARU_PANDOC_PATH=~/Downloads/pandoc-amd64-7c20fab3/pandoc
+pandocomatic some-file-to-convert.md
+```
+
+### Pandocomatic has too much output! How do I make pandocomatic more quiet?
+
+You can run pandoc in quiet mode by using the `--quiet` or `-q`
+command-line option. For example:
+
+``` {.bash}
+pandocomatic --quiet some-file-to-export.md
+```
 
 Glossary
 --------

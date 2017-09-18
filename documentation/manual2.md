@@ -22,6 +22,8 @@ pandocomatic_:
 
 ::paru::insert why_pandocomatic.md
 
+------------------------------------------
+
 # Using pandocomatic: Quick start and overview {#using-pandocomatic}
 
 ::paru::insert convert_a_document.md
@@ -41,10 +43,10 @@ pandocomatic_:
 
 ::paru::insert pandocomatic_templates.md
 
-::paru::insert faq.md
-
 ------------------------------------------
 
 # Appendix {#appendix}
+
+::paru::insert faq.md
 
 ::paru::insert glossary.md
