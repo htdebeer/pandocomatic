@@ -4,6 +4,12 @@ settings:
     follow-links: false
     skip: ['.*']
 templates:
+    author:
+        metadata:
+            author: Huub de Beer
+    today:
+        preprocessors:
+            -   preprocessors/today.rb
     webpage:
         glob: ['*.md']
         pandoc:
@@ -13,3 +19,8 @@ templates:
                 - assets/style.css
         postprocessors:
             - postprocessors/tidy.sh
+    my-webpage:
+        extends: ['author', 'today', 'webpage']
+        pandoc:
+            to: html5
+            bibliography: 'assets/my-bibliography.bib'

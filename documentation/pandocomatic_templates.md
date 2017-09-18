@@ -9,7 +9,7 @@ only affect the document they are defined in, whereas *external pandocomatic
 templates*, which are defined in a *pandocomatic configuration file*, affect
 all documents that use that template.
 
-Although you can create a one-off *internal pandocomatic template* for a
+Although you can create an one-off *internal pandocomatic template* for a
 document—sometimes you just have an odd writing project that differs too much
 from your regular writings—, most often you use an *external pandocomatic
 template* and customize it in the *internal pandocomatic template*.
@@ -29,7 +29,7 @@ the template `webpage` is defined:
 
 Each template is a YAML property in the `templates` section. The property name
 is the template name. The property value is the template's definition. A
-template definition can contain the following sections:
+template definition can contain the following properties:
 
 - `extends`
 - `glob`
@@ -40,30 +40,33 @@ template definition can contain the following sections:
 - `postprocessors'
 - `cleanup`
 
-Before discussing these sections in detail, the way pandocomatic resolves
-paths used in these sections is described first.
+Before discussing these properties in detail, the way pandocomatic resolves
+paths used in these sections is described first. For paths can be used in most of
+these properties.
 
 #### Specifying paths {#specifying-paths}
 
-Because templates can be used in any document, specifying paths to assets to
-use in the conversion process is not straightforward. Using global paths only
-could work, but has the disadvantage that the templates are no longer
-shareable with others. Using local paths works only if the assets and the
-document to convert are located in the same directory. As a third alternative,
+Because templates can be used in any document, specifying paths pointing to
+assets to use in the conversion process is not straightforward. Using global
+paths works, but has the disadvantage that the templates are no longer
+shareable with others. Using local paths works if the assets and the document
+to convert are located in the same directory, but that does not hold for more
+general *external pandocomatic templates*. As a third alternative,
 pandocomatic also supports paths that are relative to the *pandocomatic data
 directory*.
 
 You can specify these types of paths as follows:
 
-1. All **local** paths start with a `./`. These paths are local to the
+1. All *local* paths start with a `./`. These paths are local to the
    document being converted. When converting a directory tree, the current
    directory is being prepended to the path minus the `./`.
-2. **global** paths start with a `/`. These paths are resolved as is.
-3. paths **relative** to the *pandocomatic data directory* do not start with a
+2. *Global* paths start with a `/`. These paths are resolved as is.
+3. Paths *relative* to the *pandocomatic data directory* do not start with a
    `./` nor a `/`. These paths are resolved by prepending the path to the
-   *pandocomatic data directory*.
+   *pandocomatic data directory*. These come in handy for defining general
+   usable *external pandocomatic templates*.
 
-#### Template sections
+#### Template properties
 
 ##### `extends`
 
@@ -136,67 +139,148 @@ will not be applied.
 
 ##### `setup`
 
+For more involved conversion patterns, some setup of the environment might be
+needed. Think of setting Bash environment variables, creating temporary
+directories, or even installing third party tools needed in the conversion.
+Startup scripts can be any executable script.
+
+Setup scripts are run before the conversion process starts. 
+
+
 **Examples**
 
--   the example:
-
-    ```{.yaml}
+-   ```{.yaml}
+    setup:
+    - scripts/create_working_directory.sh
     ```
 
 ##### `preprocessors`
 
+After setup, pandocomatic executes all preprocessors in order of specification
+in the `preprocessor` property, which is a list. A preprocessor is any
+executable script that takes as input the document to convert and outputs that
+document after "preparing" it somehow.  You can use a preprocessor to add
+metadata, include other files, replace strings, and so on.
+
 **Examples**
 
--   the example:
+-   Add the today's date to the metadata:
 
     ```{.yaml}
+    preprocessors: ['preprocessors/today.sh']
     ```
+
+    Note. You can also use a [filter to mix in the
+    date](https://github.com/htdebeer/paru/blob/master/examples/filters/add_today.rb).
 
 ##### `metadata`
 
+Metadata is used in pandoc's templates as well as a means of communicating
+with a filter. Some metadata is common to many documents, such as language,
+author, keywords, and so on. In the `metadata` property of a template you can
+specify this global metadata. The `metadata` property is a map.
+
 **Examples**
 
--   the example:
+-   For example, all document I write have me as the author
 
     ```{.yaml}
+    metadata:
+        author: Huub de Beer
     ```
 
 ##### `pandoc`
 
+To actually control the pandoc conversion process itself, you can specify any
+pandoc command-line option in the `pandoc` property, which is a map.
+
 **Examples**
 
--   the example:
+-   Convert markdown to HTML with a table of contents:
 
     ```{.yaml}
+    pandoc:
+        from: markdown
+        to: html
+        toc: true
     ```
+
+-   Convert markdown to ODT with citations:
+
+    ```{.yaml}
+    pandoc:
+        from: markdown
+        to: odt
+        bibliography: 'assets/bibligraphy.bib'
+        toc: 'assets/APA.csl'
+    ```    
 
 ##### `postprocessors`
 
+Similar to the `preprocessors` property, the `postprocessors` property is a
+list of scripts to run after the pandoc conversion. Each post processor takes
+as input the converted document and outputs that document with the changes
+made by the post processor. Post processors come in handy for cleaning up
+output, checking for dead links, do string replacing, and so on.
+
 **Examples**
 
--   the example:
+-   Clean up the HTML generated by pandoc through the `tidy` program:
 
     ```{.yaml}
+    postprocessors: ['postprocessors/tidy.sh']
     ```
 
 ##### `cleanup`
 
+The counterpart of the `setup` property. The `cleanup` property is a list of
+scripts to run after the conversion of the document. It can be used to clean
+up temporary files, resetting the environment, uploading the resulting document, and so
+on.
+
 **Examples**
 
--   the example:
+-   Deploy a generated HTML file to your website:
 
     ```{.yaml}
+    cleanup: ['scripts/upload_and_remove.sh']
     ```
 
 ### Extending pandocomatic templates {#extending-pandocomatic-templates}
 
-### Extension rules
+Using the `extends` property of a template, you can mix and extend multiple
+templates. For example, building on the `webpage` template, I can create a
+`my-webpage` template like so:
 
-#### Simple values
+```{.yaml}
+::paru::insert ../example/manual/extended_example_configuration_file.yaml
+```
 
-#### Maps
+This `my-webpage` templates extends the original by:
 
-#### Lists (or rather sets)
+- it always has my name as author
+- it sets "today" as the date so the date gets updated automatically whenever
+  I convert a document with this template
+- and uses my bibliography for generating references.
+
+#### Extension rules
+
+Although extension of templates is relatively straightforward, there are some
+nuances to the extension rules to keep in mind. 
+
+
+The extension behavior differs
+for three types of values: simple values, maps, and lists.
+
+##### Simple values
+
+If a parent template and child templates both have simple values, such as
+strings, numbers, or Booleans, the child
+
+
+##### Maps
+
+##### Lists (or rather sets)
 
 #### Modularity 
 
