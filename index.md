@@ -1142,7 +1142,9 @@ and a PDF version of a document at the same time:
  ---
  title: About using templates
  pandocomatic_:
-     use-template: my-webpage
+     use-template: 
+     -   my-webpage
+     -   my-pdf
      pandoc:
          bibliography: ./a_different_bibliography.bib
      postprocessors:

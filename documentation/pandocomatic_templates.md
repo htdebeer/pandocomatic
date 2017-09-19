@@ -362,7 +362,7 @@ these templates. For example, this allows you to generate both a HTML and a
 PDF version of a document at the same time:
 
 ```{.pandoc}
-::paru::insert ../example/manual/use_my_webpage.md
+::paru::insert ../example/manual/use_my_webpage_and_print.md
 ```
 
 Do note, however, that an *internal pandocomatic template* will apply to all
