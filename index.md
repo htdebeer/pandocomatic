@@ -198,10 +198,10 @@ pandocomatic is instructed by the `pandoc` section to convert the
 document to the
 [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML) file
 `hello_world.html`. With the command-line option
-``` --output goodday_world.html``, you can instruct pandocomatic to convert ```hello\_world.md`to`goodday\_world.html\`
-instead. For more information about pandocomatic's command-line options,
-see the [chapter about command-line options](#pandocomatic_cli) in this
-manual.
+`--output goodday_world.html`, you can instruct pandocomatic to convert
+`hello_world.md` to `goodday_world.html` instead. For more information
+about pandocomatic's command-line options, see the [chapter about
+command-line options](#pandocomatic_cli) in this manual.
 
 You can instruct pandocomatic to apply any pandoc command-line option in
 the `pandoc` section. For example, to use a custom pandoc template and
@@ -811,7 +811,7 @@ You can specify these types of paths as follows:
 
 #### Template properties
 
-##### `extends`
+##### extends
 
 A template can extend zero or more templates by supplying a list of
 template names to extend. The extension builds from left to right.
@@ -848,7 +848,7 @@ below.
     extends: ['overview', 'webpage']
     ```
 
-##### `glob`
+##### glob
 
 When a template is used for converting files in a directory tree, you
 can specify which files in the directory should be converted by a
@@ -881,7 +881,7 @@ the template will not be applied.
     glob: ['overview_*', '*.html']
     ```
 
-##### `setup`
+##### setup
 
 For more involved conversion patterns, some setup of the environment
 might be needed. Think of setting Bash environment variables, creating
@@ -897,7 +897,7 @@ Setup scripts are run before the conversion process starts.
     - scripts/create_working_directory.sh
     ```
 
-##### `preprocessors`
+##### preprocessors
 
 After setup, pandocomatic executes all preprocessors in order of
 specification in the `preprocessor` property, which is a list. A
@@ -917,7 +917,7 @@ strings, and so on.
     Note. You can also use a [filter to mix in the
     date](https://github.com/htdebeer/paru/blob/master/examples/filters/add_today.rb).
 
-##### `metadata`
+##### metadata
 
 Metadata is used in pandoc's templates as well as a means of
 communicating with a filter. Some metadata is common to many documents,
@@ -934,7 +934,7 @@ property of a template you can specify this global metadata. The
         author: Huub de Beer
     ```
 
-##### `pandoc`
+##### pandoc
 
 To actually control the pandoc conversion process itself, you can
 specify any pandoc command-line option in the `pandoc` property, which
@@ -961,7 +961,7 @@ is a map.
         toc: 'assets/APA.csl'
     ```
 
-##### `postprocessors`
+##### postprocessors
 
 Similar to the `preprocessors` property, the `postprocessors` property
 is a list of scripts to run after the pandoc conversion. Each post
@@ -978,7 +978,7 @@ replacing, and so on.
     postprocessors: ['postprocessors/tidy.sh']
     ```
 
-##### `cleanup`
+##### cleanup
 
 The counterpart of the `setup` property. The `cleanup` property is a
 list of scripts to run after the conversion of the document. It can be
