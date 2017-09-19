@@ -48,6 +48,7 @@ module Pandocomatic
         @src = src
         
         metadata = PandocMetadata.load_file @src
+
         metadata.templates.each do |template_name|
             raise ConfigurationError.new(:no_such_template, nil, template_name) unless template_name.empty? or config.has_template? template_name
 

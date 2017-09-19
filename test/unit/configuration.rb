@@ -127,13 +127,11 @@ class TestConfiguration < Minitest::Test
         current = 3
         parent = [1]
         extended = Pandocomatic::Configuration.extend_value(current, parent)
-        assert_instance_of Integer, extended
         assert_equal 3, extended
         
         current = 3
         parent = {"a" => 1}
         extended = Pandocomatic::Configuration.extend_value(current, parent)
-        assert_instance_of Integer, extended
         assert_equal 3, extended
     end
 

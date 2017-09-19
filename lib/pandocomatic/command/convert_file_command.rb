@@ -62,6 +62,7 @@ module Pandocomatic
         #   this file
         def initialize(config, src, dst, template_name = nil)
             super()
+
             @config = config
             @src = src
             @dst = dst
@@ -104,6 +105,8 @@ module Pandocomatic
 
                 pandoc_options = Configuration.extend_value(pandoc_options, template['pandoc'])
             end
+               
+            template = Configuration.extend_value(metadata.pandocomatic, template) if metadata.has_pandocomatic?
 
             # Run setup scripts
             setup template

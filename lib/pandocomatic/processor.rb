@@ -18,6 +18,7 @@
 #++
 module Pandocomatic
     require 'open3'
+    require_relative 'error/processor_error.rb'
 
     # Generic class for processors used to preprocess, postproces, setup, and
     # cleanup with external scripts or programs during the conversion process.
@@ -34,7 +35,14 @@ module Pandocomatic
         # 
         # @return [String] output of script.
         def self.run script, input
-            output, _ = Open3.capture2(script, :stdin_data => input)
+            output, error, status = Open3.capture3(script, :stdin_data => input)
+
+            warn error unless error.empty?
+
+            if status.exitstatus > 0
+                raise ProcessorError.new(:error_processing_script, StandardError.new(error), [script, input]) 
+            end
+
             output
         end
 
