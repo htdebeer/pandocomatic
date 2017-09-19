@@ -266,26 +266,108 @@ This `my-webpage` templates extends the original by:
 #### Extension rules
 
 Although extension of templates is relatively straightforward, there are some
-nuances to the extension rules to keep in mind. 
+nuances to the extension rules to keep in mind. Basically there are three
+cases:
 
+1.  If the parent template has a property, but the child does not, the
+    resulting template has the parent's property. Examples:
 
-The extension behavior differs
-for three types of values: simple values, maps, and lists.
+    ```
+    parent = 4 ∧ child = ⊘ ⇒ 4
+    parent = [4, 5] ∧ child = ⊘ ⇒ [4, 5]
+    ```
 
-##### Simple values
+2.  If the parent template does not have a property, but the child does, the
+    resulting template has the child's property.
 
-If a parent template and child templates both have simple values, such as
-strings, numbers, or Booleans, the child
+    ```
+    parent = ⊘ ∧ child = 4 ⇒ 4
+    parent = ⊘ ∧ child = {a: 1} ⇒ {a: 1}
+    ```
 
+3.  If both parent and child templates do have a property, the resulting
+    template will have that property and its value is determined as follows:
 
-##### Maps
+    1.  If the child's value is of a simple type, such as a string, number, or
+        Boolean, the resulting property will have the value of the child.
+        Examples:
 
-##### Lists (or rather sets)
+        ```
+        parent = 4 ∧ child = true ⇒ true
+        parent = [4, 5] ∧ child = "yes" ⇒ "yes"
+        parent = {key: true} ∧ child = 12 ⇒ 12
+        ```
 
-#### Modularity 
+    2.  If parent and child values both are maps, the resulting value will be
+        the child's map merged with the parent's map. Examples:
+        
+        ```
+        parent = {a: 1, b: 2} ∧ child = {a: 2, c: 3} ⇒ {a: 2, b: 2, c: 3}
+        parent = {a: 1, b: 2} ∧ child = {a: , c: 3} ⇒ {b: 2, c: 3}
+        ```
 
-### Customizing a template
+    3.  If the parent value is a list, two different extension mechanisms can
+        take effect depending on the type of the child's value:
+        
+        1.  If the child is a list as well, the resulting value will be the
+            child's list merged with the parent's list. Duplicate values will
+            be removed. Lists in pandocomatic templates are treated as sets.
+            Examples:
 
-#### `use-template`
+            ```
+            parent = [1] ∧ child = [2] ⇒ [1, 2]
+            parent = [1] ∧ child = [1, 2] ⇒ [1, 2]
+            ```
+
+        2.  If the child is a map, it is assumed to have properties `remove`
+            and `add`, both lists. The resulting value will be the parent's
+            value with the items from the `remove` list removed and
+            items from the `add` list added. Examples:
+
+            ```
+            parent = [1] ∧ child = {'remove': [1], 'add': [3]} ⇒ [3]
+            parent = [1, 2] ∧ child = {'remove': [1]} ⇒ [2]
+            ```
+
+To remove a property in a child template, that child's value should be
+`nil`. You can create a `nil` value in YAML by having a key without a value.
+
+### Customizing an external template in an internal template
+
+To use an *external pandocomatic template* you have to use it in a document by
+creating an *internal pandocomatic template* which has the `use-template`
+property set to the name of the *external pandocomatic template* you want to
+use. After that, you can customize the template to you liking, for example
+adding extra pandoc command-line options or adding another preprocessor.
+
+You create an *internal pandocomatic template* by adding a `pandocomatic_`
+section to the document's YAML metadata. The `pandocomatic_` section can have
+the same properties as an *external pandocomatic template* except for the
+`glob` and `extends` properties. Actually, you can add these two properties as
+well, but they are ignored.
+
+For example, if you use the `my-webpage` template, but you would like to use a
+different bibliography and check all links in the converted document, your
+document would look like:
+
+```{.pandoc}
+::paru::insert ../example/manual/use_my_webpage.md
+```
 
 #### Multiple conversions
+
+The `use-template` property can also be a list of *external pandocomatic
+template* names. In that case, the document is converted once for each of
+these templates. For example, this allows you to generate both a HTML and a
+PDF version of a document at the same time:
+
+```{.pandoc}
+::paru::insert ../example/manual/use_my_webpage.md
+```
+
+Do note, however, that an *internal pandocomatic template* will apply to all
+used *external pandocomatic templates*. It is not possible to customize one
+used template differently than another. This means that you have to move the
+customization to the used *external pandocomatic templates* or you have
+customize the *internal pandocomatic template* such that it is applicable to
+all used *external pandocomatic templates* (as in the example above).

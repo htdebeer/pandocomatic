@@ -9,5 +9,6 @@ templates:
       - filters/insert_code_block.rb
       - filters/remove_pandocomatic_metadata.rb
       - filters/insert_pandocomatic_version.rb
-    postprocessors:
-        - postprocessors/setup_for_website.rb
+  indexdoc:
+      extends: mddoc
+      postprocessors: ['postprocessors/setup_for_website.rb']

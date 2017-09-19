@@ -137,8 +137,9 @@ Be careful to not overwrite the input file with the output file! I would suggest
        - filters/insert_code_block.rb
        - filters/remove_pandocomatic_metadata.rb
        - filters/insert_pandocomatic_version.rb
-     postprocessors:
-         - postprocessors/setup_for_website.rb
+   indexdoc:
+       extends: mddoc
+       postprocessors: ['postprocessors/setup_for_website.rb']
 ```
 
 The `mddoc` template tells pandocomatic to convert a markdown file to a standalone markdown file using three filters: `insert_document.rb`, `insert_code_block.rb`, and `remove_pandocomatic_metadata.rb`. The first two filters allow you to include another markdown file or to include a source code file (see the README listing below). The last filter removes the pandocomatic metadata block from the file so the settings in it do not interfere when, later on, `manual.md` is converted to HTML. These filters are located in the [`filters`](https://github.com/htdebeer/pandocomatic/tree/master/documentation/data-dir/filters) subdirectory in the specified data directory `data-dir`.
@@ -206,10 +207,3 @@ See [pandocomatic's manual](https://heerdebeer.org/Software/markdown/pandocomati
 
 1.  [automating setting up and running pandoc for a series of related papers](https://heerdebeer.org/Software/markdown/pandocomatic/#automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and
 2.  [using pandocomatic as a static site generator](https://heerdebeer.org/Software/markdown/pandocomatic/#using-pandocomatic-as-a-static-site-generator).
-
----
-pandocomatic_:
-    pandoc:
-        filter:
-        - './documentation/data-dir/filters/number_all_the_things.rb'
-...

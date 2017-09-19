@@ -10,13 +10,14 @@ keywords:
 - pandocomatic
 - static site generator
 pandocomatic_:
-  use-template: mddoc
-  postprocessors: ['postprocessors/setup_for_website.rb']
+  use-template: indexdoc
 ...
 
 # Introduction {#introduction}
 
 ::paru::insert introduction.md
+
+::paru::insert acknowledgements.md
 
 ::paru::insert install.md
 
