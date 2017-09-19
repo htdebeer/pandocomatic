@@ -1,0 +1,24 @@
+digraph simple_conversion {
+    rankdir="LR"
+    {
+        node [shape=diamond]
+        setup
+        cleanup
+        node [shape=note]
+        input
+        output
+        node [shape=doublecircle]
+        pandoc
+        node [shape=circle,labelangle=45]
+        pre_1 [label=<pre>]
+        pre_N [label=<pre>]
+        post_1 [label=<post>]
+        post_M [label=<post>]
+        node [shape="none", label="..."]
+        dots1
+        dots2
+    }
+    
+    setup ->  input -> pre_1 -> dots1 -> pre_N -> pandoc -> post_1
+    -> dots2 -> post_M -> output -> cleanup
+}
