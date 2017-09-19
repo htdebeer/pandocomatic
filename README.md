@@ -5,6 +5,8 @@ Pandocomatic is a tool to automate the use of [pandoc](http://pandoc.org/). With
 
 Pandocomatic is [free software](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic is released under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html). You'll find the source code of pandocomatic in its [repository](https://github.com/htdebeer/pandocomatic) on [Github](https://github.com).
 
+See [pandocomatic's manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for an extensive description of pandocomatic.
+
 Why pandocomatic?
 -----------------
 
@@ -203,7 +205,4 @@ Pandocomatic allows you to generalize common aspects of running pandoc while sti
 More information
 ----------------
 
-See [pandocomatic's manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more extensive examples of using pandocomatic. Notably, the manual contains two typical use cases of pandocomatic:
-
-1.  [automating setting up and running pandoc for a series of related papers](https://heerdebeer.org/Software/markdown/pandocomatic/#automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and
-2.  [using pandocomatic as a static site generator](https://heerdebeer.org/Software/markdown/pandocomatic/#using-pandocomatic-as-a-static-site-generator).
+See [pandocomatic's manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more extensive examples of using pandocomatic.

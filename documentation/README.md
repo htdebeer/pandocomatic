@@ -9,6 +9,10 @@ pandocomatic_:
 
 ::paru::insert introduction.md
 
+See [pandocomatic's
+manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for an
+extensive description of pandocomatic.
+
 ::paru::insert why_pandocomatic.md
 
 ::paru::insert license.md
@@ -23,9 +27,4 @@ pandocomatic_:
 
 See [pandocomatic's
 manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more
-extensive examples of using pandocomatic. Notably, the manual contains two
-typical use cases of pandocomatic:
-
-1.  [automating setting up and running pandoc for a series of related papers](https://heerdebeer.org/Software/markdown/pandocomatic/#automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
-2.  [using pandocomatic as a static site
-    generator](https://heerdebeer.org/Software/markdown/pandocomatic/#using-pandocomatic-as-a-static-site-generator).
+extensive examples of using pandocomatic.
