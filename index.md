@@ -780,7 +780,7 @@ definition. A template definition can contain the following properties:
 -   `preprocessors`
 -   `metadata`
 -   `pandoc`
--   \`postprocessors'
+-   `postprocessors`
 -   `cleanup`
 
 Before discussing these properties in detail, the way pandocomatic
