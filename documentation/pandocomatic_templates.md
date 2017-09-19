@@ -68,7 +68,7 @@ You can specify these types of paths as follows:
 
 #### Template properties
 
-##### `extends`
+##### extends
 
 A template can extend zero or more templates by supplying a list of template
 names to extend. The extension builds from left to right.
@@ -105,7 +105,7 @@ about extending templates](#extending-pandocomatic-templates) below.
     extends: ['overview', 'webpage']
     ```
 
-##### `glob`
+##### glob
 
 When a template is used for converting files in a directory tree, you can
 specify which files in the directory should be converted by a template. The
@@ -137,7 +137,7 @@ will not be applied.
     glob: ['overview_*', '*.html']
     ```
 
-##### `setup`
+##### setup
 
 For more involved conversion patterns, some setup of the environment might be
 needed. Think of setting Bash environment variables, creating temporary
@@ -154,7 +154,7 @@ Setup scripts are run before the conversion process starts.
     - scripts/create_working_directory.sh
     ```
 
-##### `preprocessors`
+##### preprocessors
 
 After setup, pandocomatic executes all preprocessors in order of specification
 in the `preprocessor` property, which is a list. A preprocessor is any
@@ -173,7 +173,7 @@ metadata, include other files, replace strings, and so on.
     Note. You can also use a [filter to mix in the
     date](https://github.com/htdebeer/paru/blob/master/examples/filters/add_today.rb).
 
-##### `metadata`
+##### metadata
 
 Metadata is used in pandoc's templates as well as a means of communicating
 with a filter. Some metadata is common to many documents, such as language,
@@ -189,7 +189,7 @@ specify this global metadata. The `metadata` property is a map.
         author: Huub de Beer
     ```
 
-##### `pandoc`
+##### pandoc
 
 To actually control the pandoc conversion process itself, you can specify any
 pandoc command-line option in the `pandoc` property, which is a map.
@@ -215,7 +215,7 @@ pandoc command-line option in the `pandoc` property, which is a map.
         toc: 'assets/APA.csl'
     ```    
 
-##### `postprocessors`
+##### postprocessors
 
 Similar to the `preprocessors` property, the `postprocessors` property is a
 list of scripts to run after the pandoc conversion. Each post processor takes
@@ -231,12 +231,12 @@ output, checking for dead links, do string replacing, and so on.
     postprocessors: ['postprocessors/tidy.sh']
     ```
 
-##### `cleanup`
+##### cleanup
 
 The counterpart of the `setup` property. The `cleanup` property is a list of
 scripts to run after the conversion of the document. It can be used to clean
-up temporary files, resetting the environment, uploading the resulting document, and so
-on.
+up temporary files, resetting the environment, uploading the resulting
+document, and so on.
 
 **Examples**
 

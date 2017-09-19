@@ -25,7 +25,7 @@ For example, if `hello_world.md` contains the following pandoc markdown text:
 pandocomatic is instructed by the `pandoc` section to convert the document to
 the [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML) file
 `hello_world.html`. With the command-line option `--output
-goodday_world.html``, you can instruct pandocomatic to convert
+goodday_world.html`, you can instruct pandocomatic to convert
 `hello_world.md` to `goodday_world.html` instead. For more information about
 pandocomatic's command-line options, see the [chapter about command-line
 options](#pandocomatic_cli) in this manual.
