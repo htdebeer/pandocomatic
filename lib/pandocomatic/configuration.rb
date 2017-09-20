@@ -74,7 +74,11 @@ module Pandocomatic
             # configuration files, unless explicitly set to not skip via the
             # "unskip" option
 
-            @settings = {'skip' => ['.*', 'pandocomatic.yaml']} 
+            @settings = {
+                'skip' => ['.*', 'pandocomatic.yaml'],
+                'recursive' => true,
+                'follow-links' => false
+            } 
 
             @templates = {}
             @convert_patterns = {}
