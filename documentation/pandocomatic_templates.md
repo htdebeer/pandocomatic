@@ -57,18 +57,18 @@ directory*.
 
 You can specify these types of paths as follows:
 
-1. All *local* paths start with a `./`. These paths are local to the
-   document being converted. When converting a directory tree, the current
-   directory is being prepended to the path minus the `./`.
-2. *Global* paths start with a `/`. These paths are resolved as is.
-3. Paths *relative* to the *pandocomatic data directory* do not start with a
-   `./` nor a `/`. These paths are resolved by prepending the path to the
-   *pandocomatic data directory*. These come in handy for defining general
-   usable *external pandocomatic templates*.
+1.  All *local* paths start with a `./`. These paths are local to the
+    document being converted. When converting a directory tree, the current
+    directory is being prepended to the path minus the `./`.
+2.  *Global* paths start with a `/`. These paths are resolved as is.
+3.  Paths *relative* to the *pandocomatic data directory* do not start with a
+    `./` nor a `/`. These paths are resolved by prepending the path to the
+    *pandocomatic data directory*. These come in handy for defining general
+    usable *external pandocomatic templates*.
 
-   *Note.* For filters, the path is first checked against the `PATH`. If
-   pandocomatic finds an executable matching the path, it will resolve that
-   executable instead.
+    *Note.* For filters, the path is first checked against the `PATH`. If
+    pandocomatic finds an executable matching the path, it will resolve that
+    executable instead.
 
 #### Template properties
 
