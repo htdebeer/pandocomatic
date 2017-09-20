@@ -66,6 +66,10 @@ You can specify these types of paths as follows:
    *pandocomatic data directory*. These come in handy for defining general
    usable *external pandocomatic templates*.
 
+   *Note.* For filters, the path is first checked against the `PATH`. If
+   pandocomatic finds an executable matching the path, it will resolve that
+   executable instead.
+
 #### Template properties
 
 ##### extends
