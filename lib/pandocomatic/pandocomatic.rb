@@ -168,6 +168,12 @@ module Pandocomatic
                 # No data-dir option given: try to find the default one from pandoc
                 begin
                     data_dir = Paru::Pandoc.info()[:data_dir]
+
+                    # If pandoc's data dir does not exist, however, fall back
+                    # to the current directory
+                    unless File.exist? File.absolute_path(data_dir)
+                        data_dir = Dir.pwd
+                    end
                 rescue Paru::Error => e
                     # If pandoc cannot be run, continuing probably does not work out
                     # anyway, so raise pandoc error

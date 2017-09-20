@@ -274,7 +274,7 @@ module Pandocomatic
                         updated_path = Configuration.which path
                     end
 
-                    if updated_path.nil? or not updated_path.start_with? '/' then
+                    if updated_path.nil? or not check_executable then
                         # refers to data-dir
                         updated_path = File.join @data_dir, path
                     end
@@ -488,8 +488,8 @@ module Pandocomatic
             ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
                 exts.each { |ext|
                     exe = File.join(path, "#{cmd}#{ext}")
-                    return exe if File.executable?(exe) &&
-                        !File.directory?(exe)
+                    return exe if File.executable?(exe) and
+                        not File.directory?(exe)
                 }
             end
             return nil
