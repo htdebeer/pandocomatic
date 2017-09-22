@@ -66,12 +66,15 @@ module Pandocomatic
             @config = config
             @src = src
             @dst = dst
-
+            
             if template_name.nil? or template_name.empty?
                 @template_name = @config.determine_template @src
             else
                 @template_name = template_name
             end
+            
+            @metadata = PandocMetadata.load_file @src
+            @dst = @config.set_extension @dst, @template_name, @metadata
 
             @errors.push IOError.new(:file_does_not_exist, nil, @src) unless File.exist? @src
             @errors.push IOError.new(:file_is_not_a_file, nil, @src) unless File.file? @src
@@ -93,8 +96,7 @@ module Pandocomatic
         private
 
         def convert_file
-            metadata = PandocMetadata.load_file @src
-            pandoc_options = metadata.pandoc_options || {}
+            pandoc_options = @metadata.pandoc_options || {}
             template = {}
 
             # Determine the actual options and settings to use when converting this
@@ -106,9 +108,7 @@ module Pandocomatic
                 pandoc_options = Configuration.extend_value(pandoc_options, template['pandoc'])
             end
                
-            template = Configuration.extend_value(metadata.pandocomatic, template) if metadata.has_pandocomatic?
-            
-            @dst = @config.set_extension @dst, @template_name, metadata
+            template = Configuration.extend_value(@metadata.pandocomatic, template) if @metadata.has_pandocomatic?            
 
             # Run setup scripts
             setup template
@@ -129,8 +129,8 @@ module Pandocomatic
             output = postprocess input, template
 
             # Write out the results of the conversion process to file.
-            if @dst.to_s.empty? and metadata.pandoc_options.has_key? 'output'
-                @dst = metadata.pandoc_options['output']
+            if @dst.to_s.empty? and @metadata.pandoc_options.has_key? 'output'
+                @dst = @metadata.pandoc_options['output']
             end
 
             begin
