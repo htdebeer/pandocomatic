@@ -1,0 +1,11 @@
+settings:
+    recursive: true
+    skip: ['img', '*.png'] # Do not copy the images
+templates:
+    toodt:
+        glob: ['*.md']
+        metadata:
+            author: Huub de Beer
+        pandoc:
+            from: markdown
+            to: odt

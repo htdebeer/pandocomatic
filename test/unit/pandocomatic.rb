@@ -7,7 +7,10 @@ class TestPandocomaticRun < Minitest::Test
   def assert_files_equal(expected, generated)
     assert File.exist?(generated), generated
     assert_equal File.basename(expected), File.basename(generated), generated
-    assert_equal File.read(expected).strip, File.read(generated).strip, generated
+
+    check_file_contents = ['.txt', '.md', '.html'].include? File.extname(generated)
+
+    assert_equal File.read(expected).strip, File.read(generated).strip, generated if check_file_contents
   end
 
   def assert_directories_equal(expected, generated)
@@ -20,7 +23,7 @@ class TestPandocomaticRun < Minitest::Test
       generated_entry = File.join [generated, entry]
 
       if File.file? expected_entry
-        assert_files_equal expected_entry, generated_entry
+          assert_files_equal expected_entry, generated_entry
       elsif File.directory? expected_entry
         assert_directories_equal expected_entry, generated_entry
       else
@@ -29,7 +32,7 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
   
-  def test_convert_hello_world
+  def test_convert_hello_world()
     Dir.mktmpdir('hello_world') do |dir|
       input = File.join ['example', 'hello_world.md']
       output = File.join [dir, 'hello_world.html']
@@ -41,7 +44,7 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
 
-  def test_convert_with_dos_line_endings
+  def test_convert_with_dos_line_endings()
     Dir.mktmpdir('dos') do |dir|
       input = File.join ['example', 'dos.md']
       output = File.join [dir, 'dos.tex']
@@ -53,7 +56,7 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
 
-  def test_convert_blog
+  def test_convert_blog()
     Dir.mktmpdir('blog') do |dir|
       input = File.join ['example', 'src', 'blog']
       data_dir = File.join ['example', 'data-dir']
@@ -67,7 +70,7 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
 
-  def test_convert_wiki
+  def test_convert_wiki()
     Dir.mktmpdir('wiki') do |dir|
       input = File.join ['example', 'src', 'wiki']
       data_dir = File.join ['example', 'data-dir']
@@ -81,7 +84,7 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
   
-  def test_convert_authored_wiki
+  def test_convert_authored_wiki()
     Dir.mktmpdir('auhtorized_wiki') do |dir|
       input = File.join ['example', 'src', 'authored_wiki']
       data_dir = File.join ['example', 'data-dir']
@@ -95,7 +98,7 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
   
-  def test_convert_wiki_with_arguments
+  def test_convert_wiki_with_arguments()
     Dir.mktmpdir('wiki_with_arguments') do |dir|
       input = File.join ['example', 'src', 'wiki_with_arguments']
       data_dir = File.join ['example', 'data-dir']
@@ -109,7 +112,7 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
   
-  def test_convert_setup_cleanup
+  def test_convert_setup_cleanup()
     temp_file_name = 'pandocomatic_temporary_file.txt'
     temp_file_name_path = File.join ['/tmp', temp_file_name]
 
@@ -145,7 +148,7 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
 
-  def test_convert_site
+  def test_convert_site()
     Dir.mktmpdir('site') do |dir|
       input = File.join ['example', 'src']
       data_dir = File.join ['example', 'data-dir']
@@ -159,7 +162,7 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
 
-  def test_extending_templates
+  def test_extending_templates()
     Dir.mktmpdir('twice_extended_wiki') do |dir|
       input = File.join ['example', 'src', 'twice_extended_wiki']
       data_dir = File.join ['example', 'data-dir']
@@ -169,6 +172,24 @@ class TestPandocomaticRun < Minitest::Test
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
 
       example_output = File.join ['example', 'dst', 'twice_extended_wiki']
+      assert_directories_equal example_output, output
+    end
+  end
+
+  def test_converting_dir_to_odt()
+    Dir.mktmpdir('twice_extended_wiki') do |dir|
+      input = File.join ['example', 'src', 'odt_with_images']
+      data_dir = File.join ['example', 'data-dir']
+      config = File.join ['example', 'odt_with_images.yaml']
+      output = File.join [dir, 'odt_with_images']
+
+      _, err = capture_io do
+          Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
+      end
+
+      assert_empty err
+
+      example_output = File.join ['example', 'dst', 'odt_with_images']
       assert_directories_equal example_output, output
     end
   end

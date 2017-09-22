@@ -1,0 +1,10 @@
+settings:
+    recursive: true
+templates:
+    toodt:
+        glob: ['*.md']
+        metadata:
+            author: Huub de Beer
+        pandoc:
+            from: markdown
+            to: odt

@@ -107,6 +107,8 @@ module Pandocomatic
             end
                
             template = Configuration.extend_value(metadata.pandocomatic, template) if metadata.has_pandocomatic?
+            
+            @dst = @config.set_extension @dst, @template_name, metadata
 
             # Run setup scripts
             setup template
