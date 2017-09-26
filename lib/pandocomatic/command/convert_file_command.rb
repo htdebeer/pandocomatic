@@ -178,39 +178,42 @@ module Pandocomatic
         ]
 
         def pandoc(input, options, src_dir)
-            converter = Paru::Pandoc.new
-            options.each do |option, value|
-                if PANDOC_OPTIONS_WITH_PATH.include? option
-                    is_executable = option == "filter"
-                    if value.is_a? Array
-                        value = value.map {|v| @config.update_path(v, src_dir, is_executable)}
-                    else
-                        value = @config.update_path(value, src_dir, is_executable)
+            absolute_dst = File.expand_path @dst
+            Dir.chdir(src_dir) do
+                converter = Paru::Pandoc.new
+                options.each do |option, value|
+                    if PANDOC_OPTIONS_WITH_PATH.include? option
+                        is_executable = option == "filter"
+                        if value.is_a? Array
+                            value = value.map {|v| @config.update_path(v, src_dir, is_executable)}
+                        else
+                            value = @config.update_path(value, src_dir, is_executable)
+                        end
+                    end
+
+                    # There is no "pdf" output format; change it to latex but keep the
+                    # extension.
+                    value = determine_output_for_pdf(options) if option == "to" and value == "pdf"
+
+                    begin
+                        # Pandoc multi-word options can have the multiple words separated by
+                        # both underscore (_) and dash (-).
+                        option = option.gsub "-", "_"
+                        converter.send option, value unless option == 'output'
+                        # don't let pandoc write the output to enable postprocessing
+                    rescue
+                        warn "The pandoc option '#{option}' (with value '#{value}') is not recognized by paru. This option is skipped." if debug?
                     end
                 end
-                
-                # There is no "pdf" output format; change it to latex but keep the
-                # extension.
-                value = determine_output_for_pdf(options) if option == "to" and value == "pdf"
+
+                converter.send "output", absolute_dst if OUTPUT_FORMATS.include? options["to"]
 
                 begin
-                    # Pandoc multi-word options can have the multiple words separated by
-                    # both underscore (_) and dash (-).
-                    option = option.gsub "-", "_"
-                    converter.send option, value unless option == 'output'
-                    # don't let pandoc write the output to enable postprocessing
-                rescue
-                    warn "The pandoc option '#{option}' (with value '#{value}') is not recognized by paru. This option is skipped." if debug?
+                    puts converter.to_command if debug?
+                    converter << input
+                rescue Paru::Error => e
+                    raise PandocError.new(:error_running_pandoc, e, input)
                 end
-            end
-
-            converter.send "output", @dst if OUTPUT_FORMATS.include? options["to"]
-
-            begin
-                puts converter.to_command if debug?
-                converter << input
-            rescue Paru::Error => e
-                raise PandocError.new(:error_running_pandoc, e, input)
             end
         end
 
@@ -263,7 +266,6 @@ module Pandocomatic
         end
 
         private
-
 
         # Pandoc version 2 supports multiple pdf engines. Determine which
         # to use given the options.

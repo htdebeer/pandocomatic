@@ -260,12 +260,13 @@ module Pandocomatic
         #   verified to be executable? Defaults to false.
         #
         # @return [String] the updated path.
-        def update_path(path, src_dir, check_executable = false)
+        def update_path(path, src_dir, check_executable = false, output = false)
             updated_path = path
             if path.start_with? './' 
                 # refers to a local dir; strip the './' before appending it to
                 # the source directory as to prevent /some/path/./to/path
-                updated_path = File.join src_dir, path[2..-1]
+                #updated_path = File.join src_dir, path[2..-1]
+                updated_path = path[2..-1]
             else
                 if path.start_with? '/'
                     updated_path = path
