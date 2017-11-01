@@ -2,7 +2,7 @@
 pandocomatic_:
   use-template: mddoc
   pandoc:
-    to: markdown_github
+    to: gfm
 ...
 
 [![Gem Version](https://badge.fury.io/rb/pandocomatic.svg)](https://badge.fury.io/rb/pandocomatic)

@@ -713,7 +713,7 @@ words, given a directory with the following files:
     - image.png 
 
 Running pandocomatic with the example *pandocomatic configuration file*
-will result in the following result"
+will result in the following result\"
 
     directory/
     + sub directory/
@@ -738,8 +738,8 @@ templates*, which are defined in a *pandocomatic configuration file*,
 affect all documents that use that template.
 
 Although you can create an one-off *internal pandocomatic template* for
-a document—sometimes you just have an odd writing project that differs
-too much from your regular writings—, most often you use an *external
+a document---sometimes you just have an odd writing project that differs
+too much from your regular writings---, most often you use an *external
 pandocomatic template* and customize it in the *internal pandocomatic
 template*.
 
@@ -871,7 +871,7 @@ the template will not be applied.
 
 **Examples**
 
--   Apply this template to all files with extension `.md` (i.e. all
+-   Apply this template to all files with extension `.md` (i.e. all
     markdown files):
 
     ``` {.yaml}
