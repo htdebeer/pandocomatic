@@ -219,6 +219,26 @@ pandoc command-line option in the `pandoc` property, which is a map.
         toc: 'assets/APA.csl'
     ```    
 
+For convenience, the virtual output format `pdf` is added by pandocomatic. It
+allows you to specify PDF output without needing to use the `output` option.
+This allows for general pandoc configurations for generating PDF files. You
+specify the PDF output format by `to: pdf`. Pandocomatic will determine the
+actual output format based on the value of `pdf-engine`. If that option is not
+set, pandocomatic defaults to `latex`.
+
+To give the use more control over what filename extension will be used, the
+virtual pandoc option `use-extension` has been added. If set, and the `output`
+option is not being used, the value of the `use-extension` option is used as
+the extension of the output file. For example, to generate a PDF presentation
+using the beamer output format, you can specify the following pandoc options:
+
+```{.yaml}
+pandoc:
+    from: markdown
+    to: beamer
+    use-extension: pdf
+```
+
 ##### postprocessors
 
 Similar to the `preprocessors` property, the `postprocessors` property is a

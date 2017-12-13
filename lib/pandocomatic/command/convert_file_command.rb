@@ -199,7 +199,7 @@ module Pandocomatic
                         # Pandoc multi-word options can have the multiple words separated by
                         # both underscore (_) and dash (-).
                         option = option.gsub "-", "_"
-                        converter.send option, value unless option == 'output'
+                        converter.send option, value unless option == 'output' or option == 'use-extension'
                         # don't let pandoc write the output to enable postprocessing
                     rescue
                         warn "The pandoc option '#{option}' (with value '#{value}') is not recognized by paru. This option is skipped." if debug?

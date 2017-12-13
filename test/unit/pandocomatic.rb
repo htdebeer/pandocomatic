@@ -200,18 +200,21 @@ class TestPandocomaticRun < Minitest::Test
     filenames = {
       'beamer_presentation.md' => 'beamer_presentation.tex',
       'beamer_presentation_plus_min_extensions.md' => 'beamer_presentation_plus_min_extensions.tex',
-      'beamer_presentation_to_pdf.md' => 'beamer_presentation_to_pdf.pdf'
+      'beamer_presentation_to_pdf.md' => 'beamer_presentation_to_pdf.pdf',
+      'beamer_presentation_to_pdf_with_extension_option.md' => 'beamer_presentation_to_pdf_with_extension_option.pdf'
     }
 
-    Dir.mktmpdir('extensions') do |dir|
-      Dir.chdir dir
-      filenames.each do |input_file, output_file|
-        input = File.absolute_path(File.join([current_dir, 'example', 'extensions', input_file]))
-        Pandocomatic::Pandocomatic.run "-i #{input}"
-        assert File.exist?(File.join(dir, output_file))
+    begin
+      Dir.mktmpdir('extensions') do |dir|
+        Dir.chdir dir
+        filenames.each do |input_file, output_file|
+          input = File.absolute_path(File.join([current_dir, 'example', 'extensions', input_file]))
+          Pandocomatic::Pandocomatic.run "-i #{input}"
+          assert File.exist?(File.join(dir, output_file))
+        end
       end
+    ensure
+      Dir.chdir current_dir
     end
-
-    Dir.chdir current_dir
   end
 end

@@ -244,11 +244,9 @@ module Pandocomatic
             # Else fall back to taking the input file as output file with the
             # extension updated to the output format
             if destination.nil?
-                ext = File.extname dst
-                basename = File.basename dst, ext
-                destination = File.join dir, "#{basename}.#{find_extension(dst, template_name, metadata)}"
+                destination = set_extension dst, template_name, metadata
             end
-
+            
             destination
         end
 
@@ -262,18 +260,29 @@ module Pandocomatic
         #
         # @return [String] the extension to use for the destination file
         def find_extension(dst, template_name, metadata)
+            extension = "html"
+
             # Pandoc supports enabling / disabling extensions
             # using +EXTENSION and -EXTENSION
             strip_extensions = lambda{|format| format.split(/[+-]/).first}
+            use_extension = lambda do |pandoc|
+                if pandoc.has_key? "use-extension"
+                    pandoc["use-extension"]
+                else
+                    nil
+                end
+            end
 
-            extension = "html"
             if template_name.nil? or template_name.empty? then
                 if metadata.has_pandocomatic? 
                     pandocomatic = metadata.pandocomatic
                     if pandocomatic.has_key? "pandoc"
                         pandoc = pandocomatic["pandoc"]
-
-                        if pandoc.has_key? "to"
+                        
+                        ext = use_extension.call pandoc
+                        if not ext.nil?
+                            extension = ext
+                        elsif pandoc.has_key? "to"
                             extension = strip_extensions.call(pandoc["to"])
                         end
                     end
@@ -282,14 +291,17 @@ module Pandocomatic
                 # TODO: what if there is no pandoc.to?
                 if @templates[template_name].has_key? "pandoc"
                     pandoc = @templates[template_name]["pandoc"]
-                    if pandoc.has_key? "to"
+                    ext = use_extension.call pandoc
+                    if not ext.nil?
+                        extension = nil
+                    elsif pandoc.has_key? "to"
                         extension = strip_extensions.call(pandoc["to"])
                     end
                 end
             end
 
             extension = DEFAULT_EXTENSION[extension] || extension
-            return extension
+            extension
         end
 
         # Is there a template with template_name in this Configuration?
