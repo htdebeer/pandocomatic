@@ -199,6 +199,59 @@ module Pandocomatic
             File.join dir, "#{basename}.#{find_extension(dst, template_name, metadata)}"
         end
 
+        # Set the destination file given this Confguration,
+        # template, and metadata
+        #
+        # @param dst [String] path to a destination file
+        # @param template_name [String] the name of the template used to
+        #   convert to destination
+        # @param metadata [PandocMetadata] the metadata in the source file
+        def set_destination(dst, template_name, metadata)
+            dir = File.dirname dst
+
+            determine_output_in_pandoc = lambda do |pandoc|
+                if pandoc.has_key? "output"
+                    output = pandoc["output"]
+                    if output.start_with? "/"
+                        # Treat as an absolute path. Note. this probably
+                        # does not work on windows?
+                        return output
+                    else
+                        # Put it relative to the current directory
+                        return File.join dir, output
+                    end
+                end
+                return nil
+            end
+
+            destination = nil
+
+            # Output option in pandoc property has precedence
+            if metadata.has_pandocomatic?
+                pandocomatic = metadata.pandocomatic
+                if pandocomatic.has_key? "pandoc"
+                    destination = determine_output_in_pandoc.call pandocomatic["pandoc"]
+                end
+            end
+
+            # Output option in template's pandoc property is next
+            if destination.nil? and not template_name.nil? and not template_name.empty? then
+                if @templates[template_name].has_key? "pandoc"
+                    destination = determine_output_in_pandoc.call @templates[template_name]["pandoc"]
+                end
+            end
+
+            # Else fall back to taking the input file as output file with the
+            # extension updated to the output format
+            if destination.nil?
+                ext = File.extname dst
+                basename = File.basename dst, ext
+                destination = File.join dir, "#{basename}.#{find_extension(dst, template_name, metadata)}"
+            end
+
+            destination
+        end
+
         # Find the extension of the destination file given this Confguration,
         # template, and metadata
         #
@@ -209,7 +262,7 @@ module Pandocomatic
         #
         # @return [String] the extension to use for the destination file
         def find_extension(dst, template_name, metadata)
-            # Pandoc supports enabling ? disabling extensions
+            # Pandoc supports enabling / disabling extensions
             # using +EXTENSION and -EXTENSION
             strip_extensions = lambda{|format| format.split(/[+-]/).first}
 

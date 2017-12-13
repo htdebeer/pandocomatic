@@ -36,7 +36,7 @@ module Pandocomatic
     require_relative 'command.rb'
 
     # Output formats used in pandocomatic
-    OUTPUT_FORMATS = ["docx", "odt", "pdf", "beamer"]
+    OUTPUT_FORMATS = ["docx", "odt", "pdf", "epub", "epub3", "epub2"]
 
     # Command to convert a file
     #
@@ -74,7 +74,7 @@ module Pandocomatic
             end
             
             @metadata = PandocMetadata.load_file @src
-            @dst = @config.set_extension @dst, @template_name, @metadata
+            @dst = @config.set_destination @dst, @template_name, @metadata
 
             @errors.push IOError.new(:file_does_not_exist, nil, @src) unless File.exist? @src
             @errors.push IOError.new(:file_is_not_a_file, nil, @src) unless File.file? @src
@@ -134,7 +134,7 @@ module Pandocomatic
             end
 
             begin
-                unless OUTPUT_FORMATS.include? pandoc_options["to"] then
+                unless use_output_option @dst then
                     File.open(@dst, 'w') do |file| 
                         raise IOError.new(:file_is_not_a_file, nil, @dst) unless File.file? @dst
                         raise IOError.new(:file_is_not_writable, nil, @dst) unless File.writable? @dst
@@ -206,7 +206,7 @@ module Pandocomatic
                     end
                 end
 
-                converter.send "output", absolute_dst if OUTPUT_FORMATS.include? options["to"]
+                converter.send "output", absolute_dst if use_output_option absolute_dst
 
                 begin
                     puts converter.to_command if debug?
@@ -266,6 +266,10 @@ module Pandocomatic
         end
 
         private
+
+        def use_output_option(dst) 
+            OUTPUT_FORMATS.include?(File.extname(dst).slice(1..-1))
+        end
 
         # Pandoc version 2 supports multiple pdf engines. Determine which
         # to use given the options.

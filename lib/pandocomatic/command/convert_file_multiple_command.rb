@@ -51,8 +51,7 @@ module Pandocomatic
 
         metadata.templates.each do |template_name|
             raise ConfigurationError.new(:no_such_template, nil, template_name) unless template_name.empty? or config.has_template? template_name
-
-            dst = config.set_extension dst, template_name, metadata
+    
             if not modified_only? or file_modified? @src, dst then
                 subcommand = ConvertFileCommand.new(@config, @src, dst, template_name)
                 push subcommand unless subcommand.nil? or subcommand.skip?
