@@ -195,9 +195,9 @@ class TestPandocomaticRun < Minitest::Test
   end
 
   def test_extensions()
-    current_dir = Dir.getwd
-
+    current_dir = File.absolute_path Dir.getwd
     Dir.mktmpdir('extensions') do |dir|
+      # Default/conventional extension
       name = 'beamer_presentation'
       input = File.absolute_path(File.join(['example', 'extensions', "#{name}.md"]))
 
@@ -206,7 +206,16 @@ class TestPandocomaticRun < Minitest::Test
 
       assert File.exist?(File.join(dir, "#{name}.tex"))
 
+      # Extensions
       Dir.chdir current_dir
+      name = 'beamer_presentation_plus_min_extensions'
+      input = File.absolute_path(File.join(['example', 'extensions', "#{name}.md"]))
+
+      Dir.chdir dir
+      Pandocomatic::Pandocomatic.run "-i #{input}"
+
+      assert File.exist?(File.join(dir, "#{name}.tex"))
     end
+    Dir.chdir current_dir
   end
 end

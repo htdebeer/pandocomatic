@@ -209,6 +209,10 @@ module Pandocomatic
         #
         # @return [String] the extension to use for the destination file
         def find_extension(dst, template_name, metadata)
+            # Pandoc supports enabling ? disabling extensions
+            # using +EXTENSION and -EXTENSION
+            strip_extensions = lambda{|format| format.split(/[+-]/).first}
+
             extension = "html"
             if template_name.nil? or template_name.empty? then
                 if metadata.has_pandocomatic? 
@@ -217,7 +221,7 @@ module Pandocomatic
                         pandoc = pandocomatic["pandoc"]
 
                         if pandoc.has_key? "to"
-                            extension = pandoc["to"]
+                            extension = strip_extensions.call(pandoc["to"])
                         end
                     end
                 end 
@@ -226,7 +230,7 @@ module Pandocomatic
                 if @templates[template_name].has_key? "pandoc"
                     pandoc = @templates[template_name]["pandoc"]
                     if pandoc.has_key? "to"
-                        extension = pandoc["to"]
+                        extension = strip_extensions.call(pandoc["to"])
                     end
                 end
             end
