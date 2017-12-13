@@ -36,7 +36,7 @@ module Pandocomatic
     require_relative 'command.rb'
 
     # Output formats used in pandocomatic
-    OUTPUT_FORMATS = ["docx", "odt", "pdf", "epub", "epub3", "epub2"]
+    OUTPUT_FORMATS = ["docx", "pptx", "odt", "pdf", "epub", "epub3", "epub2"]
 
     # Command to convert a file
     #
