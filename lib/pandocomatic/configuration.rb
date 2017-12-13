@@ -25,17 +25,32 @@ module Pandocomatic
     # default_configuration.yaml.
     DEFAULT_CONFIG = YAML.load_file File.join(__dir__, 'default_configuration.yaml')
 
-    # Maps pandoc output formats to an extension.
-    FORMAT_TO_EXT = {
+    # Maps pandoc output formats to their conventional default extension.
+    DEFAULT_EXTENSION = {
         'native' => 'hs',
+        'plain' => 'txt',
         'markdown' => 'md',
         'markdown_strict' => 'md',
         'markdown_phpextra' => 'md',
-        'markdown_github' => 'md',
+        'markdown_mmd' => 'md',
+        'gfm' => 'md',
+        'commonmark' => 'md',
+        'html4' => 'html',
         'html5' => 'html',
-        'docx' => 'docx',
         'latex' => 'tex',
-        'context' => 'tex'
+        'beamer' => 'tex',
+        'context' => 'tex',
+        'docbook4' => 'docbook',
+        'docbook5' => 'docbook',
+        'opendocument' => 'odt',
+        'epub2' => 'epub',
+        'epub3' => 'epub',
+        'asciidoc' => 'adoc',
+        'slidy' => 'html',
+        'slideous' => 'html',
+        'dzslides' => 'html',
+        'revealjs' => 'html',
+        's5' => 'html'
     }
 
     # A Configuration object models a pandocomatic configuration.
@@ -216,7 +231,7 @@ module Pandocomatic
                 end
             end
 
-            extension = FORMAT_TO_EXT[extension] || extension
+            extension = DEFAULT_EXTENSION[extension] || extension
             return extension
         end
 

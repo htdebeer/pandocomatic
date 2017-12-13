@@ -193,4 +193,20 @@ class TestPandocomaticRun < Minitest::Test
       assert_directories_equal example_output, output
     end
   end
+
+  def test_extensions()
+    current_dir = Dir.getwd
+
+    Dir.mktmpdir('extensions') do |dir|
+      name = 'beamer_presentation'
+      input = File.absolute_path(File.join(['example', 'extensions', "#{name}.md"]))
+
+      Dir.chdir dir
+      Pandocomatic::Pandocomatic.run "-i #{input}"
+
+      assert File.exist?(File.join(dir, "#{name}.tex"))
+
+      Dir.chdir current_dir
+    end
+  end
 end
