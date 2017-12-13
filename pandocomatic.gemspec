@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'pandocomatic'
-  s.version = '0.2.1'
+  s.version = '0.2.1.1'
   s.license = 'GPL-3.0'
   s.date = '2017-12-13'
   s.summary = 'Automating the use of pandoc'

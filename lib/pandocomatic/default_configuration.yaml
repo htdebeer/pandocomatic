@@ -2,12 +2,3 @@ settings:
     recursive: true
     follow-symlinks: false
     skip: ['.*', 'pandocomatic.yaml']
-templates:
-    markdown-to-html:
-        glob: ['*.markdown', '*.md']
-        preprocessors: []
-        pandoc:
-            from: markdown
-            to: html5
-            standalone: true
-        postprocessors: []
