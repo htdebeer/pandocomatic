@@ -92,7 +92,8 @@ module Pandocomatic
             @settings = {
                 'skip' => ['.*', 'pandocomatic.yaml'],
                 'recursive' => true,
-                'follow-links' => false
+                'follow-links' => false,
+                'match-files' => 'first'
             } 
 
             @templates = {}
@@ -174,7 +175,7 @@ module Pandocomatic
         # @return [Boolean] True if the setting 'recursive' is true, false
         #   otherwise
         def recursive?()
-            @settings['recursive']
+            @settings.has_key? 'recursive' and @settings['recursive']
         end
 
         # Should pandocomatic follow symbolic links given this Configuration?
@@ -182,8 +183,29 @@ module Pandocomatic
         # @return [Boolean] True if the setting 'follow_links' is true, false
         #   otherwise
         def follow_links?()
-            @settings['follow_links']
+            @settings.has_key? 'follow_links' and @settings['follow_links']
         end
+
+        # Should pandocomatic convert a file with all matching templates or
+        # only with the first matching template? Note. A 'use-template'
+        # statement in a document will overrule this setting.
+        #
+        # @return [Boolean] True if the setting 'match-files' is 'all', false
+        # otherwise.
+        def match_all_templates?()
+            @settings.has_key? 'match-files' and 'all' == @settings['match-files']
+        end
+
+        # Should pandocomatic convert a file with the first matching templates
+        # or with all matching templates? Note. Multiple 'use-template'
+        # statements in a document will overrule this setting.
+        #
+        # @return [Boolean] True if the setting 'match-files' is 'first', false
+        # otherwise.
+        def match_first_template?()
+            @settings.has_key? 'match-files' and 'first' == @settings['match-files']
+        end
+
 
         # Set the extension of the destination file given this Confguration,
         # template, and metadata
@@ -288,12 +310,12 @@ module Pandocomatic
                     end
                 end 
             else
-                # TODO: what if there is no pandoc.to?
                 if @templates[template_name].has_key? "pandoc"
                     pandoc = @templates[template_name]["pandoc"]
                     ext = use_extension.call pandoc
+
                     if not ext.nil?
-                        extension = nil
+                        extension = ext
                     elsif pandoc.has_key? "to"
                         extension = strip_extensions.call(pandoc["to"])
                     end
@@ -332,6 +354,25 @@ module Pandocomatic
             @convert_patterns.select do |template_name, globs|
                 globs.any? {|glob| File.fnmatch glob, File.basename(src)}
             end.keys.first
+        end
+
+        # Determine the templates to use with this source document given this
+        # Configuration.
+        #
+        # @param src [String] path to the source document
+        # @return [Array[String]] the template's name to use
+        def determine_templates(src)
+            matches = @convert_patterns.select do |template_name, globs|
+                globs.any? {|glob| File.fnmatch glob, File.basename(src)}
+            end.keys
+           
+            if matches.empty?
+               []
+            elsif match_all_templates?
+                matches
+            else
+                [matches.first]
+            end
         end
 
         # Update the path to an executable processor or executor given this

@@ -49,11 +49,34 @@ module Pandocomatic
         
         metadata = PandocMetadata.load_file @src
 
-        metadata.templates.each do |template_name|
-            raise ConfigurationError.new(:no_such_template, nil, template_name) unless template_name.empty? or config.has_template? template_name
-    
-            if not modified_only? or file_modified? @src, dst then
-                subcommand = ConvertFileCommand.new(@config, @src, dst, template_name)
+        subcommands = []
+
+        if metadata.has_template?
+            # There are templates in this document's metadata, try to use
+            # those. 
+            metadata.templates.each do |template_name|
+                raise ConfigurationError.new(:no_such_template, nil, template_name) unless template_name.empty? or config.has_template? template_name
+
+                subcommands.push ConvertFileCommand.new(@config, @src, dst, template_name)
+            end
+        else
+            # Try to match any global templates using the glob patterns
+            global_templates = @config.determine_templates(@src)
+                
+            if global_templates.empty?
+                
+                subcommands.push ConvertFileCommand.new(@config, @src, dst)
+            else
+                global_templates.each do |template_name|
+                    subcommands.push ConvertFileCommand.new(@config, @src, dst, template_name)
+                end
+            end
+        end
+
+        # Only run a command if the src file is modified, or if the modified
+        # setting is ignored.
+        subcommands.each do |subcommand|
+            if not modified_only? or file_modified? @src, subcommand.dst then
                 push subcommand unless subcommand.nil? or subcommand.skip?
             end
         end

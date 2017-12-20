@@ -2,3 +2,4 @@ settings:
     recursive: true
     follow-symlinks: false
     skip: ['.*', 'pandocomatic.yaml']
+    match-files: 'first'

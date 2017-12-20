@@ -32,12 +32,13 @@ templates](#pandocomatic-templates).
 
 ### Settings
 
-You can configure four optional global settings:
+You can configure five optional global settings:
 
 1. `data-dir`
-2. `skip`
-3. `recursive`
-4. `follow-links`
+2. `match-files`
+3. `skip`
+4. `recursive`
+5. `follow-links`
 
 The latter three are used only when running pandocomatic to convert a
 directory tree. These are discussed in the next sub section.
@@ -61,6 +62,27 @@ However, it is recommended to create a meaningful sub directory structure
 rather than to put everything together. For example, a sub directory for
 processors, filters, CSL files, and pandoc templates makes it easier to point
 to these assets.
+
+The setting `match-files` controls how pandocomatic chooses a template to use
+to convert a file. Pandocomatic matches a file to a template as follows:
+
+1.  If the file has one or more `use-template` statements in the
+    *pandocomatic* metadata, it will use these specified templates.
+2.  However, if no such templates are specified in the file, pandocomatic
+    tries to find *global* templates as follows:
+
+    a.  If the setting `match-files` has value `all`, all templates with glob
+        pattern that matches the input file are used to convert the file. For
+        example, you can have specified a template `www` to convert `*.md`
+        files to HTML and a template `pdf` to convert `*.md` to PDF. In this
+        case, a markdown file will be converted to both output formats. You
+        can use this to generate a website with a print PDF page for each web
+        page.
+    b.  If the setting `match-files` has value `first`, the first template
+        with a glob pattern that matches the input file is used to convert the
+        file.
+
+        This is the default.
 
 #### Configuring converting a directory tree {#global-settings}
 

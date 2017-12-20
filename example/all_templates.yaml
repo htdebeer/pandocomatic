@@ -1,0 +1,25 @@
+settings:
+  recursive: true
+  follow-links: false
+  match-files: all
+templates:
+  wiki-page:
+    glob: ['*.md']
+    preprocessors:
+      - 'preprocessors/now.rb'
+    pandoc:
+      from: markdown
+      to: html5
+      standalone: true
+      template: 'templates/wiki.html'
+    postprocessors:
+      - 'postprocessors/branding.rb'
+  pdf-page:
+    glob: ['*.md']
+    preprocessors:
+      - 'preprocessors/now.rb'
+    pandoc:
+      from: markdown
+      to: latex
+      pdf-engine: lualatex
+      use-extension: pdf
