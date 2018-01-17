@@ -66,7 +66,7 @@ module Pandocomatic
             @config = config
             @src = src
             @dst = dst
-            
+
             if template_name.nil? or template_name.empty?
                 @template_name = @config.determine_template @src
             else
@@ -199,7 +199,10 @@ module Pandocomatic
                         # Pandoc multi-word options can have the multiple words separated by
                         # both underscore (_) and dash (-).
                         option = option.gsub "-", "_"
-                        converter.send option, value unless option == 'output' or option == 'use_extension'
+                        converter.send option, value unless 
+                                option == 'output' or 
+                                option == 'use_extension' or
+                                option == 'rename'
                         # don't let pandoc write the output to enable postprocessing
                     rescue
                         warn "The pandoc option '#{option}' (with value '#{value}') is not recognized by paru. This option is skipped." if debug?
@@ -217,24 +220,43 @@ module Pandocomatic
             end
         end
 
+        # Preprocess the input
+        #
+        # @param input [String] the input to preprocess
+        # @param config [Hash] template
+        #
+        # @return [String] the generated output
         def preprocess(input, config = {})
             process input, 'preprocessors', config
         end
 
+        # Postprocess the input
+        #
+        # @param input [String] the input to postprocess
+        # @param config [Hash] template
+        #
+        # @return [String] the generated output
         def postprocess(input, config = {})
             process input, 'postprocessors', config
         end
 
+        # Run setup scripts
+        #
+        # @param config [Hash] template
         def setup(config = {})
             process "", 'setup', config
         end
 
+        # Run cleanup scripts
+        #
+        # @param config [Hash] template
         def cleanup(config = {})
             process "", 'cleanup', config
         end
 
         # Run the input string through a list of filters called processors. There
-        # are to types: preprocessors and postprocessors
+        # are various types: preprocessors and postprocessors, setup and
+        # cleanup, and rename
         def process(input, type, config = {})
             if config.has_key? type then
                 processors = config[type]
@@ -266,6 +288,9 @@ module Pandocomatic
         end
 
         private
+
+        def run_processor
+        end
 
         def use_output_option(dst) 
             OUTPUT_FORMATS.include?(File.extname(dst).slice(1..-1))

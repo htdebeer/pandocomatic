@@ -239,6 +239,46 @@ pandoc:
     use-extension: pdf
 ```
 
+Finally, the virtual pandoc option `rename` has been added to allow you to
+rename the output file via a script. This script will receive the destination
+path on `STDIN` and is supposed to write the renamed output path to `STDOUT`.
+It allows you to perform quite complex behavior with regards to the output
+directory and name of output files.
+
+I use this virtual pandoc option when I am generating my static
+sites with both HTML and PDF output and my input file is named `index.md`. For
+the HTML format I want `index.html` as the output file name, but for the PDF
+output I do not want `index.pdf` as output filename. Instead, I prefer to use
+the name of the input directory with extenstion `.pdf`. To that end I setup
+pandocomatic as follows:
+
+```{.yaml}
+pandoc:
+    from: markdown
+    to: pdf
+    rename: use-dirname.rb
+```
+
+and `use-dirname.rb`:
+
+```{.ruby}
+#!/usr/bin/env ruby
+
+current_dst = $stdin.read
+current_dst_dir = File.dirname current_dst
+current_dst_filename = File.basename current_dst
+current_dst_extname = File.extname current_dst
+
+dirname = File.split(current_dst_dir).last
+
+if current_dst_filename.start_with? "index" and not dirname.nil?
+    puts File.join(current_dst_dir, "#{dirname}.#{current_dst_extname}")
+else 
+    puts current_dst
+end
+
+```
+
 ##### postprocessors
 
 Similar to the `preprocessors` property, the `postprocessors` property is a

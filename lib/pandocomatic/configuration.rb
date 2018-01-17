@@ -231,35 +231,39 @@ module Pandocomatic
         def set_destination(dst, template_name, metadata)
             dir = File.dirname dst
 
+            # Use the output option when set.
             determine_output_in_pandoc = lambda do |pandoc|
                 if pandoc.has_key? "output"
                     output = pandoc["output"]
-                    if output.start_with? "/"
-                        # Treat as an absolute path. Note. this probably
-                        # does not work on windows?
-                        return output
-                    else
+                    if not output.start_with? "/"
                         # Put it relative to the current directory
-                        return File.join dir, output
+                        output = File.join dir, output
                     end
+                    output
+                else
+                    nil
                 end
-                return nil
             end
 
             destination = nil
+            rename_script = nil
 
             # Output option in pandoc property has precedence
             if metadata.has_pandocomatic?
                 pandocomatic = metadata.pandocomatic
                 if pandocomatic.has_key? "pandoc"
-                    destination = determine_output_in_pandoc.call pandocomatic["pandoc"]
+                    pandoc = pandocomatic["pandoc"]
+                    destination = determine_output_in_pandoc.call pandoc
+                    rename_script = pandoc["rename"]
                 end
             end
 
             # Output option in template's pandoc property is next
             if destination.nil? and not template_name.nil? and not template_name.empty? then
                 if @templates[template_name].has_key? "pandoc"
-                    destination = determine_output_in_pandoc.call @templates[template_name]["pandoc"]
+                    pandoc = @templates[template_name]["pandoc"]
+                    destination = determine_output_in_pandoc.call pandoc
+                    rename_script ||= pandoc["rename"]
                 end
             end
 
@@ -267,6 +271,10 @@ module Pandocomatic
             # extension updated to the output format
             if destination.nil?
                 destination = set_extension dst, template_name, metadata
+
+                if not rename_script.nil? then
+                    destination = rename_destination(rename_script, destination)
+                end
             end
             
             destination
@@ -619,6 +627,39 @@ module Pandocomatic
                 }
             end
             return nil
+        end
+
+        # Rename path by using rename script. If script fails somehow, warn
+        # and return the original destination.
+        #
+        # @param rename_script [String] absolute path to script to run
+        # @param dst [String] original destination to rename
+        def rename_destination(rename_script, dst)
+            script = update_path(rename_script, File.dirname(dst))
+
+            command, *parameters = script.shellsplit # split on spaces unless it is preceded by a backslash
+
+            if not File.exists? command
+                command = Configuration.which(command)
+                script = "#{command} #{parameters.join(' ')}"
+
+                raise ProcessorError.new(:script_does_not_exist, nil, command) if command.nil?
+            end
+
+            raise ProcessorError.new(:script_is_not_executable, nil, command) unless File.executable? command
+
+            begin
+                renamed_dst = Processor.run(script, dst)
+                if not renamed_dst.nil? and not renamed_dst.empty?
+                    renamed_dst.strip
+                else
+                    raise StandardError,new("Running rename script '#{script}' on destination '#{dst}' did not result in a renamed destination.")
+                    dst
+                end
+            rescue StandardError => e
+                ProcessorError.new(:error_processing_script, e, [script, dst])
+                dst
+            end
         end
         
         def marshal_dump()

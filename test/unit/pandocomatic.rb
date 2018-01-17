@@ -218,7 +218,7 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
   
-  def test_convert_for_all_matchin_templates()
+  def test_convert_for_all_matching_templates()
     Dir.mktmpdir('wiki') do |dir|
       input = File.join ['example', 'src', 'wiki']
       data_dir = File.join ['example', 'data-dir']
@@ -228,6 +228,20 @@ class TestPandocomaticRun < Minitest::Test
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
 
       example_output = File.join ['example', 'dst', 'all_templates']
+      assert_directories_equal example_output, output
+    end
+  end
+  
+  def test_convert_for_all_matching_templates_with_renaming()
+    Dir.mktmpdir('wiki') do |dir|
+      input = File.join ['example', 'src', 'wiki']
+      data_dir = File.join ['example', 'data-dir']
+      config = File.join ['example', 'all_templates_with_renaming.yaml']
+      output = File.join [dir, 'all_templates_with_renaming']
+
+      Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
+
+      example_output = File.join ['example', 'dst', 'all_templates_with_renaming']
       assert_directories_equal example_output, output
     end
   end
