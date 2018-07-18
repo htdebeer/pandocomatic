@@ -60,7 +60,13 @@ You can specify these types of paths as follows:
 1.  All *local* paths start with a `./`. These paths are local to the
     document being converted. When converting a directory tree, the current
     directory is being prepended to the path minus the `./`.
-2.  *Global* paths start with a `/`. These paths are resolved as is.
+
+    On the Windows operating system, a *local* path starts with `.\`.  Note
+    that backslashes might need escaping, like `.\\`.
+2.  *Global* paths start with a `/`. These paths are resolved as is. On the
+    Windows operating system, a *global* path starts with a letter followed by
+    a colon and a backslash, for example `C:\`.  Note
+    that backslashes might need escaping, like `.\\`.
 3.  Paths *relative* to the *pandocomatic data directory* do not start with a
     `./` nor a `/`. These paths are resolved by prepending the path to the
     *pandocomatic data directory*. These come in handy for defining general

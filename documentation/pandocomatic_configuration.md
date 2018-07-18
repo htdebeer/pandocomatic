@@ -64,7 +64,9 @@ processors, filters, CSL files, and pandoc templates makes it easier to point
 to these assets.
 
 The setting `match-files` controls how pandocomatic chooses a template to use
-to convert a file. Pandocomatic matches a file to a template as follows:
+to convert a file. Possible values for `match-files` are `first` and `all`.
+These options have the following effect: Pandocomatic matches a file to a
+template as follows:
 
 1.  If the file has one or more `use-template` statements in the
     *pandocomatic* metadata, it will use these specified templates.

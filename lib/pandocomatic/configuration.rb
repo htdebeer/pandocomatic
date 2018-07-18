@@ -395,13 +395,13 @@ module Pandocomatic
         # @return [String] the updated path.
         def update_path(path, src_dir, check_executable = false, output = false)
             updated_path = path
-            if path.start_with? './' 
+
+            if is_local_path path
                 # refers to a local dir; strip the './' before appending it to
                 # the source directory as to prevent /some/path/./to/path
-                #updated_path = File.join src_dir, path[2..-1]
                 updated_path = path[2..-1]
             else
-                if path.start_with? '/'
+                if is_absolute_path path
                     updated_path = path
                 else 
                     if check_executable
@@ -668,6 +668,22 @@ module Pandocomatic
 
         def marshal_load(array)
             @data_dir, @settings, @templates, @convert_patterns = array
+        end
+
+        def is_local_path(path)
+            if Gem.win_platform? then
+                path.match("^\\.\\\\\.*$")
+            else
+                path.start_with? "./"
+            end
+        end
+
+        def is_absolute_path(path)
+            if Gem.win_platform? then
+                path.match("^[a-zA-Z]:\\\\\.*$")
+            else
+                path.start_with? "/"
+            end
         end
 
     end

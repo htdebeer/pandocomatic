@@ -55,12 +55,12 @@ guide](http://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest [gem](https://rubygems.org/)
-[pandocomatic-0.2.2.1](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.2.1.gem)
+[pandocomatic-0.2.3.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.3.0.gem)
 from [Github](https://github.com) and install it manually as follows:
 
 ``` {.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.2.2.1.gem
+gem install pandocomatic-0.2.3.0.gem
 ```
 
 Why pandocomatic?
@@ -648,8 +648,9 @@ a sub directory for processors, filters, CSL files, and pandoc templates
 makes it easier to point to these assets.
 
 The setting `match-files` controls how pandocomatic chooses a template
-to use to convert a file. Pandocomatic matches a file to a template as
-follows:
+to use to convert a file. Possible values for `match-files` are `first`
+and `all`. These options have the following effect: Pandocomatic matches
+a file to a template as follows:
 
 1.  If the file has one or more `use-template` statements in the
     *pandocomatic* metadata, it will use these specified templates.
@@ -826,7 +827,13 @@ You can specify these types of paths as follows:
 1.  All *local* paths start with a `./`. These paths are local to the
     document being converted. When converting a directory tree, the
     current directory is being prepended to the path minus the `./`.
-2.  *Global* paths start with a `/`. These paths are resolved as is.
+
+    On the Windows operating system, a *local* path starts with `.\`.
+    Note that backslashes might need escaping, like `.\\`.
+2.  *Global* paths start with a `/`. These paths are resolved as is. On
+    the Windows operating system, a *global* path starts with a letter
+    followed by a colon and a backslash, for example `C:\`. Note that
+    backslashes might need escaping, like `.\\`.
 3.  Paths *relative* to the *pandocomatic data directory* do not start
     with a `./` nor a `/`. These paths are resolved by prepending the
     path to the *pandocomatic data directory*. These come in handy for
