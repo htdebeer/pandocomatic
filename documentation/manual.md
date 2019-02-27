@@ -2,7 +2,7 @@
 title: Pandocomatic
 subtitle: Automating the use of pandoc
 author: Huub de Beer
-date: March 1st, 2017
+date: September 21st, 2017
 keywords:
 - pandoc
 - ruby
@@ -10,61 +10,44 @@ keywords:
 - pandocomatic
 - static site generator
 pandocomatic_:
-  use-template: mddoc
-  pandoc:
-    filter: 
-    - 'filters/number_chapters_and_sections_and_figures.rb'
+  use-template: indexdoc
 ...
 
-
-# Introduction
+# Introduction {#introduction}
 
 ::paru::insert introduction.md
 
-## Why pandocomatic?
-
-::paru::insert why_pandocomatic.md
-
-But more about that later. First, the installation of pandocomatic is
-described, followed by its license.  After that, in the next chapters, using
-pandocomatic and configuring pandocomatic are described in detail. The last
-two chapters of this manual describe two typical use cases of pandocomatic:
-
-1.  [automating setting up and running pandoc for a series of related papers](#automating-setting-up-and-running-pandoc-for-a-series-of-related-papers), and 
-2.  [using pandocomatic as a static site
-    generator](#using-pandocomatic-as-a-static-site-generator).
-
-::paru::insert license.md
+::paru::insert acknowledgements.md
 
 ::paru::insert install.md
 
-# Using pandocomatic
+::paru::insert why_pandocomatic.md
 
-::paru::insert usage.md
+------------------------------------------
 
-## Examples
+# Using pandocomatic: Quick start and overview {#using-pandocomatic}
 
-::paru::insert usage_examples.md
+::paru::insert convert_a_document.md
 
+::paru::insert convert_a_series_of_documents.md
 
-See Chapters
-[4](#use-case-i-automating-setting-up-and-running-pandoc-for-a-series-of-related-papers)
-and
-[5](#use-case-ii-use-pandocomatic-as-a-static-site-generator)
-for more extensive examples on how to use pandocomatic.
+::paru::insert static_site_generator.md
 
-In the next chapter the configuration of pandocomatic is elaborated.
+------------------------------------------
 
-# Configuring pandocomatic
-
-::paru::insert configuration.md
-
-# Automating setting up and running pandoc for a series of related papers
-
-::paru::insert use_pandocomatic_to_automate_pandoc.md
-
-# Using pandocomatic as a static site generator
-
-::paru::insert use_pandocomatic_as_a_static_site_generator.md
+# Reference: All about pandocomatic {#reference}
 
 
+::paru::insert pandocomatic_cli.md
+
+::paru::insert pandocomatic_configuration.md
+
+::paru::insert pandocomatic_templates.md
+
+------------------------------------------
+
+# Appendix {#appendix}
+
+::paru::insert faq.md
+
+::paru::insert glossary.md

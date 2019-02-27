@@ -16,7 +16,7 @@ end
 task :generate_docs do
     sh %{
     cd documentation;
-    ../test/pandocomatic.rb --data-dir data-dir --config config.yaml --input manual2.md --output ../index.md;
+    ../test/pandocomatic.rb --data-dir data-dir --config config.yaml --input manual.md --output ../index.md;
     ../test/pandocomatic.rb --data-dir data-dir --config config.yaml --input README.md --output ../README.md
     }
 end
