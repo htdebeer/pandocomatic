@@ -1,5 +1,5 @@
 #--
-# Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017-2019, Huub de Beer <Huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -17,7 +17,7 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require 'trollop'
+  require 'optimist'
 
   require_relative './error/cli_error.rb'
 
@@ -41,7 +41,7 @@ module Pandocomatic
       begin
         options = parse_options args || {:help => true, :help_given => true}
         options
-      rescue Trollop::CommandlineError => e
+      rescue Optimist::CommandlineError => e
         raise CLIError.new(:problematic_invocation, e, args)
       end
     end
@@ -50,7 +50,7 @@ module Pandocomatic
 
     # Parse pandocomatic's global options.
     def self.parse_options(args)
-      parser = Trollop::Parser.new do
+      parser = Optimist::Parser.new do
         # General options 
         opt :dry_run, 'Do a dry run', :short => '-y'
         opt :quiet, 'Run quietly', :short => '-q'
@@ -73,7 +73,7 @@ module Pandocomatic
       # All options should be parsed according to the specification given in the parser
       begin
         options = parser.parse args
-      rescue Trollop::CommandlineError => e
+      rescue Optimist::CommandlineError => e
         raise CLIError.new(:problematic_invocation, e, args)
       end
       
@@ -140,7 +140,7 @@ module Pandocomatic
     end
 
     #--
-    #Trollop has special behavior for the version and help options. To
+    #Optimist has special behavior for the version and help options. To
     # overcome, "show_version" and "show_help" options are introduced. When
     # set, these are put in the options as "version" and "help"
     # respectively.
