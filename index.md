@@ -55,12 +55,12 @@ guide](http://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest [gem](https://rubygems.org/)
-[pandocomatic-0.2.4.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.4.0.gem)
+[pandocomatic-0.2.4.1](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.4.1.gem)
 from [Github](https://github.com) and install it manually as follows:
 
 ``` {.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.2.4.0.gem
+gem install pandocomatic-0.2.4.1.gem
 ```
 
 Why pandocomatic?
@@ -654,6 +654,7 @@ a file to a template as follows:
 
 1.  If the file has one or more `use-template` statements in the
     *pandocomatic* metadata, it will use these specified templates.
+
 2.  However, if no such templates are specified in the file,
     pandocomatic tries to find *global* templates as follows:
 
@@ -664,6 +665,7 @@ a file to a template as follows:
         `*.md` to PDF. In this case, a markdown file will be converted
         to both output formats. You can use this to generate a website
         with a print PDF page for each web page.
+
     b.  If the setting `match-files` has value `first`, the first
         template with a glob pattern that matches the input file is used
         to convert the file.
@@ -830,10 +832,12 @@ You can specify these types of paths as follows:
 
     On the Windows operating system, a *local* path starts with `.\`.
     Note that backslashes might need escaping, like `.\\`.
+
 2.  *Global* paths start with a `/`. These paths are resolved as is. On
     the Windows operating system, a *global* path starts with a letter
     followed by a colon and a backslash, for example `C:\`. Note that
     backslashes might need escaping, like `.\\`.
+
 3.  Paths *relative* to the *pandocomatic data directory* do not start
     with a `./` nor a `/`. These paths are resolved by prepending the
     path to the *pandocomatic data directory*. These come in handy for
