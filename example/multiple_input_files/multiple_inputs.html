@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Huub de Beer" />
+  <title>Using multiple input files with pandocomatic</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Using multiple input files with pandocomatic</h1>
+<p class="author">Huub de Beer</p>
+</header>
+<h1 id="introduction">Introduction</h1>
+<p>Like pandoc itself, pandocomatic does support multiple input files as long as they are files and not directories.</p>
+<h1 id="usage">Usage</h1>
+<p>To use multiple input files, make sure that:</p>
+<ul>
+<li><p>Only files can be used, no directories</p></li>
+<li><p>Do not mix <code>--input/-i</code> options and extra input paramters:</p>
+<ul>
+<li><p>Good:</p>
+<pre><code>pandocomatic -i 1.md -i 2.md
+pandocomatic 1.md 2.md
+pandocomatic --input 1.md -i 2.md</code></pre></li>
+<li><p>Bad:</p>
+<pre><code>pandocomatic -i somedir -i 1.md</code></pre></li>
+</ul></li>
+</ul>
+</body>
+</html>

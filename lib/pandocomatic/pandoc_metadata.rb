@@ -24,6 +24,8 @@ module Pandocomatic
 
     require_relative './error/pandoc_error.rb'
     require_relative './error/io_error.rb'
+            
+    METADATA_BLOCK = /^---[ \t]*(\r\n|\r|\n)(.+?)^(?:---|\.\.\.)[ \t]*(\r\n|\r|\n)/m
 
     # PandocMetadata represents the metadata with pandoc options set in
     # templates and input files.
@@ -41,12 +43,20 @@ module Pandocomatic
             end
         end
 
+        # Remove all metadata from an input string
+        #
+        # @param input [String] the input to remove all metadata from
+        # @return [String] the input with all metadata blocks removed
+        def self.remove_metadata(input)
+            input.gsub(METADATA_BLOCK, "\n");
+        end
+
         # Extract the YAML metadata from an input string
         #
         # @param input [String] the input string
         # @return [String] the YAML data embedded in the input string
         def self.pandoc2yaml(input)
-            mined_metadata = input.scan(/^---[ \t]*(\r\n|\r|\n)(.+?)^(?:---|\.\.\.)[ \t]*(\r\n|\r|\n)/m)
+            mined_metadata = input.scan(METADATA_BLOCK)
             
             mined_metadata
                 .flatten

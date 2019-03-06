@@ -21,6 +21,7 @@ module Pandocomatic
     Encoding.default_internal = Encoding::UTF_8
 
     require 'paru'
+    require 'tempfile'
 
     require_relative './error/pandocomatic_error.rb'
     require_relative './error/pandoc_error.rb'
@@ -50,7 +51,7 @@ module Pandocomatic
         ERROR_STATUS = 1266 # This is the sum of the ascii values of the characters in 'pandocomatic'
 
         # Pandocomatic's current version
-        VERSION = [0, 2, 4, 1]
+        VERSION = [0, 2, 5, 0]
 
         # Pandocomatic's default configuration file
         CONFIG_FILE = 'pandocomatic.yaml'
@@ -74,7 +75,13 @@ module Pandocomatic
                 else
                     # Run the pandocomatic converter configured according to the options
                     # given.
-                    input = options[:input]
+
+                    if options[:multiple_inputs] then
+                        input = concatenate options[:input]
+                    else
+                        input = options[:input].first
+                    end
+
                     output = options[:output]
                     configuration = configure options
 
@@ -82,7 +89,7 @@ module Pandocomatic
                     # directory, and the options quiet and dry-run, which are used when
                     # executing a command: if dry-run the command is not actually
                     # executed and if quiet the command is not printed to STDOUT
-                    src_root = File.absolute_path input
+                    src_root = File.absolute_path options[:input].first
                     dry_run = if options[:dry_run_given] then options[:dry_run] else false end
                     quiet = if options[:quiet_given] then options[:quiet] else false end
                     debug = if options[:debug_given] and not quiet then options[:debug] else false end
@@ -130,6 +137,13 @@ module Pandocomatic
                 # for now. This is likely a bug: ask the user to report it.
                 warn "An unexpected error has occurred. You can report this bug via https://github.com/htdebeer/pandocomatic/issues/new."
                 raise e
+            ensure
+                # If a temporary file has been created while concatenating
+                # multiuple input files, ensure it is removed.
+                if options[:multiple_inputs] and input.is_a? Tempfile then
+                    input.close
+                    input.unlink
+                end
             end
         end
 
@@ -198,6 +212,20 @@ module Pandocomatic
             data_dir = determine_data_dir options
             config_file = determine_config_file options, data_dir
             Configuration.new options, data_dir, config_file
+        end
+
+        def self.concatenate(input_files)
+            # Concatenate all input files into one (temporary) input file
+            temp_input_file = Tempfile.new(input_files.first)
+
+            input_files.each_with_index do |filename, index|
+                input = File.read File.absolute_path(filename)
+                input = if 0 === index then input else PandocMetadata.remove_metadata(input) end
+                temp_input_file.write input
+            end
+
+            temp_input_file.rewind
+            temp_input_file
         end
 
     end

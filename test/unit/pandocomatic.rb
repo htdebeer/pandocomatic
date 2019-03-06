@@ -245,5 +245,21 @@ class TestPandocomaticRun < Minitest::Test
       assert_directories_equal example_output, output
     end
   end
+
+  def test_convert_multiple_files()
+    Dir.mktmpdir('multiple_inputs') do |dir|
+      inputs = [
+          File.join(['example', 'multiple_input_files', 'book.md']),
+          File.join(['example', 'multiple_input_files', 'chapter01.md']),
+          File.join(['example', 'multiple_input_files', 'chapter02.md'])
+      ]
+      output = File.join [dir, 'multiple_inputs.html']
+      
+      Pandocomatic::Pandocomatic.run "#{inputs.map{|i| "-i #{i}"}.join(" ")} -o #{output}"
+
+      example_output = File.join ['example', 'multiple_input_files', 'multiple_inputs.html']
+      assert_files_equal example_output, output
+    end
+  end
   
 end
