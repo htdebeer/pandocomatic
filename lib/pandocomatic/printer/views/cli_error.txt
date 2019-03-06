@@ -1,6 +1,11 @@
 <%=@error.message%>: <% case @error.type 
 when :no_input_given%>
 Specify the input file or directory with the option `--input PATH`.
+<% when :no_mixed_inputs%>
+Using both the `--input/-i` options and extra input parameters is not allowed.
+Use either only `--input/-i` options or only input parameters.
+<% when :multiple_input_files_only %>
+When specifying multiple inputs, only files are allowed. '<%= @error.data %>' is a directory.
 <% when :unknown_option %>
 See `pandocomatic --help` which options are allowed.
 <% when :too_many_options %>

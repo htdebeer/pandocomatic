@@ -22,7 +22,7 @@ module Pandocomatic
   require_relative './error/cli_error.rb'
 
   ##
-  # Command line options parser for pandocomatic using trollop.
+  # Command line options parser for pandocomatic using optimist.
   #
   class CLI
 
@@ -63,7 +63,7 @@ module Pandocomatic
 
         # What to convert and where to put it
         opt :output, 'Output', :short => '-o', :type => String
-        opt :input, 'Input', :short => '-i', :type => String
+        opt :input, 'Input', :short => '-i', :type => String, :multi => true
 
         # Version and help
         opt :show_version, 'Version', :short => '-v', :long => 'version'
@@ -79,29 +79,38 @@ module Pandocomatic
       
       options = use_custom_version options
       options = use_custom_help options
-     
-      if options_need_to_be_validated? options
-        # if no input option is specified, it should follow as the last item
-        if not options[:input_given]
-          options[:input] = args.shift
-          options[:input_given] = true
-        end
 
-        # There should be no other options left.
-        raise CLIError.new(:too_many_options, nil, args) if not args.empty?
+      if options_need_to_be_validated? options
+        # if no input option is specified, all items following the last option
+        # are treated as input files.
+        if not options[:input_given]
+          options[:input] = args
+          options[:input_given] = true
+        elsif not args.empty?
+          raise CLIError.new(:no_mixed_inputs)
+        end
 
         # There should be an input specified
         raise CLIError.new(:no_input_given) if options[:input].nil? or options[:input].empty?
 
-        # The input file or directory should exist
-        input = File.absolute_path options[:input]
-        raise CLIError.new(:input_does_not_exist, nil, options[:input]) unless File.exist? input
-        raise CLIError.new(:input_is_not_readable, nil, input) unless File.readable? input
+        # Support multiple input files for conversion
+        options[:multiple_inputs] = 1 < options[:input].size
+
+        # The input files or directories should exist
+        input = options[:input].map do |input_file|
+          raise CLIError.new(:input_does_not_exist, nil, input_file) unless File.exist? input_file
+          raise CLIError.new(:input_is_not_readable, nil, input_file) unless File.readable? input_file
+        
+          # If there are multiple input files, these files cannot be directories
+          raise CLIError.new(:multiple_input_files_only, nil, input_file) if options[:multiple_inputs] and File.directory? input_file
+          
+          File.absolute_path input_file
+        end
 
         if options[:output_given]
           output = File.absolute_path options[:output]
           # Input and output should be both files or directories
-          match_file_types input, output
+          match_file_types input.first, output
 
           # The output, if it already exist, should be writable
           raise CLIError.new(:output_is_not_writable, nil, output) unless not File.exist? output or File.writable? output
@@ -109,7 +118,7 @@ module Pandocomatic
           # If the input is a directory, an output directory should be
           # specified as well. If the input is a file, the output could be
           # specified in the input file, or STDOUT could be used.
-          raise CLIError.new(:no_output_given) if File.directory? input
+          raise CLIError.new(:no_output_given) if not options[:multiple_inputs] and File.directory? input.first
         end
 
         # Data dir, if specified, should be an existing and readable directory
@@ -140,7 +149,7 @@ module Pandocomatic
     end
 
     #--
-    #Optimist has special behavior for the version and help options. To
+    # Optimist has special behavior for the version and help options. To
     # overcome, "show_version" and "show_help" options are introduced. When
     # set, these are put in the options as "version" and "help"
     # respectively.

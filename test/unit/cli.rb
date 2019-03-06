@@ -133,11 +133,21 @@ class TestPandocomaticCLI < Minitest::Test
     assert_equal e.message, "Problematic invocation"
   end
 
-  def test_too_many_options
+  def test_multiple_input_files
+    assert_includes cli('-i test/files/readable_test_file -i test/files/readable_test_file2'), :multiple_inputs  
+    assert_includes cli('test/files/readable_test_file test/files/readable_test_file2'), :multiple_inputs  
+
     e = assert_raises Pandocomatic::CLIError do
-      cli('-i files/test/readable_test_file files/test/another_file')
+      cli('-i test/files/readable_test_file test/files/readable_test_file2')
     end
-    assert_equal e.message, "Too many options"
+
+    assert_equal e.message, "No mixed inputs"
+
+    e = assert_raises Pandocomatic::CLIError do
+      cli('-i test/files/readable_test_dir -i test/files/readable_test_file')
+    end
+
+    assert_equal e.message, "Multiple input files only"
   end
 
 end

@@ -30,6 +30,8 @@ module Pandocomatic
       # :no_input_given,
       # :input_does_not_exist,
       # :input_is_not_readable,
+      # :multiple_input_files_only,
+      # :no_mixed_inputs
 
       # :no_output_given,
       # :output_is_not_a_directory,
@@ -37,7 +39,6 @@ module Pandocomatic
       # :output_it_not_writable,
 
       # :unknown_option,
-      # :too_many_options,
       # :problematic_invocation,
 
       # :data_dir_does_not_exist,
