@@ -25,6 +25,7 @@ module Pandocomatic
     require_relative './error/pandoc_error.rb'
     require_relative './error/io_error.rb'
             
+    # Regular expression to find metadata blocks in a string.
     METADATA_BLOCK = /^---[ \t]*(\r\n|\r|\n)(.+?)^(?:---|\.\.\.)[ \t]*(\r\n|\r|\n)/m
 
     # PandocMetadata represents the metadata with pandoc options set in

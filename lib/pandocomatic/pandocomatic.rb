@@ -1,5 +1,5 @@
 #--
-# Copyright 2014, 2015, 2016, 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2014—2019, Huub de Beer <Huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -25,11 +25,8 @@ module Pandocomatic
 
     require_relative './error/pandocomatic_error.rb'
     require_relative './error/pandoc_error.rb'
-    require_relative './error/configuration_error.rb'
 
     require_relative './cli.rb'
-
-    require_relative './configuration.rb'
 
     require_relative './printer/help_printer.rb'
     require_relative './printer/version_printer.rb'
@@ -38,7 +35,6 @@ module Pandocomatic
     require_relative './printer/finish_printer.rb'
     require_relative './printer/summary_printer.rb'
 
-    require_relative './command/command.rb'
     require_relative './command/convert_dir_command.rb'
     require_relative './command/convert_list_command.rb'
     require_relative './command/convert_file_command.rb'
@@ -51,60 +47,34 @@ module Pandocomatic
         ERROR_STATUS = 1266 # This is the sum of the ascii values of the characters in 'pandocomatic'
 
         # Pandocomatic's current version
-        VERSION = [0, 2, 5, 0]
-
-        # Pandocomatic's default configuration file
-        CONFIG_FILE = 'pandocomatic.yaml'
-
+        VERSION = [0, 2, 5, 0, "α"]
+        
         # Run pandocomatic given options
         #
         # @param args [String[]] list of options to configure pandocomatic
         def self.run(args)
             begin
                 start_time = Time.now
-                options = CLI.parse args
+                configuration = CLI.parse args
 
-                if options[:version_given]
+                if configuration.show_version?
                     # The version option has precedence over all other options; if
                     # given, the version is printed
                     VersionPrinter.new(VERSION).print
-                elsif options[:help_given]
+                elsif configuration.show_help?
                     # The help option has precedence over all other options except the
                     # version option. If given, the help is printed.
                     HelpPrinter.new().print
                 else
                     # Run the pandocomatic converter configured according to the options
                     # given.
-
-                    if options[:multiple_inputs] then
-                        input = concatenate options[:input]
-                    else
-                        input = options[:input].first
-                    end
-
-                    output = options[:output]
-                    configuration = configure options
-
-                    # Extend the command classes by setting the source tree root
-                    # directory, and the options quiet and dry-run, which are used when
-                    # executing a command: if dry-run the command is not actually
-                    # executed and if quiet the command is not printed to STDOUT
-                    src_root = File.absolute_path options[:input].first
-                    dry_run = if options[:dry_run_given] then options[:dry_run] else false end
-                    quiet = if options[:quiet_given] then options[:quiet] else false end
-                    debug = if options[:debug_given] and not quiet then options[:debug] else false end
-                    modified_only = if options[:modified_only_given] then options[:modified_only_given] else false end
-
-                    Command.reset(src_root, dry_run, quiet, debug, modified_only)
-
+                    #
                     # Pandocomatic has two modes: converting a directory tree or
                     # converting a single file. The mode is selected by the input.
-                    if File.directory? input
-                        command = ConvertDirCommand.new(configuration, input, output)
+                    if configuration.directory?
+                        command = ConvertDirCommand.new(configuration, configuration.input, configuration.output)
                     else
-                        destination = if output.nil? or output.empty? then File.basename input else output end
-
-                        command = ConvertFileMultipleCommand.new(configuration, input, destination)
+                        command = ConvertFileMultipleCommand.new(configuration, configuration.input, configuration.output)
                         command.make_quiet unless command.subcommands.size > 1
                     end
 
@@ -119,14 +89,14 @@ module Pandocomatic
                     # Pandocomatic is successfully configured: running the
                     # actual conversion now. But first a short summary of the
                     # process to execute is printed.
-                    SummaryPrinter.new(command, input, output).print unless quiet or not command.directory?
+                    SummaryPrinter.new(command, configuration).print unless configuration.quiet? or not command.directory?
 
                     # Depending on the options dry-run and quiet, the command.execute
                     # method will actually performing the commands (dry-run = false) and
                     # print the command to STDOUT (quiet = false)
                     command.execute()
 
-                    FinishPrinter.new(command, input, output, start_time).print unless quiet
+                    FinishPrinter.new(command, configuration, start_time).print unless configuration.quiet?
                 end
             rescue PandocomaticError => e
                 # Report the error and break off the conversion process.
@@ -138,95 +108,8 @@ module Pandocomatic
                 warn "An unexpected error has occurred. You can report this bug via https://github.com/htdebeer/pandocomatic/issues/new."
                 raise e
             ensure
-                # If a temporary file has been created while concatenating
-                # multiuple input files, ensure it is removed.
-                if options[:multiple_inputs] and input.is_a? Tempfile then
-                    input.close
-                    input.unlink
-                end
+                configuration.clean_up!
             end
         end
-
-        private
-
-        def self.determine_config_file(options, data_dir = Dir.pwd)
-            config_file = ''
-
-            if options[:config_given]
-                config_file = options[:config]
-            elsif Dir.entries(data_dir).include? CONFIG_FILE
-                config_file = File.join(data_dir, CONFIG_FILE)
-            elsif Dir.entries(Dir.pwd()).include? CONFIG_FILE
-                config_file = File.join(Dir.pwd(), CONFIG_FILE)
-            else
-                # Fall back to default configuration file distributed with
-                # pandocomatic
-                config_file = File.join(__dir__, 'default_configuration.yaml')
-            end
-
-            path = File.absolute_path config_file
-
-            raise ConfigurationError.new(:config_file_does_not_exist, nil, path) unless File.exist? path
-            raise ConfigurationError.new(:config_file_is_not_a_file, nil, path) unless File.file? path
-            raise ConfigurationError.new(:config_file_is_not_readable, nil, path) unless File.readable? path
-
-            path
-        end
-
-        def self.determine_data_dir(options)
-            data_dir = ''
-
-            if options[:data_dir_given]
-                data_dir = options[:data_dir]
-            else
-                # No data-dir option given: try to find the default one from pandoc
-                begin
-                    data_dir = Paru::Pandoc.info()[:data_dir]
-
-                    # If pandoc's data dir does not exist, however, fall back
-                    # to the current directory
-                    unless File.exist? File.absolute_path(data_dir)
-                        data_dir = Dir.pwd
-                    end
-                rescue Paru::Error => e
-                    # If pandoc cannot be run, continuing probably does not work out
-                    # anyway, so raise pandoc error
-                    raise PandocError.new(:error_running_pandoc, e, data_dir)
-                rescue StandardError => e
-                    # Ignore error and use the current working directory as default working directory
-                    data_dir = Dir.pwd
-                end
-            end
-
-            # check if data directory does exist and is readable
-            path = File.absolute_path data_dir
-
-            raise ConfigurationError.new(:data_dir_does_not_exist, nil, path) unless File.exist? path
-            raise ConfigurationError.new(:data_dir_is_not_a_directory, nil, path) unless File.directory? path
-            raise ConfigurationError.new(:data_dir_is_not_readable, nil, path) unless File.readable? path
-
-            path
-        end
-
-        def self.configure(options)
-            data_dir = determine_data_dir options
-            config_file = determine_config_file options, data_dir
-            Configuration.new options, data_dir, config_file
-        end
-
-        def self.concatenate(input_files)
-            # Concatenate all input files into one (temporary) input file
-            temp_input_file = Tempfile.new(input_files.first)
-
-            input_files.each_with_index do |filename, index|
-                input = File.read File.absolute_path(filename)
-                input = if 0 === index then input else PandocMetadata.remove_metadata(input) end
-                temp_input_file.write input
-            end
-
-            temp_input_file.rewind
-            temp_input_file
-        end
-
     end
 end

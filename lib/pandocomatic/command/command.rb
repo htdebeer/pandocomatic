@@ -50,18 +50,13 @@ module Pandocomatic
 
     # Reset all Commands
     #
-    # @param src_root [String = "."] the root directory to convert
-    # @param dry_run [Boolean = false] should Commands actually run or not?
-    # @param quiet [Boolean = false] should Commands run silently?
-    # @param debug [Boolean = false] should Commands be run in debug mode?
-    # @param modified_only [Boolean = false] should only modified files be
-    #   converted?
-    def self.reset(src_root = ".", dry_run = false, quiet = false, debug = false, modified_only = false)
-      @@src_root = src_root
-      @@dry_run = dry_run
-      @@quiet = quiet
-      @@debug = debug
-      @@modified_only = modified_only
+    # @param configuration [Configuration] the configuration used to convert
+    def self.reset(configuration)
+      @@src_root = configuration.src_root
+      @@dry_run = configuration.dry_run?
+      @@quiet = configuration.quiet?
+      @@debug = configuration.debug?
+      @@modified_only = configuration.modified_only?
       @@total = 0
     end
 

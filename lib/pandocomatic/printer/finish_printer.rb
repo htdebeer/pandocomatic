@@ -25,8 +25,13 @@ module Pandocomatic
     MINUTE = 60
 
     # Create a new FinishPrinter
-    def initialize(command, input, output, start_time)
-      super command, input, output
+    # 
+    # @param command [Command] the command to finish
+    # @param configuration [Configuration] the configuration of the
+    # pandocomatic invokation
+    # @param start_time [Time] the time the command was started
+    def initialize(command, configuration, start_time)
+      super command, configuration
       set_template 'finish.txt'
 
       @start_time = start_time
@@ -34,6 +39,8 @@ module Pandocomatic
     end
 
     # Calculate the duration of the whole conversion process
+    #
+    # @erturn [Number]
     def duration()
       seconds = @end_time - @start_time
       if seconds > MINUTE

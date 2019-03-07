@@ -25,13 +25,13 @@ module Pandocomatic
         # Create a new SummaryPrinter
         # 
         # @param command [Command] the command to summarize
-        # @param input [String] the filename of the input file
-        # @param output [String] the filename of the output file
-        def initialize(command, input, output)
+        # @param configuration [Configuration] the configuration of the
+        # pandocomatic invokation
+        def initialize(command, configuration)
             super 'summary.txt'
             @command = command
-            @input = input
-            @output = output
+            @input = configuration.input.to_s
+            @output = configuration.output
         end
 
         # A string representation of the commands being executed

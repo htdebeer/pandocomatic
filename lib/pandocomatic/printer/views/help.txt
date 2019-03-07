@@ -59,8 +59,15 @@ OPTIONS
                       TRUE
 
                   - templates:
+                    - cleanup: [SCRIPTS] paths to scripts to run after a
+                      conversion is finished, i.e. after the last
+                      postprocessor is run.
                     - glob: [GLOB PATTERNS] files to convert using this
                       template.
+                    - setup: [SCRIPTS] paths to scripts to run before a
+                      conversion is started, i.e. before any preprocessor is
+                      run.
+                    - metadata: [YAML properties] metadata properties
                     - preprocessors: [SCRIPTS] paths to scripts to run before
                       converting with pandoc.
                     - postprocessors: [SCRIPTS] paths to scripts to run after
@@ -111,11 +118,11 @@ SEE ALSO
   - Pandocomatic's documentation
     https://heerdebeer.org/Software/markdown/pandocomatic/
 
-  - Pandoc's manual
-    http://pandoc.org/MANUAL.html
+  - Pandoc's user guide
+    https://pandoc.org/MANUAL.html
 
   - YAML website
-    http://yaml.org/
+    https://yaml.org/
 
 AUTHOR
 
@@ -123,7 +130,7 @@ AUTHOR
 
 LICENSE
 
-  Copyright 2014, 2015, 2016, 2017, Huub de Beer <Huub@heerdebeer.org>
+  Copyright 2014—2019 Huub de Beer <Huub@heerdebeer.org>
 
   Pandocomatic is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by the

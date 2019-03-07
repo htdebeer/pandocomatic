@@ -142,7 +142,7 @@ module Pandocomatic
     # If the source directory contains a configuration file, use it to
     # reconfigure the converter. Otherwise, use the current configuration
     def reconfigure(current_config, src_dir)
-      config_file = File.join src_dir, Pandocomatic::CONFIG_FILE
+      config_file = File.join src_dir, Configuration::CONFIG_FILE
       if File.exist? config_file then
         config = current_config.reconfigure config_file
       else

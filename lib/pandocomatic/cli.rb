@@ -20,6 +20,8 @@ module Pandocomatic
   require 'optimist'
 
   require_relative './error/cli_error.rb'
+  require_relative './configuration.rb'
+
 
   ##
   # Command line options parser for pandocomatic using optimist.
@@ -32,15 +34,13 @@ module Pandocomatic
     #
     # @param args [String, Array] A command line invocation string or a list of strings like ARGV
     #
-    # @return [Hash] The options to pandocomatic
-    # the subcommand's options
-    #
+    # @return [Configuration] The configuration for running pandocomatic given
+    # the command-line options.
     def self.parse(args)
       args = args.split if args.is_a? String
 
       begin
-        options = parse_options args || {:help => true, :help_given => true}
-        options
+        parse_options args || Configuration.new({:help => true, :help_given => true})
       rescue Optimist::CommandlineError => e
         raise CLIError.new(:problematic_invocation, e, args)
       end
@@ -49,6 +49,8 @@ module Pandocomatic
     private 
 
     # Parse pandocomatic's global options.
+    #
+    # @return [Configuration]
     def self.parse_options(args)
       parser = Optimist::Parser.new do
         # General options 
@@ -94,7 +96,7 @@ module Pandocomatic
         raise CLIError.new(:no_input_given) if options[:input].nil? or options[:input].empty?
 
         # Support multiple input files for conversion
-        options[:multiple_inputs] = 1 < options[:input].size
+        multiple_inputs = 1 < options[:input].size
 
         # The input files or directories should exist
         input = options[:input].map do |input_file|
@@ -102,7 +104,7 @@ module Pandocomatic
           raise CLIError.new(:input_is_not_readable, nil, input_file) unless File.readable? input_file
         
           # If there are multiple input files, these files cannot be directories
-          raise CLIError.new(:multiple_input_files_only, nil, input_file) if options[:multiple_inputs] and File.directory? input_file
+          raise CLIError.new(:multiple_input_files_only, nil, input_file) if multiple_inputs and File.directory? input_file
           
           File.absolute_path input_file
         end
@@ -118,7 +120,7 @@ module Pandocomatic
           # If the input is a directory, an output directory should be
           # specified as well. If the input is a file, the output could be
           # specified in the input file, or STDOUT could be used.
-          raise CLIError.new(:no_output_given) if not options[:multiple_inputs] and File.directory? input.first
+          raise CLIError.new(:no_output_given) if not multiple_inputs and File.directory? input.first
         end
 
         # Data dir, if specified, should be an existing and readable directory
@@ -139,9 +141,9 @@ module Pandocomatic
           raise CLIError.new(:config_file_is_not_a_file, nil, config) unless File.file? config
         end
 
-      end
-      
-      options
+      end 
+
+      Configuration.new options, input
     end
 
     def self.options_need_to_be_validated? options

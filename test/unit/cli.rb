@@ -11,23 +11,23 @@ class TestPandocomaticCLI < Minitest::Test
   end
 
   def test_version
-    assert_includes cli('-v'), :version
-    assert_includes cli('--version'), :version
-    assert_includes cli('-q --version'), :version
-    assert_includes cli('--version test/files/readable_test_file'), :version
+      assert cli('-v').show_version?
+      assert cli('--version').show_version?
+      assert cli('-q --version').show_version?
+      assert cli('--version test/files/readable_test_file').show_version?
   end
 
   def test_help
-    assert_includes cli('-h'), :help
-    assert_includes cli('-h -q'), :help
-    assert_includes cli('-i test/files/readable_test_file -h'), :help
-    assert_includes cli('--help'), :help
+      assert cli('-h').show_help?
+      assert cli('-h -q').show_help?
+      assert cli('-i test/files/readable_test_file -h').show_help?
+      assert cli('--help').show_help?
   end
 
   def test_version_and_help
-    assert_includes cli('-v -h'), :version
-    assert_includes cli('-v -h'), :help
-    assert_includes cli('-v -h'), :help
+      assert cli('-v -h').show_version?
+      assert cli('-v -h').show_help?
+      assert cli('-v -h').show_help?
   end
 
   def test_input
@@ -39,9 +39,13 @@ class TestPandocomaticCLI < Minitest::Test
     end
     assert_equal e.message, "No input given"
 
-    assert_includes cli('test/files/readable_test_file'), :input
-    assert_includes cli('-i test/files/readable_test_file'), :input
-    assert_includes cli('--input test/files/readable_test_file'), :input
+    refute_nil cli('test/files/readable_test_file').input
+
+    refute_nil cli('-i test/files/readable_test_file').input
+    
+    refute_nil cli('--input test/files/readable_test_file').input
+      
+    refute_nil cli('-i test/files/readable_test_dir -o /tmp').input
 
     e = assert_raises Pandocomatic::CLIError do
       cli('test/files/non_existing_file')
@@ -77,9 +81,9 @@ class TestPandocomaticCLI < Minitest::Test
     end
     assert_equal e.message, "Output is not a directory"
     
-    assert_includes cli('--input test/files/readable_test_file'), :output
-    assert_includes cli('--input test/files/readable_test_file -o test/files/readable_test_file'), :output
-    assert_includes cli('--input test/files/readable_test_dir -o test'), :output
+    refute cli('--input test/files/readable_test_file').output?
+    assert cli('--input test/files/readable_test_file -o test/files/readable_test_file').output?
+    assert cli('--input test/files/readable_test_dir -o test').output?
   end
 
   def test_data_dir
@@ -101,7 +105,7 @@ class TestPandocomaticCLI < Minitest::Test
     # end
     # assert_equal e.message, "Data dir is not readable"
 
-    assert_includes cli('-i test/files/readable_test_file -d test/files/readable_test_dir'), :data_dir
+    assert cli('-i test/files/readable_test_file -d test/files/readable_test_dir').data_dir?
   end
 
   def test_config
@@ -115,14 +119,14 @@ class TestPandocomaticCLI < Minitest::Test
     end
     assert_equal e.message, "Config file is not a file"
     
-    assert_includes cli('-i test/files/readable_test_file -c test/files/readable_test_file'), :config
+    assert cli('-i test/files/readable_test_file -c test/files/config.yaml').config?
   end
 
   def test_other_options
-    assert_includes cli('-i test/files/readable_test_file -y'), :dry_run
-    assert_includes cli('-i test/files/readable_test_file -q'), :quiet
-    assert_includes cli('-i test/files/readable_test_file -m'), :modified_only
-    assert_includes cli('-i test/files/readable_test_file -b'), :debug
+      assert cli('-i test/files/readable_test_file -y').dry_run?
+    assert cli('-i test/files/readable_test_file -q').quiet?
+    assert cli('-i test/files/readable_test_file -m').modified_only?
+    assert cli('-i test/files/readable_test_file -b').debug?
   end
 
   def test_problematic_invocation
@@ -134,8 +138,9 @@ class TestPandocomaticCLI < Minitest::Test
   end
 
   def test_multiple_input_files
-    assert_includes cli('-i test/files/readable_test_file -i test/files/readable_test_file2'), :multiple_inputs  
-    assert_includes cli('test/files/readable_test_file test/files/readable_test_file2'), :multiple_inputs  
+    refute_nil cli('-i test/files/readable_test_file -i test/files/readable_test_file2').input
+    
+    refute_nil cli('test/files/readable_test_file test/files/readable_test_file2').input
 
     e = assert_raises Pandocomatic::CLIError do
       cli('-i test/files/readable_test_file test/files/readable_test_file2')

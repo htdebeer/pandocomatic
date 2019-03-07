@@ -1,5 +1,5 @@
 #--
-# Copyright 2014, 2015, 2016, 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2014—2019 Huub de Beer <Huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -20,6 +20,11 @@ module Pandocomatic
 
     require 'yaml'
     require 'paru/pandoc'
+    
+    require_relative './error/configuration_error.rb'
+    require_relative './command/command.rb'
+    require_relative './input.rb'
+    require_relative './multiple_files_input.rb'
 
     # The default configuration for pandocomatic is read from
     # default_configuration.yaml.
@@ -56,12 +61,38 @@ module Pandocomatic
     # A Configuration object models a pandocomatic configuration.
     class Configuration
 
-        # Create a new Configuration instance based on the command-line
-        # options, a data_dir, and a configuration file.
-        def initialize options, data_dir, configuration_file
-            @data_dir = data_dir
+        # Pandocomatic's default configuration file
+        CONFIG_FILE = 'pandocomatic.yaml'
 
-            load configuration_file
+        # Create a new Configuration instance based on the command-line options
+        def initialize options, input
+            @options = options
+            @data_dir = determine_data_dir options
+            config_file = determine_config_file(options, @data_dir)
+
+            load config_file unless config_file.nil? or config_file.empty?
+            
+            @input = if input.nil? or input.empty? then
+                         nil
+                     elsif 1 < input.size then
+                         MultipleFilesInput.new(input)
+                     else
+                         Input.new(input)
+                     end
+
+            @output = if output? then 
+                          options[:output] 
+                      elsif @input.is_a? Input then 
+                          @input.base 
+                      else 
+                          nil 
+                      end
+
+            # Extend the command classes by setting the source tree root
+            # directory, and the options quiet and dry-run, which are used when
+            # executing a command: if dry-run the command is not actually
+            # executed and if quiet the command is not printed to STDOUT
+            Command.reset(self)
         end
 
         # Read a configuration file and create a pandocomatic configuration object
@@ -147,6 +178,116 @@ module Pandocomatic
         # @return [String]
         def to_s()
             marshal_dump
+        end
+
+        # Is the dry run CLI option given?
+        #
+        # @return [Boolean]
+        def dry_run?() 
+            @options[:dry_run_given] and @options[:dry_run]
+        end
+
+        # Is the quiet CLI option given?
+        #
+        # @return [Boolean]
+        def quiet?()
+            @options[:quiet_given] and @options[:quiet]
+        end
+
+        # Is the debug CLI option given?
+        #
+        # @return [Boolean]
+        def debug?()
+            @options[:debug_given] and @options[:debug]
+        end
+
+        # Is the modified only CLI option given?
+        #
+        # @return [Boolean]
+        def modified_only?()
+            @options[:modified_only_given] and @options[:modified_only]
+        end
+
+        # Is the version CLI option given?
+        #
+        # @return [Boolean]
+        def show_version?()
+            @options[:version_given]
+        end
+
+        # Is the help CLI option given?
+        #
+        # @return [Boolean]
+        def show_help?()
+            @options[:help_given]
+        end
+
+        # Is the data dir CLI option given?
+        #
+        # @return [Boolean]
+        def data_dir?()
+            @options[:data_dir_given]
+        end
+
+        # Is the config CLI option given?
+        #
+        # @return [Boolean]
+        def config?()
+            @options[:config_given]
+        end
+
+        # Is the output CLI option given and can that output be used?
+        #
+        # @return [Boolean]
+        def output?()
+            @options[:output_given] and @options[:output]
+        end
+
+        # Get the output file name
+        #
+        # @return [String]
+        def output()
+            @output
+        end
+
+        # Get the source root directory
+        #
+        # @return [String]
+        def src_root()  
+            if @input.nil? then nil else @input.absolute_path end
+        end
+
+        # Have input CLI options be given?
+        def input?()
+            @options[:input_given]
+        end
+
+        # Get the input file name
+        #
+        # @return [String]
+        def input()
+            if @input.nil? then
+                nil
+            else
+                @input.name
+            end
+        end
+
+        # Is this Configuration for converting directories?
+        #
+        # @return [Boolean]
+        def directory?()
+            not @input.nil? and @input.directory?
+        end
+
+        # Clean up this configuration. This will remove temporary files
+        # created for the conversion process guided by this Configuration.
+        def clean_up!()
+            # If a temporary file has been created while concatenating
+            # multiple input files, ensure it is removed.
+            if @input.is_a? MultipleFilesInput then
+                @input.destroy!
+            end
         end
 
         # Should the source file be skipped given this Configuration?
@@ -684,6 +825,65 @@ module Pandocomatic
             else
                 path.start_with? "/"
             end
+        end
+
+        def determine_config_file(options, data_dir = Dir.pwd)
+            config_file = ''
+
+            if options[:config_given]
+                config_file = options[:config]
+            elsif Dir.entries(data_dir).include? CONFIG_FILE
+                config_file = File.join(data_dir, CONFIG_FILE)
+            elsif Dir.entries(Dir.pwd()).include? CONFIG_FILE
+                config_file = File.join(Dir.pwd(), CONFIG_FILE)
+            else
+                # Fall back to default configuration file distributed with
+                # pandocomatic
+                config_file = File.join(__dir__, 'default_configuration.yaml')
+            end
+
+            path = File.absolute_path config_file
+
+            raise ConfigurationError.new(:config_file_does_not_exist, nil, path) unless File.exist? path
+            raise ConfigurationError.new(:config_file_is_not_a_file, nil, path) unless File.file? path
+            raise ConfigurationError.new(:config_file_is_not_readable, nil, path) unless File.readable? path
+
+            path
+        end
+
+        def determine_data_dir(options)
+            data_dir = ''
+
+            if options[:data_dir_given]
+                data_dir = options[:data_dir]
+            else
+                # No data-dir option given: try to find the default one from pandoc
+                begin
+                    data_dir = Paru::Pandoc.info()[:data_dir]
+
+                    # If pandoc's data dir does not exist, however, fall back
+                    # to the current directory
+                    unless File.exist? File.absolute_path(data_dir)
+                        data_dir = Dir.pwd
+                    end
+                rescue Paru::Error => e
+                    # If pandoc cannot be run, continuing probably does not work out
+                    # anyway, so raise pandoc error
+                    raise PandocError.new(:error_running_pandoc, e, data_dir)
+                rescue StandardError => e
+                    # Ignore error and use the current working directory as default working directory
+                    data_dir = Dir.pwd
+                end
+            end
+
+            # check if data directory does exist and is readable
+            path = File.absolute_path data_dir
+
+            raise ConfigurationError.new(:data_dir_does_not_exist, nil, path) unless File.exist? path
+            raise ConfigurationError.new(:data_dir_is_not_a_directory, nil, path) unless File.directory? path
+            raise ConfigurationError.new(:data_dir_is_not_readable, nil, path) unless File.readable? path
+
+            path
         end
 
     end
