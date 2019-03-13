@@ -159,7 +159,7 @@ module Pandocomatic
         # @return [Boolean] True if there is a pandoc options property in this
         #   PandocMetadata object. False otherwise.
         def has_pandoc_options?()
-            has_pandocomatic? and pandocomatic.has_key? 'pandoc'
+            has_pandocomatic? and pandocomatic.has_key? 'pandoc' and not pandocomatic['pandoc'].nil?
         end
 
     end

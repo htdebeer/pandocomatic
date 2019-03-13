@@ -245,22 +245,13 @@ module Pandocomatic
                 end
             end
 
-            destination = nil
-            rename_script = nil
-
-            # Output option in pandoc property has precedence
-            if metadata.has_pandocomatic?
-                pandocomatic = metadata.pandocomatic
-                if pandocomatic.has_key? "pandoc"
-                    pandoc = pandocomatic["pandoc"]
-                    destination = determine_output_in_pandoc.call pandoc
-                    rename_script = pandoc["rename"]
-                end
-            end
+            # Output options in pandoc property have precedence
+            destination = determine_output_in_pandoc.call metadata.pandoc_options
+            rename_script = metadata.pandoc_options["rename"]
 
             # Output option in template's pandoc property is next
             if destination.nil? and not template_name.nil? and not template_name.empty? then
-                if @templates[template_name].has_key? "pandoc"
+                if @templates[template_name].has_key? "pandoc" and not @templates[template_name]["pandoc"].nil?
                     pandoc = @templates[template_name]["pandoc"]
                     destination = determine_output_in_pandoc.call pandoc
                     rename_script ||= pandoc["rename"]
@@ -304,21 +295,14 @@ module Pandocomatic
             end
 
             if template_name.nil? or template_name.empty? then
-                if metadata.has_pandocomatic? 
-                    pandocomatic = metadata.pandocomatic
-                    if pandocomatic.has_key? "pandoc"
-                        pandoc = pandocomatic["pandoc"]
-                        
-                        ext = use_extension.call pandoc
-                        if not ext.nil?
-                            extension = ext
-                        elsif pandoc.has_key? "to"
-                            extension = strip_extensions.call(pandoc["to"])
-                        end
-                    end
-                end 
+                ext = use_extension.call metadata.pandoc_options
+                if not ext.nil?
+                    extension = ext
+                elsif metadata.pandoc_options.has_key? "to"
+                    extension = strip_extensions.call(metadata.pandoc_options["to"])
+                end
             else
-                if @templates[template_name].has_key? "pandoc"
+                if @templates[template_name].has_key? "pandoc" and not @templates[template_name]["pandoc"].nil?
                     pandoc = @templates[template_name]["pandoc"]
                     ext = use_extension.call pandoc
 
@@ -685,6 +669,5 @@ module Pandocomatic
                 path.start_with? "/"
             end
         end
-
     end
 end
