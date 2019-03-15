@@ -48,7 +48,7 @@ module Pandocomatic
 
         # Pandocomatic's current version
         VERSION = [0, 2, 5, 0, "beta"]
-        
+
         # Run pandocomatic given options
         #
         # @param args [String[]] list of options to configure pandocomatic

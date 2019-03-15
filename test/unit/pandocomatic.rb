@@ -56,6 +56,18 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
 
+  def test_convert_with_only_comment_in_pandoc_metadata()
+      Dir.mktmpdir('only-comment-in-metadata') do |dir|
+          input = File.join ['example', 'only-comment-in-metadata.md']
+          output = File.join [dir, 'only-comment-in-metadata.html']
+
+          Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
+
+          example_output = File.join ['example', 'only-comment-in-metadata.html']
+          assert_files_equal example_output, output
+      end
+  end
+
   def test_convert_blog()
     Dir.mktmpdir('blog') do |dir|
       input = File.join ['example', 'src', 'blog']
