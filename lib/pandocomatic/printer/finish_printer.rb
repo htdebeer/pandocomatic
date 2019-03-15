@@ -40,7 +40,7 @@ module Pandocomatic
 
     # Calculate the duration of the whole conversion process
     #
-    # @erturn [Number]
+    # @return [Number]
     def duration()
       seconds = @end_time - @start_time
       if seconds > MINUTE

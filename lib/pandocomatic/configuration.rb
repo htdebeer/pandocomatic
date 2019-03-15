@@ -75,7 +75,7 @@ module Pandocomatic
             @input = if input.nil? or input.empty? then
                          nil
                      elsif 1 < input.size then
-                         MultipleFilesInput.new(input)
+                         MultipleFilesInput.new(input, self)
                      else
                          Input.new(input)
                      end
@@ -346,7 +346,6 @@ module Pandocomatic
         def match_first_template?()
             @settings.has_key? 'match-files' and 'first' == @settings['match-files']
         end
-
 
         # Set the extension of the destination file given this Confguration,
         # template, and metadata

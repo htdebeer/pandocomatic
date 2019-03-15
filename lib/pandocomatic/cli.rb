@@ -22,7 +22,6 @@ module Pandocomatic
   require_relative './error/cli_error.rb'
   require_relative './configuration.rb'
 
-
   ##
   # Command line options parser for pandocomatic using optimist.
   #

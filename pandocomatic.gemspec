@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.name = 'pandocomatic'
-  s.version = '0.2.5.0.alpha'
+  s.version = '0.2.5.0.beta'
   s.license = 'GPL-3.0'
-  s.date = '2019-03-09'
+  s.date = '2019-03-15'
   s.summary = 'Automating the use of pandoc'
   s.description = 'Pandocomatic is a tool to automate using pandoc (<http://pandoc.org>). With pandocomatic you can express common patterns of using pandoc for generating your documents. Applied to a directory, pandocomatic can act as a static site generator.'
   s.author = ['Huub de Beer']
@@ -16,8 +16,8 @@ Gem::Specification.new do |s|
   s.files += Dir['lib/pandocomatic/printer/views/*.txt']
   s.add_runtime_dependency 'paru', '~> 0.3.2', '>= 0.3.2.0'
   s.add_runtime_dependency 'optimist', '~> 3.0.0', '>= 3.0.0'
-  s.add_development_dependency 'minitest-reporters', '~> 0'
-  s.add_development_dependency 'yard', '~> 0.9.8'
+  s.add_development_dependency 'minitest-reporters', '~> 1.3'
+  s.add_development_dependency 'yard', '~> 0.9.18'
   s.executables << 'pandocomatic'
   s.homepage = 'https://heerdebeer.org/Software/markdown/pandocomatic/'
   s.requirements << 'pandoc, a universal document converer <http://pandoc.org>'
