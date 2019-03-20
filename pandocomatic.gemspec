@@ -1,12 +1,13 @@
 Gem::Specification.new do |s|
   s.name = 'pandocomatic'
-  s.version = '0.2.5.0.betaa'
+  s.version = '0.2.5.0.betab'
   s.license = 'GPL-3.0'
-  s.date = '2019-03-15'
+  s.date = '2019-03-20'
   s.summary = 'Automating the use of pandoc'
   s.description = 'Pandocomatic is a tool to automate using pandoc (<http://pandoc.org>). With pandocomatic you can express common patterns of using pandoc for generating your documents. Applied to a directory, pandocomatic can act as a static site generator.'
   s.author = ['Huub de Beer']
   s.email = 'Huub@heerdebeer.org'
+  s.required_ruby_version = ">= 2.4.4"
   s.files = Dir['lib/pandocomatic/*.rb']
   s.files += Dir['lib/pandocomatic/default_configuration.yaml']
   s.files += Dir['lib/pandocomatic/command/*.rb']
