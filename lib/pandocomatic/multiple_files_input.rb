@@ -61,7 +61,19 @@ module Pandocomatic
         #
         # @return String
         def to_s()
-            @input_files.join(" + ")
+            input_string = @input_files.first
+            previous_dir = File.dirname @input_files.first
+            @input_files.slice(1..-1).each do |f|
+                current_dir = File.dirname f
+                if current_dir == previous_dir
+                    input_string += " + #{File.basename f}"
+                else
+                    previous_dir = current_dir
+                    input_string += " + #{f}"
+                end
+            end
+
+            input_string
         end
 
         private 

@@ -61,6 +61,8 @@ module Pandocomatic
     # A Configuration object models a pandocomatic configuration.
     class Configuration
 
+        attr_reader :input
+
         # Pandocomatic's default configuration file
         CONFIG_FILE = 'pandocomatic.yaml'
 
@@ -265,7 +267,7 @@ module Pandocomatic
         # Get the input file name
         #
         # @return [String]
-        def input()
+        def input_file()
             if @input.nil? then
                 nil
             else

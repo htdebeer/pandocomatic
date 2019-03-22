@@ -72,9 +72,9 @@ module Pandocomatic
                     # Pandocomatic has two modes: converting a directory tree or
                     # converting a single file. The mode is selected by the input.
                     if configuration.directory?
-                        command = ConvertDirCommand.new(configuration, configuration.input, configuration.output)
+                        command = ConvertDirCommand.new(configuration, configuration.input_file, configuration.output)
                     else
-                        command = ConvertFileMultipleCommand.new(configuration, configuration.input, configuration.output)
+                        command = ConvertFileMultipleCommand.new(configuration, configuration.input_file, configuration.output)
                         command.make_quiet unless command.subcommands.size > 1
                     end
 

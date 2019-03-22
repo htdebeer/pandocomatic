@@ -5,6 +5,8 @@ pandocomatic_:
   pandoc:
     to: latex
 ...
+3rd
+
 # Usage
 
 To use multiple input files, make sure that:
