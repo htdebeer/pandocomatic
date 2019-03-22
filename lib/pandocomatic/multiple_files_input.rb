@@ -94,13 +94,21 @@ module Pandocomatic
                                   if not template.nil? and not template.dig("pandoc", "from").nil? then
                                       template["pandoc"]["from"]
                                   else
-                                      "unknown"
+                                      if @config.is_markdown_file? @input_files.first then
+                                          "markdown"
+                                      else
+                                          "unknown"
+                                      end
                                   end
                               end
 
             @input_files.each_with_index do |filename, index|
                 input = File.read File.absolute_path(filename)
-                input = if 0 == index or not strip_metadata then input else PandocMetadata.remove_metadata(input) end
+                input = if 0 == index or not strip_metadata or not @config.is_markdown_file? filename then 
+                            input 
+                        else 
+                            PandocMetadata.remove_metadata(input) 
+                        end
                 @tmp_file.write input
             end
 

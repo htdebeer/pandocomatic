@@ -460,6 +460,15 @@ module Pandocomatic
             extension
         end
 
+        def is_markdown_file?(filename)
+            if filename.nil? then
+                false
+            else
+                ext = File.extname(filename).delete_prefix(".");
+                "markdown" == DEFAULT_EXTENSION.key(ext)
+            end
+        end
+
         # Is there a template with template_name in this Configuration?
         #
         # @param template_name [String] a template's name
