@@ -23,11 +23,14 @@ module Pandocomatic
     # Generic class to handle input files and directories in a general manner.
     class Input
 
+        attr_reader :errors
+
         # Create a new Input
         #
         # @param input [String[]] a list of input files
         def initialize(input)
             @input_files = input
+            @errors = []
         end
 
         # The absolute path to this Input
@@ -56,6 +59,13 @@ module Pandocomatic
         # @return Boolean
         def directory?()
             File.directory? @input_files.first
+        end
+        
+        # Does this input have encountered any errors?
+        #
+        # @return Boolean
+        def has_errors?()
+            not @errors.empty?
         end
 
         # A string representation of this Input

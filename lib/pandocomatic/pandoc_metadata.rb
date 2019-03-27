@@ -36,7 +36,7 @@ module Pandocomatic
         #
         # @param input_document [String] a path to an input file
         # @return [String] the input document's metadata in the YAML format.
-        def self.extract_metadata input_document
+        def self.extract_metadata(input_document)
             begin
                 pandoc2yaml File.read(input_document)
             rescue StandardError => e
@@ -65,19 +65,31 @@ module Pandocomatic
                 .join("\n")
         end
 
+        # Does the pandocomatic metadata property occur at most once?
+        #
+        # @return [Boolean] False if the pandocomatic metadata property does
+        # occur multiple times.
+        def self.unique_pandocomatic_property?(input)
+            1 >= input
+                .scan(METADATA_BLOCK)
+                .map {|match| YAML.load "---#{match.join()}..."}
+                .count {|yaml| yaml.key? "pandocomatic_" or yaml.key? "pandocomatic"}
+        end
+
         # Collect the metadata embedded in the src file and create a new
         # PandocMetadata instance
         #
         # @param src [String] the path to the file to load metadata from
         # @return [PandocMetadata] the metadata in the source file, or an empty
         #   one if no such metadata is contained in the source file.
-        def self.load_file src
-            yaml_metadata = extract_metadata src
+        def self.load_file(src)
+            input = File.read src
+            yaml_metadata = pandoc2yaml input
 
             if yaml_metadata.empty? then
-                return PandocMetadata.new
+                PandocMetadata.new
             else
-                return PandocMetadata.new YAML.load(yaml_metadata)
+                PandocMetadata.new YAML.load(yaml_metadata), unique_pandocomatic_property?(input)
             end
         end
 
@@ -86,10 +98,21 @@ module Pandocomatic
         #
         # @param hash [Hash] initial properties for this new PandocMetadata
         #   object
+        # @param unique [Boolean = true] the pandocomatic property did occur
+        # at most once.
         # @return [PandocMetadata] 
-        def initialize hash = {}
-            super
+        def initialize(hash = {}, unique = true)
+            super()
             merge! hash
+            @unique = unique
+        end
+
+        # Did the metadata contain multiple pandocomatic blocks?
+        #
+        # @return [Boolean] True if at most one pandocomatic block was present
+        # in the metadata
+        def unique?()
+            @unique
         end
 
         # Does this PandocMetadata object use a template?

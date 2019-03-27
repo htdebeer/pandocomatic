@@ -38,7 +38,7 @@ module Pandocomatic
         #
         # @return String
         def name()
-            @tmp_file
+            @tmp_file.path
         end
 
         # Is this input a directory? A MultipleFilesInput cannot be a
@@ -83,35 +83,18 @@ module Pandocomatic
             # created in the same directory as the first input file
             @tmp_file = Tempfile.new(@input_files.first, File.dirname(self.absolute_path))
 
-            # Read first file and its metadata
-            metadata = PandocMetadata.load_file @input_files.first
+            contents = @input_files.map{|file| 
+                @errors.push IOError.new(:file_does_not_exist, nil, file) unless File.exist? file
+                @errors.push IOError.new(:file_is_not_a_file, nil, file) unless File.file? file
+                @errors.push IOError.new(:file_is_not_readable, nil, file) unless File.readable? file
+                File.read File.absolute_path(file)
+            }.join("\n\n")
 
-            strip_metadata = 
-                "markdown" == if metadata.pandoc_options.has_key? "from" then
-                                  metadata.pandoc_options["from"]
-                              else
-                                  template = @config.determine_template @input_files.first
-                                  if not template.nil? and not template.dig("pandoc", "from").nil? then
-                                      template["pandoc"]["from"]
-                                  else
-                                      if @config.is_markdown_file? @input_files.first then
-                                          "markdown"
-                                      else
-                                          "unknown"
-                                      end
-                                  end
-                              end
-
-            @input_files.each_with_index do |filename, index|
-                input = File.read File.absolute_path(filename)
-                input = if 0 == index or not strip_metadata or not @config.is_markdown_file? filename then 
-                            input 
-                        else 
-                            PandocMetadata.remove_metadata(input) 
-                        end
-                @tmp_file.write input
+            if not PandocMetadata.unique_pandocomatic_property? contents
+                warn "\nWarning: Encountered the pandocomatic metadata property more than once. Only the last occurrence of the pandocomatic metadata property is being used. Most likely you only want to use a pandocomatic metadata property in the first input file.\n\n"
             end
 
+            @tmp_file.write contents
             @tmp_file.rewind
         end
     end

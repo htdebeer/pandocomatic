@@ -46,7 +46,7 @@ module Pandocomatic
         super()
         @config = config
         @src = src
-        
+
         metadata = PandocMetadata.load_file @src
 
         subcommands = []

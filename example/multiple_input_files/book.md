@@ -6,7 +6,6 @@ pandocomatic_:
     from: markdown
     to: html
     standalone: true
-    toc: true
 ...
 
 1st

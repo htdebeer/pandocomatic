@@ -66,6 +66,14 @@ module Pandocomatic
                     # version option. If given, the help is printed.
                     HelpPrinter.new().print
                 else
+                    # When using multiple input files, errors reading these
+                    # files are already encountered at this point. If there
+                    # are any errors, there is no reason to continue.
+                    if configuration.input.has_errors?
+                        ConfigurationErrorsPrinter.new(configuration.input.all_errors).print
+                        exit ERROR_STATUS
+                    end
+
                     # Run the pandocomatic converter configured according to the options
                     # given.
                     #
@@ -108,7 +116,7 @@ module Pandocomatic
                 warn "An unexpected error has occurred. You can report this bug via https://github.com/htdebeer/pandocomatic/issues/new."
                 raise e
             ensure
-                configuration.clean_up!
+                configuration.clean_up! unless configuration.nil?
             end
         end
     end

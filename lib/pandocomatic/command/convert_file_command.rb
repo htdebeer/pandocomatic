@@ -90,7 +90,9 @@ module Pandocomatic
         #
         # @return [String]
         def to_s
-            "convert #{File.basename @src} #{"-> #{File.basename @dst}" unless @dst.nil?}"
+            str = "convert #{File.basename @src} #{"-> #{File.basename @dst}" unless @dst.nil?}"
+            str += "\n\t encountered multiple pandocomatic properties in the metadata. Only the last occurring pandocomatic property is being used." unless @metadata.unique?
+            str
         end
 
         private
