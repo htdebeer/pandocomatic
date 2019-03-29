@@ -81,7 +81,7 @@ module Pandocomatic
         def create_temp_file()
             # Concatenate all input files into one (temporary) input file
             # created in the same directory as the first input file
-            @tmp_file = Tempfile.new(@input_files.first, File.dirname(self.absolute_path))
+            @tmp_file = Tempfile.new("pandocomatic_tmp_", File.dirname(self.absolute_path))
 
             contents = @input_files.map{|file| 
                 @errors.push IOError.new(:file_does_not_exist, nil, file) unless File.exist? file
