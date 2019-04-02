@@ -91,7 +91,7 @@ module Pandocomatic
         # @return [String]
         def to_s
             str = "convert #{File.basename @src} #{"-> #{File.basename @dst}" unless @dst.nil?}"
-            str += "\n\t encountered multiple pandocomatic properties in the metadata. Only the last occurring pandocomatic property is being used." unless @metadata.unique?
+            str += "\n\t encountered multiple YAML metadata blocks with a pandocomatic propertie. Only the pandocomatic property in the first YAML metadata block is being used; the others are discarded." unless @metadata.unique?
             str
         end
 
