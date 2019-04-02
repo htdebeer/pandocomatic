@@ -1,6 +1,10 @@
 ---
 title: Usage of multiple input files
 author: HT de Beer
+pandocomatic_:
+    pandoc:
+        to: tex
+        toc: false
 ...
 3rd
 

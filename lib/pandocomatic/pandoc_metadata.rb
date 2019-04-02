@@ -32,48 +32,12 @@ module Pandocomatic
     # templates and input files.
     class PandocMetadata < Hash
 
-        # Extract the metadata from an input file
-        #
-        # @param input_document [String] a path to an input file
-        # @return [String] the input document's metadata in the YAML format.
-        def self.extract_metadata(input_document)
-            begin
-                pandoc2yaml File.read(input_document)
-            rescue StandardError => e
-                raise IOError.new(:error_opening_file, e, input_document)
-            end
-        end
-
-        # Remove all metadata from an input string
-        #
-        # @param input [String] the input to remove all metadata from
-        # @return [String] the input with all metadata blocks removed
-        def self.remove_metadata(input)
-            input.gsub(METADATA_BLOCK, "\n");
-        end
-
         # Extract the YAML metadata from an input string
         #
         # @param input [String] the input string
         # @return [String] the YAML data embedded in the input string
         def self.pandoc2yaml(input)
-            mined_metadata = input.scan(METADATA_BLOCK)
-            
-            mined_metadata
-                .flatten
-                .map{|yaml| yaml.strip}
-                .join("\n")
-        end
-
-        # Does the pandocomatic metadata property occur at most once?
-        #
-        # @return [Boolean] False if the pandocomatic metadata property does
-        # occur multiple times.
-        def self.unique_pandocomatic_property?(input)
-            1 >= input
-                .scan(METADATA_BLOCK)
-                .map {|match| YAML.load "---#{match.join()}..."}
-                .count {|yaml| yaml.key? "pandocomatic_" or yaml.key? "pandocomatic"}
+            extract_metadata(input).first
         end
 
         # Collect the metadata embedded in the src file and create a new
@@ -83,13 +47,22 @@ module Pandocomatic
         # @return [PandocMetadata] the metadata in the source file, or an empty
         #   one if no such metadata is contained in the source file.
         def self.load_file(src)
-            input = File.read src
-            yaml_metadata = pandoc2yaml input
+            load(File.read src)
+        end
+        
+        # Collect the metadata embedded in the src file and create a new
+        # PandocMetadata instance
+        #
+        # @param input [String] the string to load the metadata from
+        # @return [PandocMetadata] the metadata in the source file, or an empty
+        #   one if no such metadata is contained in the source file.
+        def self.load(input)
+            yaml, pandocomatic_blocks = extract_metadata(input)
 
-            if yaml_metadata.empty? then
+            if yaml.empty? then
                 PandocMetadata.new
             else
-                PandocMetadata.new YAML.load(yaml_metadata), unique_pandocomatic_property?(input)
+                PandocMetadata.new YAML.load(yaml), 1 >= pandocomatic_blocks
             end
         end
 
@@ -194,6 +167,47 @@ module Pandocomatic
         #   PandocMetadata object. False otherwise.
         def has_pandoc_options?()
             has_pandocomatic? and pandocomatic.has_key? 'pandoc' and not pandocomatic['pandoc'].nil?
+        end
+
+        private 
+
+        # Extract the metadata from an input file
+        #
+        # @param input [String] the string to extract metadata from
+        # @return [Array] The return value is an array with the following two
+        # values:
+        #  
+        # 1. The extracted metadata as a YAML string
+        # 2. The number of times the pandocomatic properties did occur in the
+        #    input.
+        #
+        # If more than one pandocomatic property is contained in the input,
+        # all but the first are discarded and are not present in the
+        # extracted metadata YAML string.
+        def self.extract_metadata(input)
+            metadata_blocks = input
+                .scan(METADATA_BLOCK)
+                .map {|match| YAML.load "---#{match.join()}..."}
+
+            pandocomatic_blocks = 0
+
+            metadata_blocks = metadata_blocks.each do |metadata|
+                metadata.delete_if do |key|
+                    if key == "pandocomatic_" or key == "pandocomatic"
+                        pandocomatic_blocks += 1
+                        
+                        1 < pandocomatic_blocks 
+                    else 
+                        false
+                    end
+                end
+            end
+
+            yaml_string = metadata_blocks
+                    .map {|metadata| YAML.dump(metadata)}
+                    .join("\n")
+
+            return [yaml_string, pandocomatic_blocks]
         end
 
     end

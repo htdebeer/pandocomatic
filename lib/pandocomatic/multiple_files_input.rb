@@ -90,8 +90,10 @@ module Pandocomatic
                 File.read File.absolute_path(file)
             }.join("\n\n")
 
-            if not PandocMetadata.unique_pandocomatic_property? contents
-                warn "\nWarning: Encountered the pandocomatic metadata property more than once. Only the last occurrence of the pandocomatic metadata property is being used. Most likely you only want to use a pandocomatic metadata property in the first input file.\n\n"
+            metadata = PandocMetadata.load contents
+
+            if not metadata.unique?
+                warn "\nWarning: Encountered the pandocomatic metadata property in more than one YAML metadata block. Only the pandocomatic property from the first YAML metadata block is being used; the other pandocomatic properties have been discarded.\n\n"
             end
 
             @tmp_file.write contents
