@@ -9,12 +9,12 @@ allows you to convert your markdown document with just:
 pandocomatic hello_world.md
 ```
 
-Pandocomatic starts by mining the [YAML](http://yaml.org/) metadata in
-`hello_world.md` for a `pandocomatic_` property. If such a property exists, it
-is treated as an **internal pandocomatic template** and the file is converted
+Pandocomatic starts by mining the YAML metadata blocks in `hello_world.md`,
+looking for a `pandocomatic_` property. If such a property exists, it is
+treated as an **internal pandocomatic template** and the file is converted
 according to that **pandocomatic template**. For more information about
 *pandocomatic template*s, see the [chapter about
-templates](#pandocomatic-templates) in this manual.
+templates](#pandocomatic-templates) later in this manual.
 
 For example, if `hello_world.md` contains the following pandoc markdown text:
 
@@ -22,18 +22,17 @@ For example, if `hello_world.md` contains the following pandoc markdown text:
 ::paru::insert ../example/manual/hello_world.md
 ```
 
-pandocomatic is instructed by the `pandoc` section to convert the document to
-the [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML) file
-`hello_world.html`. With the command-line option `--output
-goodday_world.html`, you can instruct pandocomatic to convert
-`hello_world.md` to `goodday_world.html` instead. For more information about
-pandocomatic's command-line options, see the [chapter about command-line
-options](#pandocomatic_cli) in this manual.
+pandocomatic is instructed by the `pandoc` property to convert the document to
+the HTML file `hello_world.html`. With the command-line option `--output
+goodday_world.html`, you can instruct pandocomatic to convert `hello_world.md`
+to `goodday_world.html` instead. For more information about pandocomatic's
+command-line options, see the [chapter about command-line
+options](#pandocomatic_cli).
 
 You can instruct pandocomatic to apply any pandoc command-line option in the
-`pandoc` section. For example, to use a custom pandoc template and add a
-[CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) file to the generated
-HTML, extend the `pandoc` section as follows:
+`pandoc` property. For example, to use a custom pandoc template and add a
+custom CSS file to the generated HTML, extend the `pandoc` property as
+follows:
 
 ```{.yaml}
 pandoc:
@@ -43,10 +42,10 @@ pandoc:
     template: hello-template.html
 ```
 
-Besides the `pandoc` section to configure the pandoc conversion,
+Besides the `pandoc` property to configure the pandoc conversion,
 *pandocomatic templates* can also contain a list of **preprocessors** and
 **postprocessors**. Preprocessors are run before the document is converted
-with pandoc and postprocessors are run afterwards: 
+with pandoc and postprocessors are run afterwards (see the Figure): 
 
 ![How pandocomatic works: a simple
 conversion](documentation/images/simple_conversion.svg)
@@ -76,13 +75,28 @@ pandocomatic_:
 The path `./tidy.sh` tells pandocomatic to look for the `tidy.sh` script in
 the same directory as the file to convert. You can also specify an absolute
 path (starting with a slash `/`) or a path relative to the **pandocomatic data
-directory** such as for the pandoc `template`. See the [Section about
-specifying paths in pandocomatic](#specifiying-paths) for more information. If
-you use a path relative to the *pandocomatic data directory*, you have to use
-the `--data-dir` option to tell pandocomatic where to find its data directory.
+directory** like the `template` property in the example above. See the
+[Section about specifying paths in pandocomatic](#specifiying-paths) for more
+information. If you use a path relative to the *pandocomatic data directory*,
+you have to use the `--data-dir` option to tell pandocomatic where to find its
+data directory.  If you do not, pandocomatic will default to pandoc's data
+directory.
 
-Thus, to convert the above example, use the following pandocomatic invocation:
+To convert the example, use:
 
 ```{.bash}
 pandocomatic --data-dir my_data_dir hello_world.md
 ```
+
+Like pandoc, pandocomatic does support multiple input files. These input files
+are concatenated and treated as a single input file. For example, instead of
+writing a book in one big markdown file, I could separate the chapters into
+separate markdown files. To generate the final book, invoke pandocomatic like:
+
+```{.bash}
+pandocomatic -i frontmatter.md -i c01.md -i c02.md -i c03.md -i c04.md -o book.html
+```
+
+Note. If multiple files do have a `pandocomatic_` property in their metadata,
+only the first `pandocomatic_` property is used; all other occurrences are
+being discarded. If this happens, pandocomatic will show a warning.

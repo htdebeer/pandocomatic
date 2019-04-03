@@ -2,20 +2,20 @@
 
 ### Using external templates
 
-Adding an *internal pandocomatic template* to a markdown file helps a
-lot by simplifying converting that file via pandoc. Once you start using
-pandocomatic more and more to convert your documents, you will discover that
-most of these *internal pandocomatic templates* are a lot alike. You can
-re-use these *internal pandocomatic templates* by moving the common parts to
-an **external pandocomatic template**.
+Adding an *internal pandocomatic template* to a markdown file helps a lot by
+simplifying converting that file with pandoc. Once you start using pandocomatic
+more and more, you will discover that most of these
+*internal pandocomatic templates* are a lot alike. You can re-use these
+*internal pandocomatic templates* by moving the common parts to an **external
+pandocomatic template**.
 
-*External pandocomatic template*s are defined in a
-**pandocomatic configuration file**. A *pandocomatic configuration file* is a
-YAML file. Templates are specified in the `templates` section as named sub
-properties. For example, the *internal pandocomatic template* specified in
-the `hello_world.md` file (see previous chapter) can be specified as the
-*external pandocomatic template* `hello` in the *pandocomatic configuration
-file* `my-config.yaml` as follows:
+*External pandocomatic template*s are defined in a **pandocomatic
+configuration file**. A *pandocomatic configuration file* is a YAML file.
+Templates are specified in the `templates` property as named sub properties.
+For example, the *internal pandocomatic template* specified in the
+`hello_world.md` file (see previous chapter) can be specified as the *external
+pandocomatic template* `hello` in the *pandocomatic configuration file*
+`my-config.yaml` as follows:
 
 ```{.yaml}
 ::paru::insert ../example/manual/my-config.yaml
@@ -30,8 +30,7 @@ in the `pandocomatic_` property. The `hello_world.md` example then becomes:
 
 To convert `external_hello_world.md` you need to tell pandocomatic where to
 find the *external pandocomatic template* via the `--config` command-line
-option. For example, to convert `external_hello_world.md` to `out.html`, you
-use the following pandocomatic invocation:
+option. For example, to convert `external_hello_world.md` to `out.html`, use:
 
 ```{.bash}
 pandocomatic -d my_data_dir --config my-config.yaml -i external_hello_world.md -o out.html

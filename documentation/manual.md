@@ -2,7 +2,7 @@
 title: Pandocomatic
 subtitle: Automating the use of pandoc
 author: Huub de Beer
-date: September 21st, 2017
+date: April 4th, 2019
 keywords:
 - pandoc
 - ruby
@@ -36,7 +36,6 @@ pandocomatic_:
 ------------------------------------------
 
 # Reference: All about pandocomatic {#reference}
-
 
 ::paru::insert pandocomatic_cli.md
 
