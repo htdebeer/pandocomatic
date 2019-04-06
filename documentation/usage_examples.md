@@ -63,7 +63,7 @@ template's settings inside a pandocomatic block in a markdown file:
      to: markdown_github
  ...
  
- # Pandocomatic—Automating the use of pandoc
+ # Pandocomatic—Automate the use of pandoc
  
  ::paru::insert introduction.md
  

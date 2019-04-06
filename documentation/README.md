@@ -7,7 +7,7 @@ pandocomatic_:
 
 [![Gem Version](https://badge.fury.io/rb/pandocomatic.svg)](https://badge.fury.io/rb/pandocomatic)
 
-# Pandocomatic—Automating the use of pandoc
+# Pandocomatic—Automate the use of pandoc
 
 ::paru::insert introduction.md
 

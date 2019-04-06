@@ -1,7 +1,7 @@
 [![Gem
 Version](https://badge.fury.io/rb/pandocomatic.svg)](https://badge.fury.io/rb/pandocomatic)
 
-# Pandocomatic—Automating the use of pandoc
+# Pandocomatic—Automate the use of pandoc
 
 Pandocomatic is a tool to automate the use of
 [pandoc](https://pandoc.org/). With pandocomatic you can express common
@@ -236,7 +236,7 @@ markdown file:
      to: markdown_github
  ...
  
- # Pandocomatic—Automating the use of pandoc
+ # Pandocomatic—Automate the use of pandoc
  
  ::paru::insert introduction.md
  

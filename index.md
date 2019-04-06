@@ -7,7 +7,7 @@ keywords:
 - paru
 - pandocomatic
 - static site generator
-subtitle: Automating the use of pandoc
+subtitle: Automate the use of pandoc
 title: Pandocomatic
 ---
 
