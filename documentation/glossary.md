@@ -3,7 +3,7 @@
 pandocomatic template
 
 :   A pandocomatic template specified the conversion process executed by
-pandocomatic. It can contain the following sections:
+pandocomatic. It can contain the following properties:
 
 - glob
 - extends
@@ -35,7 +35,7 @@ pandocomatic data directory
 
 :   The directory used by pandocomatic to resolve relative paths. Use this
 directory to store preprocessors, pandoc templates, pandoc filters,
-postprocessors, setup scripts, and cleanup scripts. Defaults to pandoc's data
+postprocessors, setup scripts, and cleanup scripts. It defaults to pandoc's data
 directory.
 
 pandocomatic configuration file
@@ -56,5 +56,3 @@ static-site generator
 :   Pandocomatic can be used as a static-site generator by running
 pandocomatic recursivel on a directory. Pandocomatic has some specific
 congiguration options to be used as a static-site generator.
-
-

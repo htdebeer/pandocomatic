@@ -2,7 +2,7 @@
 title: Pandocomatic
 subtitle: Automating the use of pandoc
 author: Huub de Beer
-date: April 4th, 2019
+date: April 6th, 2019
 keywords:
 - pandoc
 - ruby

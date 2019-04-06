@@ -1,6 +1,6 @@
 ---
 author: Huub de Beer
-date: 'September 21st, 2017'
+date: 'April 6th, 2019'
 keywords:
 - pandoc
 - ruby
@@ -15,15 +15,15 @@ Introduction
 ============
 
 Pandocomatic is a tool to automate the use of
-[pandoc](http://pandoc.org/). With pandocomatic you can express common
-patterns of using [pandoc](http://pandoc.org/) for generating your
-documents. Applied to a directory, pandocomatic can act as a static site
-generator. For example, this manual is generated with pandocomatic!
+[pandoc](https://pandoc.org/). With pandocomatic you can express common
+patterns of using pandoc for generating your documents. Applied to a
+directory, pandocomatic can act as a static site generator. For example,
+this manual is generated with pandocomatic!
 
 Pandocomatic is [free
 software](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic
 is released under the
-[GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html). You'll find the
+[GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html). You will find the
 source code of pandocomatic in its
 [repository](https://github.com/htdebeer/pandocomatic) on
 [Github](https://github.com).
@@ -32,7 +32,7 @@ Acknowledgements
 ----------------
 
 I would like to thank [Ian](https://github.com/iandol) for his
-contributions of patches, bug reports, fixes, and suggestions. With your
+contribution of patches, bug reports, fixes, and suggestions. With your
 help pandocomatic is growing beyond a simple tool for personal use into
 a useful addition to the pandoc ecosystem.
 
@@ -47,20 +47,19 @@ gem install pandocomatic
 ```
 
 This will install pandocomatic and
-[paru](https://heerdebeer.org/Software/markdown/paru/), a
-[Ruby](https://www.ruby-lang.org/en/) wrapper around
-[pandoc](http://pandoc.org/). To use pandocomatic, you also need a
-working pandoc installation. See [pandoc's installation
-guide](http://pandoc.org/installing.html) for more information about
+[paru](https://heerdebeer.org/Software/markdown/paru/), a Ruby wrapper
+around pandoc. To use pandocomatic, you also need a working pandoc
+installation. See [pandoc's installation
+guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
-You can also download the latest [gem](https://rubygems.org/)
-[pandocomatic-0.2.5.0.beta](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.5.0.beta.gem)
-from [Github](https://github.com) and install it manually as follows:
+You can also download the latest gem,
+[pandocomatic-0.2.5.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.5.0.gem),
+from Github and install it manually as follows:
 
 ``` {.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.2.5.0.beta.gem
+gem install pandocomatic-0.2.5.0.gem
 ```
 
 Why pandocomatic?
@@ -72,7 +71,7 @@ pandoc like:
 
 ``` {.bash}
 pandoc --from markdown \
-  --to html5 \
+  --to html \
   --standalone \
   --csl apa.csl \
   --bibliography my-bib.bib \
@@ -81,16 +80,16 @@ pandoc --from markdown \
   source.md
 ```
 
-Sure, when I write about history, the [CSL](http://citationstyles.org/)
+Sure, when I write about history, the [CSL](https://citationstyles.org/)
 file and bibliography change. And I do not need the `--mathjax` option
 like I do when I am writing about mathematics education. Still, all
 these invocations are quite similar.
 
-I already wrote the program *do-pandoc.rb* as part of a
-[Ruby](https://www.ruby-lang.org/en/) wrapper around pandoc,
-[paru](https://heerdebeer.org/Software/markdown/paru/). Using
-*do-pandoc.rb* I can specify the options to pandoc as pandoc metadata in
-the source file itself. The above pandoc invocation then becomes:
+I already wrote the program *do-pandoc.rb* as part of a Ruby wrapper
+around pandoc, [paru](https://heerdebeer.org/Software/markdown/paru/).
+Using *do-pandoc.rb* I can specify the options to pandoc in a metadata
+block in the source file itself. With *do-pandoc.rb* the invocation
+above is simplified to:
 
 ``` {.bash}
 do-pandoc.rb source.md
@@ -103,8 +102,8 @@ not differ that much from document to document.
 
 *Pandocomatic* is a tool to re-use these common configurations by
 specifying a so-called *pandocomatic template* in a
-[YAML](http://yaml.org/) configuration file. For example, by placing the
-following file, `pandocomatic.yaml` in pandoc's data directory:
+[YAML](https://yaml.org/) configuration file. For example, by placing
+the following file, `pandocomatic.yaml`, in pandoc's data directory:
 
 ``` {.yaml}
 templates:
@@ -112,7 +111,7 @@ templates:
     preprocessors: []
     pandoc:
       from: markdown
-      to: html5
+      to: html
       standalone: true
       csl: 'apa.csl'
       toc: true
@@ -121,8 +120,16 @@ templates:
     postprocessors: []
 ```
 
-I now can create a new document that uses that configuration by using
-the following metadata in my source file, `on_teaching_maths.md`:
+In this configuration file a single *pandocomatic template* is being
+defined: *education-research*. This template specifies that the source
+files it is applied to are not being preprocessed. Furthermore, the
+source files are converted with pandoc by invoking
+`pandoc --from markdown --to html --standalone --csl apa.csl --toc --bibliography /path/to/bibliography.bib --mathjax`.
+Finally, the template specifies that pandoc's output is not being
+postprocessed.
+
+I now can create a new document that uses this template by including the
+following metadata block in my source file, `on_teaching_maths.md`:
 
 ``` {.pandoc}
  ---
@@ -134,27 +141,27 @@ the following metadata in my source file, `on_teaching_maths.md`:
      output: on_teaching_mathematics.html
  ...
  
- and here follows the contents of my new paper...
+ Here goes the contents of my new paper ...
 ```
 
-To convert this file to `on_teaching_mathematics.html` I now run
-pandocomatic as follows:
+To convert this file to `on_teaching_mathematics.html` I run
+pandocomatic:
 
 ``` {.bash}
 pandocomatic -i on_teaching_maths.md
 ```
 
-With just two lines of pandoc metadata, I can tell pandocomatic what
-template to use when converting a file. You can also use multiple
+With just two extra lines in a metadata block I can tell pandocomatic
+what template to use when converting a file. You can also use multiple
 templates in a document, for example to convert a markdown file to both
 HTML and PDF. Adding file-specific pandoc options to the conversion
 process is as easy as adding a `pandoc` property with those options to
-the `pandocomatic_` metadata property in the source file.
+the `pandocomatic_` metadata property in the source file like I did with
+the `output` property in the example above.
 
 Once I had written a number of related documents this way, it was a
-small step to enable pandocomatic to convert directories as well as
-files. Just like that, pandocomatic can be used as a *static site
-generator*!
+small step to enable pandocomatic to convert directories as well. Just
+like that, pandocomatic can be used as a *static site generator*!
 
 ------------------------------------------------------------------------
 
@@ -164,21 +171,22 @@ Using pandocomatic: Quick start and overview {#using-pandocomatic}
 Converting a single document
 ----------------------------
 
-Pandocomatic allows you to put [pandoc command line
+Pandocomatic allows you to put [pandoc command-line
 options](http://pandoc.org/MANUAL.html) in the document to be converted
-itself. Instead of a complex pandoc command line invocation,
-pandocomatic allows you to convert your markdown document with just:
+itself. Instead of a complex pandoc command-line invocation,
+pandocomatic allows you to convert your markdown document
+`hello_world.md` with just:
 
 ``` {.bash}
 pandocomatic hello_world.md
 ```
 
-Pandocomatic starts by mining the [YAML](http://yaml.org/) metadata in
-`hello_world.md` for a `pandocomatic_` property. If such a property
-exists, it is treated as an **internal pandocomatic template** and the
-file is converted according to that **pandocomatic template**. For more
-information about *pandocomatic template*s, see the [chapter about
-templates](#pandocomatic-templates) in this manual.
+Pandocomatic starts by extracting the YAML metadata blocks in
+`hello_world.md`, looking for a `pandocomatic_` property. If such a
+property exists, it is treated as an **internal pandocomatic template**
+and the file is converted according to that **pandocomatic template**.
+For more information about *pandocomatic template*s, see the [chapter
+about templates](#pandocomatic-templates) later in this manual.
 
 For example, if `hello_world.md` contains the following pandoc markdown
 text:
@@ -194,19 +202,18 @@ text:
  Hello *World*!
 ```
 
-pandocomatic is instructed by the `pandoc` section to convert the
-document to the
-[HTML](https://developer.mozilla.org/en-US/docs/Web/HTML) file
-`hello_world.html`. With the command-line option
-`--output goodday_world.html`, you can instruct pandocomatic to convert
-`hello_world.md` to `goodday_world.html` instead. For more information
-about pandocomatic's command-line options, see the [chapter about
-command-line options](#pandocomatic_cli) in this manual.
+pandocomatic is instructed by the `pandoc` property to convert the
+document to the HTML file `hello_world.html`. If you would like to
+instruct pandocomatic to convert `hello_world.md` to
+`goodday_world.html` instead, use command-line option
+`--output goodday_world.html`. For more information about pandocomatic's
+command-line options, see the [chapter about command-line
+options](#pandocomatic_cli).
 
-You can instruct pandocomatic to apply any pandoc command-line option in
-the `pandoc` section. For example, to use a custom pandoc template and
-add a [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) file to
-the generated HTML, extend the `pandoc` section as follows:
+You can tell pandocomatic to apply any pandoc command-line option in a
+template's `pandoc` property. For example, to use a custom pandoc
+template and add a custom CSS file to the generated HTML, extend the
+`pandoc` property above as follows:
 
 ``` {.yaml}
 pandoc:
@@ -216,10 +223,11 @@ pandoc:
     template: hello-template.html
 ```
 
-Besides the `pandoc` section to configure the pandoc conversion,
+Besides the `pandoc` property to configure the pandoc conversion,
 *pandocomatic templates* can also contain a list of **preprocessors**
-and **postprocessors**. Preprocessors are run before the document is
-converted with pandoc and postprocessors are run afterwards:
+and a list of **postprocessors**. Preprocessors are run before the
+document is converted with pandoc and postprocessors are run afterwards
+(see the Figure below):
 
 ![How pandocomatic works: a simple
 conversion](documentation/images/simple_conversion.svg)
@@ -233,8 +241,8 @@ generated by pandoc:
 ```
 
 This script `tidy.sh` is a simple wrapper script around the
-[html-tidy](http://www.html-tidy.org/) program. To instruct pandocomatic
-to use it as a postprocessor, you have to change the `pandocomatic_`
+[html-tidy](https://www.html-tidy.org/) program. To tell pandocomatic to
+use it as a postprocessor, you have to change the `pandocomatic_`
 property to:
 
 ``` {.yaml}
@@ -248,21 +256,37 @@ pandocomatic_:
     - ./tidy.sh
 ```
 
-The path `./tidy.sh` tells pandocomatic to look for the `tidy.sh` script
-in the same directory as the file to convert. You can also specify an
-absolute path (starting with a slash `/`) or a path relative to the
-**pandocomatic data directory** such as for the pandoc `template`. See
-the [Section about specifying paths in pandocomatic](#specifiying-paths)
-for more information. If you use a path relative to the *pandocomatic
-data directory*, you have to use the `--data-dir` option to tell
-pandocomatic where to find its data directory.
+The "`./`" in the path `./tidy.sh` tells pandocomatic to look for the
+`tidy.sh` script in the same directory as the file to convert. You can
+also specify an absolute path (starting with a slash "`/`") or a path
+relative to the **pandocomatic data directory** like we do in the path
+in the `template` property in the example above. See the [Section about
+specifying paths in pandocomatic](#specifiying-paths) for more
+information. If you use a path relative to the *pandocomatic data
+directory*, you have to use the `--data-dir` option to tell pandocomatic
+where to find its data directory. If you do not, pandocomatic will
+default to pandoc's data directory.
 
-Thus, to convert the above example, use the following pandocomatic
-invocation:
+To convert the example with a data directory, use:
 
 ``` {.bash}
 pandocomatic --data-dir my_data_dir hello_world.md
 ```
+
+Like pandoc, pandocomatic does support multiple input files. These input
+files are concatenated by pandocomatic and then treated as a single
+input file. For example, instead of writing a book in one big markdown
+file, you could separate the chapters into separate markdown files. To
+generate the final book, invoke pandocomatic like:
+
+``` {.bash}
+pandocomatic -i frontmatter.md -i c01.md -i c02.md -i c03.md -i c04.md -o book.html
+```
+
+Note. If multiple files do have a `pandocomatic_` property in their
+metadata blocks, only the first `pandocomatic_` property is used; all
+other occurrences are discarded. If this happens, pandocomatic will show
+a warning.
 
 Converting a series of documents
 --------------------------------
@@ -270,15 +294,15 @@ Converting a series of documents
 ### Using external templates
 
 Adding an *internal pandocomatic template* to a markdown file helps a
-lot by simplifying converting that file via pandoc. Once you start using
-pandocomatic more and more to convert your documents, you will discover
-that most of these *internal pandocomatic templates* are a lot alike.
-You can re-use these *internal pandocomatic templates* by moving the
-common parts to an **external pandocomatic template**.
+lot by simplifying converting that file with pandoc. Once you start
+using pandocomatic more and more, you will discover that most of these
+*internal pandocomatic templates* are a lot alike. You can re-use these
+*internal pandocomatic templates* by moving the common parts to an
+**external pandocomatic template**.
 
 *External pandocomatic template*s are defined in a **pandocomatic
 configuration file**. A *pandocomatic configuration file* is a YAML
-file. Templates are specified in the `templates` section as named sub
+file. Templates are specified in the `templates` property as named sub
 properties. For example, the *internal pandocomatic template* specified
 in the `hello_world.md` file (see previous chapter) can be specified as
 the *external pandocomatic template* `hello` in the *pandocomatic
@@ -297,8 +321,8 @@ configuration file* `my-config.yaml` as follows:
 ```
 
 You use it in a pandoc markdown file by specifying the `use-template`
-option in the `pandocomatic_` property. The `hello_world.md` example
-then becomes:
+sub property in the `pandocomatic_` property. The `hello_world.md`
+example then becomes:
 
 ``` {.pandoc}
   ---
@@ -313,7 +337,7 @@ then becomes:
 To convert `external_hello_world.md` you need to tell pandocomatic where
 to find the *external pandocomatic template* via the `--config`
 command-line option. For example, to convert `external_hello_world.md`
-to `out.html`, you use the following pandocomatic invocation:
+to `out.html`, use:
 
 ``` {.bash}
 pandocomatic -d my_data_dir --config my-config.yaml -i external_hello_world.md -o out.html
@@ -322,12 +346,12 @@ pandocomatic -d my_data_dir --config my-config.yaml -i external_hello_world.md -
 ### Customizing external templates with an internal template
 
 Because you can use an *external pandocomatic templates* in many files,
-these external templates tend to setup more general options of a
-conversion process. You can customize a conversion process in a
-particular document by extending the *internal pandocomatic template*.
-For example, if you want to apply a different CSS style sheet and adding
-a table of contents, customize the `hello` template with the following
-*internal pandocomatic template*:
+these external templates tend to setup more general aspects of a
+conversion process. You can customize a such a general conversion
+process in a specific document by extending the *internal pandocomatic
+template*. For example, if you want to apply a different CSS style sheet
+and add a table of contents, customize the `hello` template with the
+following *internal pandocomatic template*:
 
 ``` {.yaml}
 pandocomatic_:
@@ -341,10 +365,10 @@ pandocomatic_:
             - './goodbye-style.css'
 ```
 
-`hello`'s `pandoc` section if extended with the `--toc` option, the
+`hello`'s `pandoc` property is extended with the `--toc` option, the
 `style.css` is removed, and `goodbye-style.css` is added. If you want to
-add the `goodbye-style.css` rather than have it replace `style.css`, you
-would specify:
+add the `goodbye-style.css` rather than having it replace `style.css`,
+you specify:
 
 ``` {.yaml}
 css:
@@ -353,8 +377,8 @@ css:
 
 Lists and properties in *internal pandocomatic templates* are merged
 with *external pandocomatic templates*; simple values, such as strings,
-numbers, or Booleans, are replaced. Besides the `pandoc` section of a
-template you can also customize other template sections.
+numbers, or Booleans, are replaced. Besides a template's `pandoc`
+property you can also customize any other property of the template.
 
 ### Extending templates
 
@@ -394,10 +418,10 @@ templates:
     ...
 ```
 
-This `author` template specifies the `metadata` section of a template.
+This `author` template specifies the `metadata` property of a template.
 This metadata will be mixed into each document that uses this template.
 If you want the `goodbye` template to also set the author automatically,
-you can change its `extends` section to:
+you can change its `extends` property to:
 
 ``` {.yaml}
 templates:
@@ -408,10 +432,9 @@ templates:
 ```
 
 Setting up templates by extending other smaller templates makes for a
-modular setup. If you share your templates with someone else, she only
-has to change the `author` template to her own name in one place to
-automatically put her name on all her documents while using your
-templates.
+modular setup. If you share your templates with someone else, they only
+have to change the `author` template in one place to use their own names
+on all their documents while using your templates.
 
 See the [Section on extending pandocomatic
 templates](#extending-pandocomatic-templates) for more information about
@@ -421,16 +444,16 @@ Converting a directory tree of documents
 ----------------------------------------
 
 Once you have created a number of documents that can be converted by
-pandocomatic, and you change something significant in one of the
+pandocomatic and you change something significant in one of the
 *external pandocomatic templates*, you have to run pandocomatic on all
 of the documents again to propagate the changes. That is fine for a
 document or two, but more than that and it becomes a chore.
 
-For example, if you change the pandoc template `hello-template.html` in
+For example, if you change the HTML template `hello-template.html` in
 the *pandocomatic data directory*, or switch to another template, you
 need to regenerate all documents you have already converted with the old
-pandoc template. If you run pandocomatic on an input directory rather
-than one input file, it will convert all files in that directory,
+HTML template. If you run pandocomatic on an input directory rather than
+on an input file, it will convert all files in that directory,
 recursively.
 
 Thus, to convert the example files used in this chapter, you can run
@@ -445,14 +468,15 @@ generated documents in the output directory `output_dir`.
 From here it is but a small step to use pandocomatic as a **static-site
 generator**. For that purpose some configuration options are available:
 
--   a settings section in a *pandocomatic configuration file* to control
+-   a settings property in a *pandocomatic configuration file* to
+    control
     -   running pandocomatic recursively or not
     -   follow symbolic links or not
--   a `glob` section in an *external pandocomatic template* telling
-    pandocomatic to apply the template to which files in the directory
--   and the convention that a file named `pandocomatic.yaml` in a
-    directory is used as the *pandocomatic configuration file* to
-    control the conversion of the files in that directory
+-   a `glob` property in an *external pandocomatic template* telling
+    pandocomatic which files in the directory to apply the template to.
+    As a convention, a file named `pandocomatic.yaml` in a directory is
+    used as the *pandocomatic configuration file* to control the
+    conversion of the files in that directory
 -   a command-line option `--modified-only` to only convert the files
     that have changes rather than to convert all files in the directory.
 
@@ -474,8 +498,8 @@ Reference: All about pandocomatic {#reference}
 Pandocomatic command-line interface {#pandocomatic-cli}
 -----------------------------------
 
-Pandocomatic takes a number of arguments which at the least should
-include the input file or directory. The general form of a pandocomatic
+Pandocomatic takes a number of arguments which should at least include
+the input file or directory. The general form of a pandocomatic
 invocation is:
 
 ``` {.bash}
@@ -499,7 +523,10 @@ pandocomatic options [INPUT]
 `-i PATH, --input PATH`
 
 :   Convert `PATH`. If this option is not given, `INPUT` is converted.
-    `INPUT` and `--input` or `-i` cannot be used together.
+    `INPUT` and `--input` or `-i` cannot be used together. You can use
+    this option multiple times, denoting to concatenate each input file
+    in the order they are specified on the command-line. Pandocomatic
+    treats the concatenated files as a single input file.
 
 `-o PATH, --output PATH`
 
@@ -547,7 +574,7 @@ Pandocomatic will complain if the input and output types do not match.
     is finished, it tells you how long it took to perform the
     conversion.
 
-    If you do not like this verbose behavior, use the `--quiet` or `-q`
+    If you do not like this verbosity, use the `--quiet` or `-q`
     argument to run pandocomatic quietly. Default is `false`.
 
 `-y, --dry-run`
@@ -604,12 +631,12 @@ configuration file `my-config.yaml`, invoke pandocomatic as follows:
 pandocomatic --config my-config.yaml some-file-to-convert.md
 ```
 
-A *pandocomatic configuration file* contains two sections:
+A *pandocomatic configuration file* contains two properties:
 
 1.  global `settings`
 2.  external `templates`
 
-These two sections are discussed after presenting an example of a
+These two properties are discussed after presenting an example of a
 configuration file. For more in-depth information about pandocomatic
 templates, please see the [Chapter on pandocomatic
 templates](#pandocomatic-templates).
@@ -624,8 +651,8 @@ You can configure five optional global settings:
 4.  `recursive`
 5.  `follow-links`
 
-The latter three are used only when running pandocomatic to convert a
-directory tree. These are discussed in the next sub section.
+The latter three are used only when converting a whole directory tree
+with pandocomatic. These are discussed in the next sub section.
 
 The first setting, `data-dir` (String), tells pandocomatic where its
 *data directory* is. You can also specify the *pandocomatic data
@@ -643,14 +670,13 @@ pandocomatic defaults to pandoc's data directory.
 Any directory can be used as a *pandocomatic data directory*, there are
 no conventions or requirements for this directory other than being a
 directory. However, it is recommended to create a meaningful sub
-directory structure rather than to put everything together. For example,
-a sub directory for processors, filters, CSL files, and pandoc templates
-makes it easier to point to these assets.
+directory structure. For example, a sub directory for processors,
+filters, CSL files, and pandoc templates makes it easier to manage and
+point to these assets.
 
-The setting `match-files` controls how pandocomatic chooses a template
+The setting `match-files` controls how pandocomatic selects the template
 to use to convert a file. Possible values for `match-files` are `first`
-and `all`. These options have the following effect: Pandocomatic matches
-a file to a template as follows:
+and `all`. Pandocomatic matches a file to a template as follows:
 
 1.  If the file has one or more `use-template` statements in the
     *pandocomatic* metadata, it will use these specified templates.
@@ -659,12 +685,12 @@ a file to a template as follows:
     pandocomatic tries to find *global* templates as follows:
 
     a.  If the setting `match-files` has value `all`, all templates with
-        glob pattern that matches the input file are used to convert the
-        file. For example, you can have specified a template `www` to
-        convert `*.md` files to HTML and a template `pdf` to convert
-        `*.md` to PDF. In this case, a markdown file will be converted
-        to both output formats. You can use this to generate a website
-        with a print PDF page for each web page.
+        a glob pattern that matches the input filename are used to
+        convert that input file. For example, you can specify a template
+        `www` to convert `*.md` files to HTML and a template `pdf` to
+        convert `*.md` to PDF. In this case, a markdown file will be
+        converted to both HTML and PDF. For example, you could use this
+        to generate a website with a print PDF page for each web page.
 
     b.  If the setting `match-files` has value `first`, the first
         template with a glob pattern that matches the input file is used
@@ -674,12 +700,12 @@ a file to a template as follows:
 
 #### Configuring converting a directory tree {#global-settings}
 
-You can convert a directory tree with pandocomatic by invoking
-pandocomatic with a directory as input rather than a file. Of course,
-once you start converting directories, more fine-grained control over
-what files to convert than "convert all files" is required. There are
-four settings you can use to control which files to convert. Three of
-them are global settings, the other one is the `glob` property of an
+You can convert a directory tree by invoking pandocomatic with a single
+directory as the input rather than one or more files. Of course, once
+you start converting directories, more fine-grained control over what
+files to convert than "convert all files" is useful. There are four
+settings you can use to control which files to convert. Three of them
+are global settings, the other one is the `glob` property of an
 *external pandocomatic template*. The `glob` property is discussed
 later.
 
@@ -700,14 +726,14 @@ The three global settings to control which files to convert are:
 
 Pandocomatic's default configuration file is defined in the file
 [`lib/pandocomatic/default_configuration.yaml`](https://github.com/htdebeer/pandocomatic/blob/master/lib/pandocomatic/default_configuration.yaml).
-This default configuration is used whenever
+This default configuration is used when
 
 -   no configuration is specified via the command-line option
     `--config`, and
 -   no default configuration file (`pandocomatic.yaml`) can be found in
     the *pandocomatic data directory*.
 
-When converting a directory tree, each time pandocomatic enters a
+When converting a directory tree, each time pandocomatic enters a (sub)
 directory, it also looks for a default configuration file to *update*
 the current settings. In other words, you can have pandocomatic behave
 differently in a sub directory than the current directory by putting a
@@ -716,11 +742,11 @@ settings or *external pandocomatic templates*.
 
 ### Templates
 
-Besides the global `settings` section, a *pandocomatic configuration
-file* can also contain a `templates` section. In the `templates` section
-you define the *external pandocomatic templates* you want to use when
-converting files with pandocomatic. Pandocomatic templates are discussed
-in detail in the [Chapter on pandocomatic
+Besides the global `settings` property, a *pandocomatic configuration
+file* can also contain a `templates` property. In the `templates`
+property you define the *external pandocomatic templates* you want to
+use when converting files with pandocomatic. Pandocomatic templates are
+discussed in detail in the [Chapter on pandocomatic
 templates](#pandocomatic-templates). The `glob` property of *external
 pandocomatic templates* is related to configuring pandocomatic when
 converting a directory. It tells pandocomatic which files in a directory
@@ -753,9 +779,9 @@ copied, recursively.
 Pandocomatic templates
 ----------------------
 
-Pandocomatic automates the use of pandoc by extracting common usage
-patterns of pandoc into so called *pandocomatic templates*, which you
-can then apply to your documents. As described in [Part
+Pandocomatic automates the use of pandoc by extracting common patterns
+of using pandoc into so called *pandocomatic templates*. You can then
+apply these templates to your documents. As described in [Part
 II](#using-pandocomatic), there are **internal** and **external**
 *pandocomatic templates*. The difference between these two types of
 templates is their scope: *internal pandocomatic templates* only affect
@@ -775,7 +801,7 @@ templates are discussed in detail.
 ### Defining a template
 
 An *external pandocomatic template* is defined in the `templates`
-section of a *pandocomatic configuration file*. For example, in the
+property of a *pandocomatic configuration file*. For example, in the
 following YAML code, the template `webpage` is defined:
 
 ``` {.yaml}
@@ -796,9 +822,10 @@ following YAML code, the template `webpage` is defined:
              - postprocessors/tidy.sh
 ```
 
-Each template is a YAML property in the `templates` section. The
+Each template is a sub property in the `templates` property. The
 property name is the template name. The property value is the template's
-definition. A template definition can contain the following properties:
+definition. A template definition can contain the following sub
+properties:
 
 -   `extends`
 -   `glob`
@@ -810,23 +837,23 @@ definition. A template definition can contain the following properties:
 -   `cleanup`
 
 Before discussing these properties in detail, the way pandocomatic
-resolves paths used in these sections is described first. For paths can
-be used in most of these properties.
+resolves paths used in these sections is described first because paths
+can be used in most of these properties.
 
 #### Specifying paths
 
 Because templates can be used in any document, specifying paths pointing
 to assets to use in the conversion process is not straightforward. Using
 global paths works, but has the disadvantage that the templates are no
-longer shareable with others. Using local paths works if the assets and
-the document to convert are located in the same directory, but that does
-not hold for more general *external pandocomatic templates*. As a third
-alternative, pandocomatic also supports paths that are relative to the
-*pandocomatic data directory*.
+longer easily shareable with others. Using local paths works if the
+assets and the document to convert are located in the same directory,
+but that does not hold for more general *external pandocomatic
+templates*. As a third alternative, pandocomatic also supports paths
+that are relative to the *pandocomatic data directory*.
 
 You can specify these types of paths as follows:
 
-1.  All *local* paths start with a `./`. These paths are local to the
+1.  All *local* paths start with `./`. These paths are local to the
     document being converted. When converting a directory tree, the
     current directory is being prepended to the path minus the `./`.
 
@@ -836,16 +863,17 @@ You can specify these types of paths as follows:
 2.  *Global* paths start with a `/`. These paths are resolved as is. On
     the Windows operating system, a *global* path starts with a letter
     followed by a colon and a backslash, for example `C:\`. Note that
-    backslashes might need escaping, like `.\\`.
+    backslashes might need escaping, like `C:\\`.
 
 3.  Paths *relative* to the *pandocomatic data directory* do not start
     with a `./` nor a `/`. These paths are resolved by prepending the
     path to the *pandocomatic data directory*. These come in handy for
     defining general usable *external pandocomatic templates*.
 
-    *Note.* For filters, the path is first checked against the `PATH`.
-    If pandocomatic finds an executable matching the path, it will
-    resolve that executable instead.
+    *Note.* For filters, processors, and start-up or clean-up scripts,
+    the path is first checked against the `PATH`. If pandocomatic finds
+    an executable matching the path, it will resolve that executable
+    instead.
 
 #### Template properties
 
@@ -880,7 +908,8 @@ below.
     ```
 
     Note. If both templates have overlapping or contradictory
-    configuration, this extension can be different from:
+    configuration, the above extension can be different from the one
+    below:
 
     ``` {.yaml}
     extends: ['overview', 'webpage']
@@ -899,7 +928,7 @@ When there are more templates that have matching glob patterns, the
 first one is used.
 
 If there is also a `skip` configured (see the [Section on global
-settings](#global-settings), the `skip` setting has precedence of the
+settings](#global-settings), the `skip` setting has precedence over the
 `glob` setting. Thus, if `skip` is `['*.md']` and `glob` is `['*.md']`,
 the template will not be applied.
 
@@ -924,7 +953,7 @@ the template will not be applied.
 For more involved conversion patterns, some setup of the environment
 might be needed. Think of setting Bash environment variables, creating
 temporary directories, or even installing third party tools needed in
-the conversion. Startup scripts can be any executable script.
+the conversion. Startup scripts can be any executable script or program.
 
 Setup scripts are run before the conversion process starts.
 
@@ -939,10 +968,10 @@ Setup scripts are run before the conversion process starts.
 
 After setup, pandocomatic executes all preprocessors in order of
 specification in the `preprocessor` property, which is a list. A
-preprocessor is any executable script that takes as input the document
-to convert and outputs that document after "preparing" it somehow. You
-can use a preprocessor to add metadata, include other files, replace
-strings, and so on.
+preprocessor is any executable script or program that takes as input the
+document to convert and outputs that document after "preparing" it
+somehow. You can use a preprocessor to add metadata, include other
+files, replace strings, and so on.
 
 **Examples**
 
@@ -961,11 +990,11 @@ Metadata is used in pandoc's templates as well as a means of
 communicating with a filter. Some metadata is common to many documents,
 such as language, author, keywords, and so on. In the `metadata`
 property of a template you can specify this global metadata. The
-`metadata` property is a map.
+`metadata` property is a key-value list.
 
 **Examples**
 
--   For example, all document I write have me as the author
+-   For example, all document I write have me as the author:
 
     ``` {.yaml}
     metadata:
@@ -976,17 +1005,19 @@ property of a template you can specify this global metadata. The
 
 To actually control the pandoc conversion process itself, you can
 specify any pandoc command-line option in the `pandoc` property, which
-is a map.
+is a key-value list.
 
 **Examples**
 
--   Convert markdown to HTML with a table of contents:
+-   Convert markdown to a standalone HTML document with a table of
+    contents:
 
     ``` {.yaml}
     pandoc:
         from: markdown
         to: html
         toc: true
+        standalone: true
     ```
 
 -   Convert markdown to ODT with citations:
@@ -1063,11 +1094,11 @@ end
 ##### postprocessors
 
 Similar to the `preprocessors` property, the `postprocessors` property
-is a list of scripts to run after the pandoc conversion. Each post
-processor takes as input the converted document and outputs that
-document with the changes made by the post processor. Post processors
-come in handy for cleaning up output, checking for dead links, do string
-replacing, and so on.
+is a list of scripts or programs to run after the pandoc conversion has
+finished. Each postprocessor takes as input the converted document and
+outputs that document with the changes made by the postprocessor.
+Postprocessors come in handy for cleaning up output, checking for dead
+links, do string replacing, and so on.
 
 **Examples**
 
@@ -1080,9 +1111,9 @@ replacing, and so on.
 ##### cleanup
 
 The counterpart of the `setup` property. The `cleanup` property is a
-list of scripts to run after the conversion of the document. It can be
-used to clean up temporary files, resetting the environment, uploading
-the resulting document, and so on.
+list of scripts or programs to run after the conversion of the document.
+It can be used to clean up temporary files, resetting the environment,
+uploading the resulting document, and so on.
 
 **Examples**
 
@@ -1164,8 +1195,9 @@ three cases:
             parent = [4, 5] ∧ child = "yes" ⇒ "yes"
             parent = {key: true} ∧ child = 12 ⇒ 12
 
-    2.  If parent and child values both are maps, the resulting value
-        will be the child's map merged with the parent's map. Examples:
+    2.  If parent and child values both are key-value lists, the
+        resulting value will be the child's key-value list merged with
+        the parent's key-value list. Examples:
 
             parent = {a: 1, b: 2} ∧ child = {a: 2, c: 3} ⇒ {a: 2, b: 2, c: 3}
             parent = {a: 1, b: 2} ∧ child = {a: , c: 3} ⇒ {b: 2, c: 3}
@@ -1182,10 +1214,10 @@ three cases:
                 parent = [1] ∧ child = [2] ⇒ [1, 2]
                 parent = [1] ∧ child = [1, 2] ⇒ [1, 2]
 
-        2.  If the child is a map, it is assumed to have properties
-            `remove` and `add`, both lists. The resulting value will be
-            the parent's value with the items from the `remove` list
-            removed and items from the `add` list added. Examples:
+        2.  If the child is a key-value list, it is assumed to have keys
+            `remove` and `add`. The resulting value will be the parent's
+            value with the items from the `remove` list removed and
+            items from the `add` list added. Examples:
 
                 parent = [1] ∧ child = {'remove': [1], 'add': [3]} ⇒ [3]
                 parent = [1, 2] ∧ child = {'remove': [1]} ⇒ [2]
@@ -1199,16 +1231,16 @@ value.
 To use an *external pandocomatic template* you have to use it in a
 document by creating an *internal pandocomatic template* which has the
 `use-template` property set to the name of the *external pandocomatic
-template* you want to use. After that, you can customize the template to
-you liking, for example adding extra pandoc command-line options or
-adding another preprocessor.
+template*. After that, you can customize the template to suit the
+document it is used in, for example adding extra pandoc command-line
+options or adding another preprocessor.
 
 You create an *internal pandocomatic template* by adding a
-`pandocomatic_` section to the document's YAML metadata. The
-`pandocomatic_` section can have the same properties as an *external
+`pandocomatic_` property to the document's YAML metadata. The
+`pandocomatic_` property can have the same properties as an *external
 pandocomatic template* except for the `glob` and `extends` properties.
-Actually, you can add these two properties as well, but they are
-ignored.
+(Actually, you can add these two properties as well, but they are
+ignored.)
 
 For example, if you use the `my-webpage` template, but you would like to
 use a different bibliography and check all links in the converted
@@ -1303,7 +1335,7 @@ Glossary
 pandocomatic template
 
 :   A pandocomatic template specified the conversion process executed by
-    pandocomatic. It can contain the following sections:
+    pandocomatic. It can contain the following properties:
 
 -   glob
 -   extends
@@ -1336,8 +1368,8 @@ pandocomatic data directory
 
 :   The directory used by pandocomatic to resolve relative paths. Use
     this directory to store preprocessors, pandoc templates, pandoc
-    filters, postprocessors, setup scripts, and cleanup scripts.
-    Defaults to pandoc's data directory.
+    filters, postprocessors, setup scripts, and cleanup scripts. It
+    defaults to pandoc's data directory.
 
 pandocomatic configuration file
 

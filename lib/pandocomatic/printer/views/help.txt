@@ -28,6 +28,10 @@ OPTIONS
   -i PATH, --input PATH
                   Convert PATH. If this option is not given, INPUT is
                   converted. INPUT and --input cannot be used together.
+                  You can use this option multiple times, denoting to 
+                  concatenate each input file in the order they
+                  are specified on the command-line. Pandocomatic treats 
+                  the concatenated files as a single input file.
 
   -o PATH, --output PATH
                   Create converted files and directories in PATH.

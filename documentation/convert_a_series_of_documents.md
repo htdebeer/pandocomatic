@@ -3,10 +3,10 @@
 ### Using external templates
 
 Adding an *internal pandocomatic template* to a markdown file helps a lot by
-simplifying converting that file with pandoc. Once you start using pandocomatic
-more and more, you will discover that most of these
-*internal pandocomatic templates* are a lot alike. You can re-use these
-*internal pandocomatic templates* by moving the common parts to an **external
+simplifying converting that file with pandoc. Once you start using
+pandocomatic more and more, you will discover that most of these *internal
+pandocomatic templates* are a lot alike. You can re-use these *internal
+pandocomatic templates* by moving the common parts to an **external
 pandocomatic template**.
 
 *External pandocomatic template*s are defined in a **pandocomatic
@@ -21,8 +21,9 @@ pandocomatic template* `hello` in the *pandocomatic configuration file*
 ::paru::insert ../example/manual/my-config.yaml
 ```
 
-You use it in a pandoc markdown file by specifying the `use-template` option
-in the `pandocomatic_` property. The `hello_world.md` example then becomes:
+You use it in a pandoc markdown file by specifying the `use-template` sub
+property in the `pandocomatic_` property. The `hello_world.md` example then
+becomes:
 
 ```{.pandoc}
 ::paru::insert ../example/manual/external_hello_world.md
@@ -39,10 +40,10 @@ pandocomatic -d my_data_dir --config my-config.yaml -i external_hello_world.md -
 ### Customizing external templates with an internal template
 
 Because you can use an *external pandocomatic templates* in many files, these
-external templates tend to setup more general options of a conversion process.
-You can customize a conversion process in a particular document by extending
-the *internal pandocomatic template*. For example, if you want to apply a
-different CSS style sheet and adding a table of contents, customize the
+external templates tend to setup more general aspects of a conversion process.
+You can customize a such a general conversion process in a specific document
+by extending the *internal pandocomatic template*. For example, if you want to
+apply a different CSS style sheet and add a table of contents, customize the
 `hello` template with the following *internal pandocomatic template*:
 
 ```{.yaml}
@@ -57,9 +58,9 @@ pandocomatic_:
             - './goodbye-style.css'
 ```
 
-`hello`'s `pandoc` section if extended with the `--toc` option, the
+`hello`'s `pandoc` property is extended with the `--toc` option, the
 `style.css` is removed, and `goodbye-style.css` is added. If you want to add
-the `goodbye-style.css` rather than have it replace `style.css`, you would
+the `goodbye-style.css` rather than having it replace `style.css`, you
 specify:
 
 ```{.yaml}
@@ -69,9 +70,8 @@ css:
 
 Lists and properties in *internal pandocomatic templates* are merged with
 *external pandocomatic templates*; simple values, such as strings, numbers, or
-Booleans, are replaced. Besides the `pandoc` section of a template you
-can also customize other template sections.
-
+Booleans, are replaced. Besides a template's `pandoc` property you can also
+customize any other property of the template.
 
 ### Extending templates
 
@@ -97,10 +97,10 @@ templates:
     ...
 ```
 
-This `author` template specifies the `metadata` section of a template. This
+This `author` template specifies the `metadata` property of a template. This
 metadata will be mixed into each document that uses this template. If you want
 the `goodbye` template to also set the author automatically, you can change
-its `extends` section to:
+its `extends` property to:
 
 ```{.yaml}
 templates:
@@ -111,10 +111,10 @@ templates:
 ``` 
 
 Setting up templates by extending other smaller templates makes for a modular
-setup. If you share your templates with someone else, she only has to change
-the `author` template to her own name in one place to automatically put her
-name on all her documents while using your templates.
+setup. If you share your templates with someone else, they only have to change
+the `author` template in one place to use their own names on all their
+documents while using your templates.
 
 See the [Section on extending pandocomatic
-templates](#extending-pandocomatic-templates) for more information about
-this extension mechanism.
+templates](#extending-pandocomatic-templates) for more information about this
+extension mechanism.

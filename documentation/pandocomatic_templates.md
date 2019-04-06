@@ -1,8 +1,8 @@
 ## Pandocomatic templates {#pandocomatic-templates}
 
-Pandocomatic automates the use of pandoc by extracting common usage patterns
-of pandoc into so called *pandocomatic templates*, which you can then apply to
-your documents. As described in [Part II](#using-pandocomatic), there are
+Pandocomatic automates the use of pandoc by extracting common patterns
+of using pandoc into so called *pandocomatic templates*. You can then apply
+these templates to your documents. As described in [Part II](#using-pandocomatic), there are
 **internal** and **external** *pandocomatic templates*. The difference between
 these two types of templates is their scope: *internal pandocomatic templates*
 only affect the document they are defined in, whereas *external pandocomatic
@@ -19,7 +19,7 @@ are discussed in detail.
 
 ### Defining a template
 
-An *external pandocomatic template* is defined in the `templates` section of a
+An *external pandocomatic template* is defined in the `templates` property of a
 *pandocomatic configuration file*. For example, in the following YAML code,
 the template `webpage` is defined:
 
@@ -27,9 +27,9 @@ the template `webpage` is defined:
 ::paru::insert ../example/manual/example_configuration_file.yaml
 ```
 
-Each template is a YAML property in the `templates` section. The property name
+Each template is a sub property in the `templates` property. The property name
 is the template name. The property value is the template's definition. A
-template definition can contain the following properties:
+template definition can contain the following sub properties:
 
 - `extends`
 - `glob`
@@ -41,14 +41,14 @@ template definition can contain the following properties:
 - `cleanup`
 
 Before discussing these properties in detail, the way pandocomatic resolves
-paths used in these sections is described first. For paths can be used in most of
-these properties.
+paths used in these sections is described first because paths can be used in
+most of these properties.
 
 #### Specifying paths {#specifying-paths}
 
 Because templates can be used in any document, specifying paths pointing to
 assets to use in the conversion process is not straightforward. Using global
-paths works, but has the disadvantage that the templates are no longer
+paths works, but has the disadvantage that the templates are no longer easily
 shareable with others. Using local paths works if the assets and the document
 to convert are located in the same directory, but that does not hold for more
 general *external pandocomatic templates*. As a third alternative,
@@ -57,7 +57,7 @@ directory*.
 
 You can specify these types of paths as follows:
 
-1.  All *local* paths start with a `./`. These paths are local to the
+1.  All *local* paths start with `./`. These paths are local to the
     document being converted. When converting a directory tree, the current
     directory is being prepended to the path minus the `./`.
 
@@ -66,15 +66,15 @@ You can specify these types of paths as follows:
 2.  *Global* paths start with a `/`. These paths are resolved as is. On the
     Windows operating system, a *global* path starts with a letter followed by
     a colon and a backslash, for example `C:\`.  Note
-    that backslashes might need escaping, like `.\\`.
+    that backslashes might need escaping, like `C:\\`.
 3.  Paths *relative* to the *pandocomatic data directory* do not start with a
     `./` nor a `/`. These paths are resolved by prepending the path to the
     *pandocomatic data directory*. These come in handy for defining general
     usable *external pandocomatic templates*.
 
-    *Note.* For filters, the path is first checked against the `PATH`. If
-    pandocomatic finds an executable matching the path, it will resolve that
-    executable instead.
+    *Note.* For filters, processors, and start-up or clean-up scripts, the
+    path is first checked against the `PATH`. If pandocomatic finds an
+    executable matching the path, it will resolve that executable instead.
 
 #### Template properties
 
@@ -109,7 +109,7 @@ about extending templates](#extending-pandocomatic-templates) below.
     ```
 
     Note. If both templates have overlapping or contradictory configuration,
-    this extension can be different from:
+    the above extension can be different from the one below:
     
     ```{.yaml}
     extends: ['overview', 'webpage']
@@ -127,7 +127,7 @@ When there are more templates that have matching glob patterns, the first one
 is used.
 
 If there is also a `skip` configured (see the [Section on global
-settings](#global-settings), the `skip` setting has precedence of the `glob`
+settings](#global-settings), the `skip` setting has precedence over the `glob`
 setting. Thus, if `skip` is `['*.md']` and `glob` is `['*.md']`, the template
 will not be applied.
 
@@ -152,7 +152,7 @@ will not be applied.
 For more involved conversion patterns, some setup of the environment might be
 needed. Think of setting Bash environment variables, creating temporary
 directories, or even installing third party tools needed in the conversion.
-Startup scripts can be any executable script.
+Startup scripts can be any executable script or program.
 
 Setup scripts are run before the conversion process starts. 
 
@@ -168,7 +168,7 @@ Setup scripts are run before the conversion process starts.
 
 After setup, pandocomatic executes all preprocessors in order of specification
 in the `preprocessor` property, which is a list. A preprocessor is any
-executable script that takes as input the document to convert and outputs that
+executable script or program that takes as input the document to convert and outputs that
 document after "preparing" it somehow.  You can use a preprocessor to add
 metadata, include other files, replace strings, and so on.
 
@@ -188,11 +188,11 @@ metadata, include other files, replace strings, and so on.
 Metadata is used in pandoc's templates as well as a means of communicating
 with a filter. Some metadata is common to many documents, such as language,
 author, keywords, and so on. In the `metadata` property of a template you can
-specify this global metadata. The `metadata` property is a map.
+specify this global metadata. The `metadata` property is a key-value list.
 
 **Examples**
 
--   For example, all document I write have me as the author
+-   For example, all document I write have me as the author:
 
     ```{.yaml}
     metadata:
@@ -202,17 +202,18 @@ specify this global metadata. The `metadata` property is a map.
 ##### pandoc
 
 To actually control the pandoc conversion process itself, you can specify any
-pandoc command-line option in the `pandoc` property, which is a map.
+pandoc command-line option in the `pandoc` property, which is a key-value list.
 
 **Examples**
 
--   Convert markdown to HTML with a table of contents:
+-   Convert markdown to a standalone HTML document with a table of contents:
 
     ```{.yaml}
     pandoc:
         from: markdown
         to: html
         toc: true
+        standalone: true
     ```
 
 -   Convert markdown to ODT with citations:
@@ -288,10 +289,11 @@ end
 ##### postprocessors
 
 Similar to the `preprocessors` property, the `postprocessors` property is a
-list of scripts to run after the pandoc conversion. Each post processor takes
-as input the converted document and outputs that document with the changes
-made by the post processor. Post processors come in handy for cleaning up
-output, checking for dead links, do string replacing, and so on.
+list of scripts or programs to run after the pandoc conversion has finished.
+Each postprocessor takes as input the converted document and outputs that
+document with the changes made by the postprocessor. Postprocessors come in
+handy for cleaning up output, checking for dead links, do string replacing,
+and so on.
 
 **Examples**
 
@@ -304,9 +306,9 @@ output, checking for dead links, do string replacing, and so on.
 ##### cleanup
 
 The counterpart of the `setup` property. The `cleanup` property is a list of
-scripts to run after the conversion of the document. It can be used to clean
-up temporary files, resetting the environment, uploading the resulting
-document, and so on.
+scripts or programs to run after the conversion of the document. It can be
+used to clean up temporary files, resetting the environment, uploading the
+resulting document, and so on.
 
 **Examples**
 
@@ -368,8 +370,8 @@ cases:
         parent = {key: true} ∧ child = 12 ⇒ 12
         ```
 
-    2.  If parent and child values both are maps, the resulting value will be
-        the child's map merged with the parent's map. Examples:
+    2.  If parent and child values both are key-value lists, the resulting value will be
+        the child's key-value list merged with the parent's key-value list. Examples:
         
         ```
         parent = {a: 1, b: 2} ∧ child = {a: 2, c: 3} ⇒ {a: 2, b: 2, c: 3}
@@ -389,8 +391,8 @@ cases:
             parent = [1] ∧ child = [1, 2] ⇒ [1, 2]
             ```
 
-        2.  If the child is a map, it is assumed to have properties `remove`
-            and `add`, both lists. The resulting value will be the parent's
+        2.  If the child is a key-value list, it is assumed to have keys `remove`
+            and `add`. The resulting value will be the parent's
             value with the items from the `remove` list removed and
             items from the `add` list added. Examples:
 
@@ -406,15 +408,15 @@ To remove a property in a child template, that child's value should be
 
 To use an *external pandocomatic template* you have to use it in a document by
 creating an *internal pandocomatic template* which has the `use-template`
-property set to the name of the *external pandocomatic template* you want to
-use. After that, you can customize the template to you liking, for example
+property set to the name of the *external pandocomatic template*. After that,
+you can customize the template to suit the document it is used in, for example
 adding extra pandoc command-line options or adding another preprocessor.
 
 You create an *internal pandocomatic template* by adding a `pandocomatic_`
-section to the document's YAML metadata. The `pandocomatic_` section can have
+property to the document's YAML metadata. The `pandocomatic_` property can have
 the same properties as an *external pandocomatic template* except for the
-`glob` and `extends` properties. Actually, you can add these two properties as
-well, but they are ignored.
+`glob` and `extends` properties. (Actually, you can add these two properties as
+well, but they are ignored.)
 
 For example, if you use the `my-webpage` template, but you would like to use a
 different bibliography and check all links in the converted document, your

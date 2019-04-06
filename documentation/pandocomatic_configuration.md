@@ -8,24 +8,23 @@ file*, which is a YAML file. For example, the following YAML code is a valid
 ::paru::insert ../example/manual/example_configuration_file.yaml
 ```
 
-By default, pandocomatic looks for the
-configuration file in the *pandocomatic data directory*; by convention this
-file is named `pandocomatic.yaml`.
+By default, pandocomatic looks for the configuration file in the *pandocomatic
+data directory*; by convention this file is named `pandocomatic.yaml`.
 
 You can tell pandocomatic to use a different configuration file via the
-command-line option `--config`. For example, if you want to use a configuration file
-`my-config.yaml`, invoke pandocomatic as follows:
+command-line option `--config`. For example, if you want to use a
+configuration file `my-config.yaml`, invoke pandocomatic as follows:
 
 ```{.bash}
 pandocomatic --config my-config.yaml some-file-to-convert.md
 ```
 
-A *pandocomatic configuration file* contains two sections:
+A *pandocomatic configuration file* contains two properties:
 
 1. global `settings`
 2. external `templates`
 
-These two sections are discussed after presenting an example of a
+These two properties are discussed after presenting an example of a
 configuration file. For more in-depth information about
 pandocomatic templates, please see the [Chapter on pandocomatic
 templates](#pandocomatic-templates). 
@@ -40,8 +39,8 @@ You can configure five optional global settings:
 4. `recursive`
 5. `follow-links`
 
-The latter three are used only when running pandocomatic to convert a
-directory tree. These are discussed in the next sub section.
+The latter three are used only when converting a whole directory tree with
+pandocomatic. These are discussed in the next sub section.
 
 The first setting, `data-dir` (String), tells pandocomatic where its
 *data directory* is. You can also specify the *pandocomatic data directory*
@@ -58,50 +57,50 @@ defaults to pandoc's data directory.
 
 Any directory can be used as a *pandocomatic data directory*, there are no
 conventions or requirements for this directory other than being a directory.
-However, it is recommended to create a meaningful sub directory structure
-rather than to put everything together. For example, a sub directory for
-processors, filters, CSL files, and pandoc templates makes it easier to point
-to these assets.
+However, it is recommended to create a meaningful sub directory structure. For
+example, a sub directory for processors, filters, CSL files, and pandoc
+templates makes it easier to manage and point to these assets.
 
-The setting `match-files` controls how pandocomatic chooses a template to use
-to convert a file. Possible values for `match-files` are `first` and `all`.
-These options have the following effect: Pandocomatic matches a file to a
-template as follows:
+The setting `match-files` controls how pandocomatic selects the template to
+use to convert a file. Possible values for `match-files` are `first` and
+`all`. Pandocomatic matches a file to a template as follows:
 
 1.  If the file has one or more `use-template` statements in the
     *pandocomatic* metadata, it will use these specified templates.
 2.  However, if no such templates are specified in the file, pandocomatic
     tries to find *global* templates as follows:
 
-    a.  If the setting `match-files` has value `all`, all templates with glob
-        pattern that matches the input file are used to convert the file. For
-        example, you can have specified a template `www` to convert `*.md`
-        files to HTML and a template `pdf` to convert `*.md` to PDF. In this
-        case, a markdown file will be converted to both output formats. You
-        can use this to generate a website with a print PDF page for each web
-        page.
-    b.  If the setting `match-files` has value `first`, the first template
-        with a glob pattern that matches the input file is used to convert the
-        file.
+    a.  If the setting `match-files` has value `all`, all templates with a
+        glob pattern that matches the input filename are used to convert that
+        input file. For example, you can specify a template `www` to convert
+        `*.md` files to HTML and a template `pdf` to convert `*.md` to PDF. In
+        this case, a markdown file will be converted to both HTML and PDF. For
+        example, you could use this to generate a website with a print PDF page
+        for each web page.  
+        
+    b.  If the setting `match-files` has value `first`,
+        the first template with a glob pattern that matches the input file is used
+        to convert the file.
 
         This is the default.
 
 #### Configuring converting a directory tree {#global-settings}
 
-You can convert a directory tree with pandocomatic by invoking pandocomatic
-with a directory as input rather than a file. Of course, once you start
-converting directories, more fine-grained control over what files to convert
-than "convert all files" is required. There are four settings you can use to
-control which files to convert. Three of them are global settings, the other
-one is the `glob` property of an *external pandocomatic template*. The `glob`
-property is discussed later.
+You can convert a directory tree by invoking pandocomatic with a single
+directory as the input rather than one or more files. Of course, once you
+start converting directories, more fine-grained control over what files to
+convert than "convert all files" is useful. There are four settings you can
+use to control which files to convert. Three of them are global settings, the
+other one is the `glob` property of an *external pandocomatic template*. The
+`glob` property is discussed later.
 
 The three global settings to control which files to convert are:
 
-1. `recursive` (Boolean), which tells pandocomatic to convert sub directories or not.
-   This setting defaults to `true`.
-2. `follow-links` (Boolean), which tells pandocomatic to treat symbolic links as files
-   and directories to convert or not. This setting defaults to `false`.
+1. `recursive` (Boolean), which tells pandocomatic to convert sub directories
+   or not.  This setting defaults to `true`.
+2. `follow-links` (Boolean), which tells pandocomatic to treat symbolic links
+   as files and directories to convert or not. This setting defaults to
+   `false`.
 3. `skip` (Array of glob patterns), which tells pandocomatic which files not
    to convert at all. This setting defaults to `['.*', 'pandocomatic.yaml']`:
    ignore all hidden files (starting with a period) and also ignore default
@@ -111,23 +110,23 @@ The three global settings to control which files to convert are:
 
 Pandocomatic's default configuration file is defined in the file
 [`lib/pandocomatic/default_configuration.yaml`](https://github.com/htdebeer/pandocomatic/blob/master/lib/pandocomatic/default_configuration.yaml).
-This default configuration is used whenever
+This default configuration is used when
 
 - no configuration is specified via the command-line option `--config`, and
-- no default configuration file (`pandocomatic.yaml`) can be found in the *pandocomatic data
-  directory*.
+- no default configuration file (`pandocomatic.yaml`) can be found in the
+  *pandocomatic data directory*.
 
-When converting a directory tree, each time pandocomatic enters a directory,
-it also looks for a default configuration file to *update* the current
-settings. In other words, you can have pandocomatic behave differently in a
-sub directory than the current directory by putting a `pandocomatic.yaml` file
-in that sub directory that changes the global settings or *external
+When converting a directory tree, each time pandocomatic enters a (sub)
+directory, it also looks for a default configuration file to *update* the
+current settings. In other words, you can have pandocomatic behave differently
+in a sub directory than the current directory by putting a `pandocomatic.yaml`
+file in that sub directory that changes the global settings or *external
 pandocomatic templates*.
 
 ### Templates
 
-Besides the global `settings` section, a *pandocomatic configuration file* can
-also contain a `templates` section. In the `templates` section you define the
+Besides the global `settings` property, a *pandocomatic configuration file* can
+also contain a `templates` property. In the `templates` property you define the
 *external pandocomatic templates* you want to use when converting files with
 pandocomatic. Pandocomatic templates are discussed in detail in the [Chapter
 on pandocomatic templates](#pandocomatic-templates). The `glob` property of

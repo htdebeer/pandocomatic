@@ -1,6 +1,6 @@
 ## Pandocomatic command-line interface {#pandocomatic-cli}
 
-Pandocomatic takes a number of arguments which at the least should include the
+Pandocomatic takes a number of arguments which should at least include the
 input file or directory. The general form of a pandocomatic invocation is:
 
 ```{.bash}
@@ -23,7 +23,10 @@ pandocomatic options [INPUT]
 `-i PATH, --input PATH`
 
 :   Convert `PATH`. If this option is not given, `INPUT` is converted. `INPUT`
-    and `--input` or `-i` cannot be used together.
+    and `--input` or `-i` cannot be used together. You can use this option
+    multiple times, denoting to concatenate each input file in the order they
+    are specified on the command-line. Pandocomatic treats the concatenated
+    files as a single input file.
 
 `-o PATH, --output PATH`
 
@@ -67,7 +70,7 @@ will complain if the input and output types do not match.
     still have to be executed. Finally, when pandocomatic is finished, it
     tells you how long it took to perform the conversion.
   
-    If you do not like this verbose behavior, use the `--quiet` or `-q`
+    If you do not like this verbosity, use the `--quiet` or `-q`
     argument to run pandocomatic quietly. Default is `false`.
 
 `-y, --dry-run`
