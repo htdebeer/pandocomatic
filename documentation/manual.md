@@ -1,6 +1,6 @@
 ---
 title: Pandocomatic
-subtitle: Automating the use of pandoc
+subtitle: Automate the use of pandoc
 author: Huub de Beer
 date: April 6th, 2019
 keywords:
