@@ -191,21 +191,32 @@ module Pandocomatic
 
             pandocomatic_blocks = 0
 
-            metadata_blocks = metadata_blocks.each do |metadata|
-                metadata.delete_if do |key|
-                    if key == "pandocomatic_" or key == "pandocomatic"
-                        pandocomatic_blocks += 1
-                        
-                        1 < pandocomatic_blocks 
-                    else 
-                        false
-                    end
+            metadata_blocks = metadata_blocks
+                .select {|m| not m.nil? and not m.empty?}
+                .each do |metadata|
+                    metadata.delete_if do |key|
+                        if key == "pandocomatic_" or key == "pandocomatic"
+                            pandocomatic_blocks += 1
+                            
+                            1 < pandocomatic_blocks 
+                        else 
+                            false
+                        end
                 end
             end
 
-            yaml_string = metadata_blocks
-                    .map {|metadata| YAML.dump(metadata)}
-                    .join("\n")
+            # According to the pandoc manual: "A document may contain multiple
+            # metadata blocks. The metadata fields will be combined through a
+            # left-biased union: if two metadata blocks attempt to set the
+            # same field, the value from the first block will be taken."
+            #
+            # Here we do the same
+            full_metadata = Hash.new
+            metadata_blocks
+                .reverse
+                .each {|block| full_metadata.merge!(block)}
+
+            yaml_string = YAML.dump(full_metadata) + "..."
 
             return [yaml_string, pandocomatic_blocks]
         end
