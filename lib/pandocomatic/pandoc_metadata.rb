@@ -188,21 +188,10 @@ module Pandocomatic
             metadata_blocks = input
                 .scan(METADATA_BLOCK)
                 .map {|match| YAML.load "---#{match.join()}..."}
-
-            pandocomatic_blocks = 0
-
-            metadata_blocks = metadata_blocks
-                .select {|m| not m.nil? and not m.empty?}
-                .each do |metadata|
-                    metadata.delete_if do |key|
-                        if key == "pandocomatic_" or key == "pandocomatic"
-                            pandocomatic_blocks += 1
-                            
-                            1 < pandocomatic_blocks 
-                        else 
-                            false
-                        end
-                end
+                .select {|block| not block.nil? and not block.empty?}
+            
+            pandocomatic_blocks = metadata_blocks.count do |block|
+                block.key? "pandocomatic_" or block.key? "pandocomatic"
             end
 
             # According to the pandoc manual: "A document may contain multiple
@@ -211,10 +200,9 @@ module Pandocomatic
             # same field, the value from the first block will be taken."
             #
             # Here we do the same
-            full_metadata = Hash.new
-            metadata_blocks
+            full_metadata = metadata_blocks
                 .reverse
-                .each {|block| full_metadata.merge!(block)}
+                .reduce(Hash.new) {|metadata, block| metadata.merge!(block)}
 
             yaml_string = YAML.dump(full_metadata) + "..."
 
