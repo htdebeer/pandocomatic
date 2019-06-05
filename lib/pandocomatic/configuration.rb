@@ -242,7 +242,7 @@ module Pandocomatic
         #
         # @return [Boolean]
         def output?()
-            @options[:output_given] and @options[:output]
+          not @options.nil? and @options[:output_given] and @options[:output]
         end
 
         # Get the output file name
@@ -409,6 +409,10 @@ module Pandocomatic
                     destination = rename_destination(rename_script, destination)
                 end
             end
+
+            # If there is a single file input without output specified, set
+            # the output now that we know what the output filename is.
+            @output = destination.delete_prefix "./" if not output?
             
             destination
         end

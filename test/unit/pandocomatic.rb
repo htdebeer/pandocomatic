@@ -274,4 +274,12 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
   
+  def test_convert_automatic_output_extension()
+    Dir.mktmpdir('automatic_output') do |dir|
+      input = File.join ['example', 'hello_world.md']
+      assert_output(/hello_world\.html/) do
+        Pandocomatic::Pandocomatic.run "-i #{input}"
+      end
+    end
+  end
 end
