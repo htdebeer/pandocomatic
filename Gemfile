@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 
-gem "paru", "~> 0.3.2"
+gem "paru", "~> 0.3.2.1"
 
 gem "optimist", "~> 3.0"
 
