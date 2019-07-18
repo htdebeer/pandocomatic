@@ -264,7 +264,11 @@ module Pandocomatic
                 processors = config[type]
                 output = input
                 processors.each do |processor|
-                    script = @config.update_path(processor, File.dirname(@src), true)
+                    script = if @config.is_local_path processor
+                                 processor
+                             else
+                                 @config.update_path(processor, File.dirname(@src), true)
+                             end
 
                     command, *parameters = script.shellsplit # split on spaces unless it is preceded by a backslash
 

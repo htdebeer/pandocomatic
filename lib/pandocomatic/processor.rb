@@ -36,7 +36,6 @@ module Pandocomatic
         # @return [String] output of script.
         def self.run script, input
             output, error, status = Open3.capture3(script, :stdin_data => input)
-
             warn error unless error.empty?
 
             if status.exitstatus > 0

@@ -47,7 +47,7 @@ module Pandocomatic
         ERROR_STATUS = 1266 # This is the sum of the ascii values of the characters in 'pandocomatic'
 
         # Pandocomatic's current version
-        VERSION = [0, 2, 5, 3]
+        VERSION = [0, 2, 5, 4]
 
         # Run pandocomatic given options
         #

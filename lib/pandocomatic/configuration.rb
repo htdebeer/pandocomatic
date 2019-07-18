@@ -643,6 +643,14 @@ module Pandocomatic
             end
         end
 
+        def is_local_path(path)
+            if Gem.win_platform? then
+                path.match("^\\.\\\\\.*$")
+            else
+                path.start_with? "./"
+            end
+        end
+
         private 
 
         # Reset the settings for pandocomatic based on a new settings Hash
@@ -809,13 +817,6 @@ module Pandocomatic
             @data_dir, @settings, @templates, @convert_patterns = array
         end
 
-        def is_local_path(path)
-            if Gem.win_platform? then
-                path.match("^\\.\\\\\.*$")
-            else
-                path.start_with? "./"
-            end
-        end
 
         def is_absolute_path(path)
             if Gem.win_platform? then
