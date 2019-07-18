@@ -78,7 +78,7 @@ The "`./`" in the path `./tidy.sh` tells pandocomatic to look for the
 specify an absolute path (starting with a slash "`/`") or a path relative to
 the **pandocomatic data directory** like we do in the path in the `template`
 property in the example above. See the [Section about specifying paths in
-pandocomatic](#specifiying-paths) for more information. If you use a path
+pandocomatic](#specifying-paths) for more information. If you use a path
 relative to the *pandocomatic data directory*, you have to use the
 `--data-dir` option to tell pandocomatic where to find its data directory.  If
 you do not, pandocomatic will default to pandoc's data directory.
