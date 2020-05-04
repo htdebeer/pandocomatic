@@ -58,6 +58,10 @@ module Pandocomatic
         's5' => 'html'
     }
 
+    # Indicator for paths that should be treated as "relative to the root
+    # path". These paths start with this ROOT_PATH_INDICATOR.
+    ROOT_PATH_INDICATOR = "$ROOT$"
+
     # A Configuration object models a pandocomatic configuration.
     class Configuration
 
@@ -89,6 +93,8 @@ module Pandocomatic
                       else 
                           nil 
                       end
+
+            @root_path = determine_root_path options
 
             # Extend the command classes by setting the source tree root
             # directory, and the options quiet and dry-run, which are used when
@@ -229,6 +235,13 @@ module Pandocomatic
         # @return [Boolean]
         def data_dir?()
             @options[:data_dir_given]
+        end
+
+        # Is the root path CLI option given?
+        #
+        # @return [Boolean]
+        def root_path?()
+            @options[:root_path_given]
         end
 
         # Is the config CLI option given?
@@ -528,29 +541,30 @@ module Pandocomatic
         # @param path [String] path to the executable
         # @param src_dir [String] the source directory from which pandocomatic
         #   conversion process has been started
-        # @param check_executable [Booelan = false] Should the executable be
+        # @param dst [String] the destination path
+        # @param check_executable [Boolean = false] Should the executable be
         #   verified to be executable? Defaults to false.
         #
         # @return [String] the updated path.
-        def update_path(path, src_dir, check_executable = false, output = false)
+        def update_path(path, src_dir, dst = "", check_executable = false, output = false)
             updated_path = path
 
-            if is_local_path path
+            if is_local_path? path
                 # refers to a local dir; strip the './' before appending it to
                 # the source directory as to prevent /some/path/./to/path
                 updated_path = path[2..-1]
-            else
-                if is_absolute_path path
-                    updated_path = path
-                else 
-                    if check_executable
-                        updated_path = Configuration.which path
-                    end
+            elsif is_absolute_path? path
+                updated_path = path
+            elsif is_root_relative_path? path
+                updated_path = make_path_root_relative path, dst, @root_path
+            else 
+                if check_executable
+                    updated_path = Configuration.which path
+                end
 
-                    if updated_path.nil? or not check_executable then
-                        # refers to data-dir
-                        updated_path = File.join @data_dir, path
-                    end
+                if updated_path.nil? or not check_executable then
+                    # refers to data-dir
+                    updated_path = File.join @data_dir, path
                 end
             end
 
@@ -643,7 +657,7 @@ module Pandocomatic
             end
         end
 
-        def is_local_path(path)
+        def is_local_path?(path)
             if Gem.win_platform? then
                 path.match("^\\.\\\\\.*$")
             else
@@ -818,12 +832,50 @@ module Pandocomatic
         end
 
 
-        def is_absolute_path(path)
+        def is_absolute_path?(path)
             if Gem.win_platform? then
                 path.match("^[a-zA-Z]:\\\\\.*$")
             else
                 path.start_with? "/"
             end
+        end
+
+        def is_root_relative_path?(path)
+            path.start_with? ROOT_PATH_INDICATOR
+        end
+
+        def make_path_root_relative(path, dst, root)
+            # Find how to get to the root directopry from dst directory.
+            # Assumption is that dst is a subdirectory of root.
+            dst_dir = File.dirname(File.absolute_path(dst))
+            
+            path.delete_prefix! ROOT_PATH_INDICATOR if is_root_relative_path? path
+
+            if File.realpath("#{dst_dir}").start_with? File.realpath(root) then
+                rel_start = ""
+
+                until File.identical?(File.realpath("#{dst_dir}/#{rel_start}"), File.realpath(root)) do
+                    # invariant dst_dir/rel_start <= root
+                    rel_start += "../" 
+                end
+
+                if rel_start.end_with? "/" and path.start_with? "/" then
+                    "#{rel_start}#{path.delete_prefix("/")}"
+                else
+                    "#{rel_start}#{path}"
+                end
+            else
+                # Because the destination is not in a subdirectory of root, a
+                # relative path to that root cannot be created. Instead,
+                # the path is assumed to be absolute relative to root
+                if root.end_with? "/" or path.start_with? "/"
+                    "#{root}#{path}"
+                else
+                    "#{root}/#{path}"
+                end
+            end
+
+
         end
 
         def determine_config_file(options, data_dir = Dir.pwd)
@@ -883,6 +935,16 @@ module Pandocomatic
             raise ConfigurationError.new(:data_dir_is_not_readable, nil, path) unless File.readable? path
 
             path
+        end
+
+        def determine_root_path(options)
+            if options[:root_path_given] then
+                options[:root_path]
+            elsif options[:output_given] then
+                File.absolute_path(File.dirname options[:output])
+            else
+                File.absolute_path "."
+            end
         end
     end
 end

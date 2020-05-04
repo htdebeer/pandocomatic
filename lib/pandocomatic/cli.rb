@@ -65,6 +65,7 @@ module Pandocomatic
         # What to convert and where to put it
         opt :output, 'Output', :short => '-o', :type => String
         opt :input, 'Input', :short => '-i', :type => String, :multi => true
+        opt :root_path, 'Root path', :short => '-r', :type => String
 
         # Version and help
         opt :show_version, 'Version', :short => '-v', :long => 'version'
@@ -120,6 +121,11 @@ module Pandocomatic
           # specified as well. If the input is a file, the output could be
           # specified in the input file, or STDOUT could be used.
           raise CLIError.new(:no_output_given) if not multiple_inputs and File.directory? input.first
+        end
+
+        # TODO: Root path validation?
+        if options[:root_path_given]
+            options[:root_path] = File.absolute_path options[:root_path]    
         end
 
         # Data dir, if specified, should be an existing and readable directory

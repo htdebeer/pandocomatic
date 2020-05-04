@@ -122,8 +122,13 @@ class TestPandocomaticCLI < Minitest::Test
     assert cli('-i test/files/readable_test_file -c test/files/config.yaml').config?
   end
 
+  def test_root_path
+      assert cli('-i test/files/readable_test_file --root-path to/somewhere').root_path?
+      assert cli('-i test/files/readable_test_file -r somewhere/else').root_path?
+  end
+
   def test_other_options
-      assert cli('-i test/files/readable_test_file -y').dry_run?
+    assert cli('-i test/files/readable_test_file -y').dry_run?
     assert cli('-i test/files/readable_test_file -q').quiet?
     assert cli('-i test/files/readable_test_file -m').modified_only?
     assert cli('-i test/files/readable_test_file -b').debug?

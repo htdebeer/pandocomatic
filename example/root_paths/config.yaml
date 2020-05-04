@@ -1,0 +1,14 @@
+settings:
+    recursive: true
+templates:
+    web:
+        glob: ["*.md"]
+        pandoc:
+            from: markdown
+            to: html
+            standalone: true
+            css: 
+                - "without_root_path.css"
+                - "/absolute/path/from/template.css"
+                - "$ROOT$/assets/root_relative_path_from_template.css"
+                - "datadir/relative/path/from/template.css"

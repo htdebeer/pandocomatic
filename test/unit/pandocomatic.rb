@@ -25,9 +25,9 @@ class TestPandocomaticRun < Minitest::Test
       if File.file? expected_entry
           assert_files_equal expected_entry, generated_entry
       elsif File.directory? expected_entry
-        assert_directories_equal expected_entry, generated_entry
+          assert_directories_equal expected_entry, generated_entry
       else
-        # ?
+          # ?
       end
     end
   end
@@ -281,5 +281,34 @@ class TestPandocomaticRun < Minitest::Test
         Pandocomatic::Pandocomatic.run "-i #{input}"
       end
     end
+  end
+
+  def test_root_path()
+      # check various scenarios with root paths
+      # With root path:
+      Dir.mktmpdir("with_root") do |dir|
+          config = File.join ['example', 'root_paths', 'config.yaml']
+          input = File.join ['example', 'root_paths', 'src']
+          output = File.join [dir, 'www-with-root-path']
+          data = File.join ['example', 'root_paths', 'data']
+
+          Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -o #{output} -r #{output} -d #{data}"
+              
+          example_output = File.join ['example', 'root_paths', 'www-with-root-path']
+          assert_directories_equal example_output, output
+      end
+
+      # Without root path:
+      Dir.mktmpdir("without_root") do |dir|
+          config = File.join ['example', 'root_paths', 'config.yaml']
+          input = File.join ['example', 'root_paths', 'src']
+          output = File.join [dir, 'www-without-root-path']
+          data = File.join ['example', 'root_paths', 'data']
+
+          Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -o #{output} -d #{data}"
+              
+          example_output = File.join ['example', 'root_paths', 'www-without-root-path']
+          assert_directories_equal example_output, output
+      end
   end
 end

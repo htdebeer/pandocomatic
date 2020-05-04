@@ -109,6 +109,11 @@ module Pandocomatic
 
                 pandoc_options = Configuration.extend_value(pandoc_options, template['pandoc'])
             end
+            
+            # Write out the results of the conversion process to file.
+            if @dst.to_s.empty? and @metadata.pandoc_options.has_key? 'output'
+                @dst = @metadata.pandoc_options['output']
+            end
                
             template = Configuration.extend_value(@metadata.pandocomatic, template) if @metadata.has_pandocomatic?            
 
@@ -129,11 +134,6 @@ module Pandocomatic
             input = preprocess input, template
             input = pandoc input, pandoc_options, File.dirname(@src)
             output = postprocess input, template
-
-            # Write out the results of the conversion process to file.
-            if @dst.to_s.empty? and @metadata.pandoc_options.has_key? 'output'
-                @dst = @metadata.pandoc_options['output']
-            end
 
             begin
                 unless use_output_option @dst then
@@ -187,9 +187,9 @@ module Pandocomatic
                     if PANDOC_OPTIONS_WITH_PATH.include? option
                         is_executable = option == "filter"
                         if value.is_a? Array
-                            value = value.map {|v| @config.update_path(v, src_dir, is_executable)}
+                            value = value.map {|v| @config.update_path(v, src_dir, absolute_dst, is_executable)}
                         else
-                            value = @config.update_path(value, src_dir, is_executable)
+                            value = @config.update_path(value, src_dir, @dst, is_executable)
                         end
                     end
 
@@ -264,10 +264,10 @@ module Pandocomatic
                 processors = config[type]
                 output = input
                 processors.each do |processor|
-                    script = if @config.is_local_path processor
+                    script = if @config.is_local_path? processor
                                  processor
                              else
-                                 @config.update_path(processor, File.dirname(@src), true)
+                                 @config.update_path(processor, File.dirname(@src), @dst, true)
                              end
 
                     command, *parameters = script.shellsplit # split on spaces unless it is preceded by a backslash
