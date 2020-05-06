@@ -290,11 +290,26 @@ class TestPandocomaticRun < Minitest::Test
           config = File.join ['example', 'root_paths', 'config.yaml']
           input = File.join ['example', 'root_paths', 'src']
           output = File.join [dir, 'www-with-root-path']
+          root_path = File.join [dir, 'www-with-root-path']
           data = File.join ['example', 'root_paths', 'data']
 
-          Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -o #{output} -r #{output} -d #{data}"
+          Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -o #{output} -r #{root_path} -d #{data}"
               
           example_output = File.join ['example', 'root_paths', 'www-with-root-path']
+          assert_directories_equal example_output, output
+      end
+      
+      # With root path not a subdir:
+      Dir.mktmpdir("with_root") do |dir|
+          config = File.join ['example', 'root_paths', 'config.yaml']
+          input = File.join ['example', 'root_paths', 'src']
+          output = File.join [dir, 'www-with-non-subdir-root-path']
+          root_path = File.join ['some', 'path']
+          data = File.join ['example', 'root_paths', 'data']
+
+          Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -o #{output} -r #{root_path} -d #{data}"
+              
+          example_output = File.join ['example', 'root_paths', 'www-with-non-subdir-root-path']
           assert_directories_equal example_output, output
       end
 

@@ -125,8 +125,9 @@ module Pandocomatic
           raise CLIError.new(:no_output_given) if not multiple_inputs and File.directory? input.first
         end
 
+        # No check for root_path: a user can supply one that does not exists
+        # at this location and still work on the output location.
         if options[:root_path_given]
-            options[:root_path] = File.absolute_path options[:root_path]    
         end
 
         # Data dir, if specified, should be an existing and readable directory

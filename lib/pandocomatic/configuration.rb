@@ -851,7 +851,7 @@ module Pandocomatic
             
             path.delete_prefix! ROOT_PATH_INDICATOR if is_root_relative_path? path
 
-            if File.realpath("#{dst_dir}").start_with? File.realpath(root) then
+            if File.exist? root and File.realpath("#{dst_dir}").start_with?(File.realpath(root)) then
                 rel_start = ""
 
                 until File.identical?(File.realpath("#{dst_dir}/#{rel_start}"), File.realpath(root)) do
@@ -868,11 +868,10 @@ module Pandocomatic
                 # Because the destination is not in a subdirectory of root, a
                 # relative path to that root cannot be created. Instead,
                 # the path is assumed to be absolute relative to root
-                if root.end_with? "/" or path.start_with? "/"
-                    "#{root}#{path}"
-                else
-                    "#{root}/#{path}"
-                end
+                root = root.delete_suffix "/" if root.end_with? "/"
+                path = path.delete_prefix "/" if path.start_with? "/"
+
+                "#{root}/#{path}"
             end
 
 
