@@ -83,6 +83,15 @@ will complain if the input and output types do not match.
 :   Run pandocomatic in debug mode. At the moment this means that all pandoc
     invocations are printed as well.
 
+`-r PATH, --root-path PATH`
+
+:   Set the root path for use with the root path relative path specification
+    in templates (see [Specifying paths](#specifying-paths)). It is used mostly 
+    with the --css pandoc option. It defaults to the directory of the specified 
+    output.
+
+    Note. This option is experimental.
+
 ### Status codes
 
 When pandocomatic runs into a problem, it will return with status codes `1266`

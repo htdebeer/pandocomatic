@@ -25,6 +25,9 @@ DESCRIPTION
 
 OPTIONS
 
+
+  Required:
+
   -i PATH, --input PATH
                   Convert PATH. If this option is not given, INPUT is
                   converted. INPUT and --input cannot be used together.
@@ -36,7 +39,8 @@ OPTIONS
   -o PATH, --output PATH
                   Create converted files and directories in PATH.
 
-  optional arguments:
+
+  Optional:
 
   -d PATH, --data-dir PATH
                   Configure pandocomatic to use PATH as its data directory.
@@ -99,6 +103,18 @@ OPTIONS
 
   -y, --dry-run   Configure pandocomatic to run the conversion process, but do
                   not actually run it. Default is FALSE.
+  
+
+  Experimental:
+
+  -r PATH, --root-path PATH  
+                  Set the root path to use with paths that are specified as
+                  relative to that root path. It is used mostly with the 
+                  --css pandoc option. It defaults to the directory of the
+                  specified output.
+
+
+  Common:
 
   -v, --version   Show the version. If this option is used, all other options
                   are ignored.

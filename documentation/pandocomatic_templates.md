@@ -53,7 +53,8 @@ shareable with others. Using local paths works if the assets and the document
 to convert are located in the same directory, but that does not hold for more
 general *external pandocomatic templates*. As a third alternative,
 pandocomatic also supports paths that are relative to the *pandocomatic data
-directory*.
+directory*. Finally, to handle paths that are meaningful in the output
+documents, pandocomatic has a way to specify paths relative to a root path.
 
 You can specify these types of paths as follows:
 
@@ -75,6 +76,14 @@ You can specify these types of paths as follows:
     *Note.* For filters, processors, and start-up or clean-up scripts, the
     path is first checked against the `PATH`. If pandocomatic finds an
     executable matching the path, it will resolve that executable instead.
+4.  Paths *relative to a root path* start with `$ROOT$`. These paths are
+    resolved by adding `../` to first go to the root path, then from there to 
+    go to the path specified.
+
+    The root path is set by means of the command-line option `--root-path`. If
+    no such option is used, the directory of the output is used instead.
+
+    Note. This root relative path alternative is experimental.
 
 #### Template properties
 

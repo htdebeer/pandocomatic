@@ -54,12 +54,12 @@ guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest gem,
-[pandocomatic-0.2.6](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.6.gem),
+[pandocomatic-0.2.7.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.7.0.gem),
 from Github and install it manually as follows:
 
 ``` {.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.2.6.gem
+gem install pandocomatic-0.2.7.0.gem
 ```
 
 Why pandocomatic?
@@ -587,6 +587,15 @@ Pandocomatic will complain if the input and output types do not match.
 :   Run pandocomatic in debug mode. At the moment this means that all
     pandoc invocations are printed as well.
 
+`-r PATH, --root-path PATH`
+
+:   Set the root path for use with the root path relative path
+    specification in templates (see [Specifying
+    paths](#specifying-paths)). It is used mostly with the --css pandoc
+    option. It defaults to the directory of the specified output.
+
+    Note. This option is experimental.
+
 ### Status codes
 
 When pandocomatic runs into a problem, it will return with status codes
@@ -849,7 +858,9 @@ longer easily shareable with others. Using local paths works if the
 assets and the document to convert are located in the same directory,
 but that does not hold for more general *external pandocomatic
 templates*. As a third alternative, pandocomatic also supports paths
-that are relative to the *pandocomatic data directory*.
+that are relative to the *pandocomatic data directory*. Finally, to
+handle paths that are meaningful in the output documents, pandocomatic
+has a way to specify paths relative to a root path.
 
 You can specify these types of paths as follows:
 
@@ -874,6 +885,16 @@ You can specify these types of paths as follows:
     the path is first checked against the `PATH`. If pandocomatic finds
     an executable matching the path, it will resolve that executable
     instead.
+
+4.  Paths *relative to a root path* start with `$ROOT$`. These paths are
+    resolved by adding `../` to first go to the root path, then from
+    there to go to the path specified.
+
+    The root path is set by means of the command-line option
+    `--root-path`. If no such option is used, the directory of the
+    output is used instead.
+
+    Note. This root relative path alternative is experimental.
 
 #### Template properties
 
