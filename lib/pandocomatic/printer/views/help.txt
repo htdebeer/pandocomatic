@@ -150,7 +150,7 @@ AUTHOR
 
 LICENSE
 
-  Copyright 2014—2019 Huub de Beer <Huub@heerdebeer.org>
+  Copyright 2014—2020 Huub de Beer <huub@heerdebeer.org>
 
   Pandocomatic is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by the
