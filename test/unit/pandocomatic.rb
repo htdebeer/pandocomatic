@@ -285,6 +285,8 @@ class TestPandocomaticRun < Minitest::Test
 
   def test_root_path()
       # check various scenarios with root paths
+      # Build the output test files using absolute paths to output and root.
+      # Otherwise it cannot find the paths 
       # With root path:
       Dir.mktmpdir("with_root") do |dir|
           config = File.join ['example', 'root_paths', 'config.yaml']
