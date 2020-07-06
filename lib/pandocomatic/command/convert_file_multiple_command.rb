@@ -64,7 +64,6 @@ module Pandocomatic
             global_templates = @config.determine_templates(@src)
                 
             if global_templates.empty?
-                
                 subcommands.push ConvertFileCommand.new(@config, @src, dst)
             else
                 global_templates.each do |template_name|

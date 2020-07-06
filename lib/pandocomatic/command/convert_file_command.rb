@@ -126,7 +126,7 @@ module Pandocomatic
             # Run the default preprocessors to mix-in information about the file
             # that is being converted and mix-in the template's metadata section as
             # well
-            input = FileInfoPreprocessor.run input, @src, pandoc_options
+            input = FileInfoPreprocessor.run input, @src, src_root, pandoc_options
             input = MetadataPreprocessor.run input, template['metadata'] if template.has_key? 'metadata' and not template['metadata'].empty?
 
             # Convert the file by preprocessing it, run pandoc on it, and

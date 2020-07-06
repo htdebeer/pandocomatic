@@ -31,7 +31,7 @@ module Pandocomatic
         # @param path [String] the path to the input document
         # @param options [Hash] pandoc options collected by pandocomatic to run on
         #   this file
-        def self.run input, path, options
+        def self.run input, path, src_path, options
             created_at = File.stat(path).ctime
             modified_at = File.stat(path).mtime
             output = input
@@ -41,6 +41,7 @@ module Pandocomatic
             output << "  to: #{options['to']}\n" if options.has_key? 'to'
             output << "  template: #{options['template']}\n" if options.has_key? 'template'
             output << "  path: '#{path}'\n"
+            output << "  src_path: '#{src_path}'\n"
             output << "  created: #{created_at.strftime '%Y-%m-%d'}\n"
             output << "  modified: #{modified_at.strftime '%Y-%m-%d'}\n"
             output << "...\n\n"
