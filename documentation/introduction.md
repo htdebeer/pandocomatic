@@ -10,3 +10,6 @@ released under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 You will find the source code of pandocomatic in its
 [repository](https://github.com/htdebeer/pandocomatic) on
 [Github](https://github.com).
+
+**Note.** For pandoc versions ≥ 2.10 use paru version ≥ 0.4.1.2; otherwise use
+paru version 0.4.0.1.
