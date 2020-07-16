@@ -11,5 +11,5 @@ You will find the source code of pandocomatic in its
 [repository](https://github.com/htdebeer/pandocomatic) on
 [Github](https://github.com).
 
-**Note.** For pandoc versions ≥ 2.10 use paru version ≥ 0.4.1.2; otherwise use
-paru version 0.4.0.1.
+**Note.** For pandoc versions ≥ 2.10 make sure to install and use paru version
+≥ 0.4.1.2; otherwise install and use paru version 0.4.0.1.

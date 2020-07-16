@@ -17,16 +17,16 @@ source code of pandocomatic in its
 [repository](https://github.com/htdebeer/pandocomatic) on
 [Github](https://github.com).
 
-**Note.** For pandoc versions ≥ 2.10 use paru version ≥ 0.4.1.2;
-otherwise use paru version 0.4.0.1.
+**Note.** For pandoc versions ≥ 2.10 make sure to install and use paru
+version ≥ 0.4.1.2; otherwise install and use paru version 0.4.0.1.
+
+**Note.** As I am a GNU/Linux user, I do not officially support other
+operating systems like Mac OSX or Windows. Fixes and patches for those
+operating systems are welcome.
 
 See [pandocomatic’s
 manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for an
 extensive description of pandocomatic.
-
-Note. As I am a GNU/Linux user, I do not officially support other
-operating systems like Mac OSX or Windows. Fixes and patches for those
-operating systems are welcome.
 
 ## Why pandocomatic?
 

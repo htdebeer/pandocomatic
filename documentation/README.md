@@ -11,13 +11,13 @@ pandocomatic_:
 
 ::paru::insert introduction.md
 
+**Note.** As I am a GNU/Linux user, I do not officially support other operating
+systems like Mac OSX or Windows. Fixes and patches for those operating systems
+are welcome.
+
 See [pandocomatic's
 manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for an
 extensive description of pandocomatic.
-
-Note. As I am a GNU/Linux user, I do not officially support other operating
-systems like Mac OSX or Windows. Fixes and patches for those operating systems
-are welcome.
 
 ::paru::insert why_pandocomatic.md
 
