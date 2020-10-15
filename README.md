@@ -20,9 +20,9 @@ source code of pandocomatic in its
 
 **Note.** Pandocomatic is build on top of
 [paru](https://github.com/htdebeer/paru), which is a wrapper around
-pandoc. For pandoc versions ≥ 2.10 make sure to also install and use
-paru version ≥ 0.4.1.2 because of breaking changes in pandoc; otherwise
-install and use paru version 0.4.0.1.
+pandoc. For pandoc versions ≥ 2.11 make sure to also install and use
+paru version ≥ 0.4.2 because of breaking changes in pandoc; otherwise
+install and use paru version 0.4.1.
 
 **Note.** As I am a GNU/Linux user, I do not officially support other
 operating systems like Mac OSX or Windows. Fixes and patches for those
