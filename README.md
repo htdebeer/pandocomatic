@@ -1,13 +1,14 @@
 [![Gem
 Version](https://badge.fury.io/rb/pandocomatic.svg)](https://badge.fury.io/rb/pandocomatic)
 
-# Pandocomatic—Automate the use of pandoc
+Pandocomatic—Automate the use of pandoc
+=======================================
 
 Pandocomatic is a tool to automate the use of
 [pandoc](https://pandoc.org/). With pandocomatic you can express common
 patterns of using pandoc for generating your documents. Applied to a
 directory, pandocomatic can act as a static site generator. For example,
-this manual is generated with pandocomatic\!
+this manual is generated with pandocomatic!
 
 Pandocomatic is [free
 software](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic
@@ -31,7 +32,8 @@ See [pandocomatic’s
 manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for an
 extensive description of pandocomatic.
 
-## Why pandocomatic?
+Why pandocomatic?
+-----------------
 
 I use pandoc a lot. I use it to write all my papers, notes, websites,
 reports, outlines, summaries, and books. Time and again I was invoking
@@ -91,10 +93,10 @@ templates:
 In this configuration file a single *pandocomatic template* is being
 defined: *education-research*. This template specifies that the source
 files it is applied to are not being preprocessed. Furthermore, the
-source files are converted with pandoc by invoking `pandoc --from
-markdown --to html --standalone --csl apa.csl --toc --bibliography
-/path/to/bibliography.bib --mathjax`. Finally, the template specifies
-that pandoc’s output is not being postprocessed.
+source files are converted with pandoc by invoking
+`pandoc --from markdown --to html --standalone --csl apa.csl --toc --bibliography /path/to/bibliography.bib --mathjax`.
+Finally, the template specifies that pandoc’s output is not being
+postprocessed.
 
 I now can create a new document that uses this template by including the
 following metadata block in my source file, `on_teaching_maths.md`:
@@ -129,7 +131,7 @@ the `output` property in the example above.
 
 Once I had written a number of related documents this way, it was a
 small step to enable pandocomatic to convert directories as well. Just
-like that, pandocomatic can be used as a *static site generator*\!
+like that, pandocomatic can be used as a *static site generator*!
 
 Pandocomatic is [free
 software](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic
@@ -138,7 +140,8 @@ is released under the
 pandocomatic’s source code on
 [github](https://github.com/htdebeer/pandocomatic).
 
-## Installation
+Installation
+------------
 
 Pandocomatic is a [Ruby](https://www.ruby-lang.org/en/) program and can
 be installed through [RubyGems](https://rubygems.org/) as follows:
@@ -155,15 +158,16 @@ guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest gem,
-[pandocomatic-0.2.7.2](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.7.2.gem),
+[pandocomatic-0.2.7.3](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.7.3.gem),
 from Github and install it manually as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.2.7.2.gem
+gem install pandocomatic-0.2.7.3.gem
 ```
 
-## Examples
+Examples
+--------
 
 ### Convert a single file
 
@@ -197,8 +201,8 @@ pandocomatic -d data-dir -c config.yaml -i README.md -o ../README.md
 pandocomatic -d data-dir -c config.yaml -i manual.md -o ../index.md
 ```
 
-Be careful to not overwrite the input file with the output file\! I
-would suggest using different names for both, or different directories.
+Be careful to not overwrite the input file with the output file! I would
+suggest using different names for both, or different directories.
 Looking more closely to the pandocomatic configuration file
 `config.yaml`, we see it contains one template, `mddoc`:
 
@@ -300,7 +304,8 @@ pandocomatic_:
 Pandocomatic allows you to generalize common aspects of running pandoc
 while still offering the ability to be as specific as needed.
 
-## More information
+More information
+----------------
 
 See [pandocomatic’s
 manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more

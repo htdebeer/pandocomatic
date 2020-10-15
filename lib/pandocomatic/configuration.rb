@@ -55,7 +55,9 @@ module Pandocomatic
         'slideous' => 'html',
         'dzslides' => 'html',
         'revealjs' => 'html',
-        's5' => 'html'
+        's5' => 'html',
+        'bibtex' => 'bib',
+        'biblatex' => 'bib'
     }
 
     # Indicator for paths that should be treated as "relative to the root
