@@ -11,8 +11,7 @@ subtitle: Automate the use of pandoc
 title: Pandocomatic
 ---
 
-Introduction
-============
+# Introduction
 
 Pandocomatic is a tool to automate the use of
 [pandoc](https://pandoc.org/). With pandocomatic you can express common
@@ -34,16 +33,14 @@ pandoc. For pandoc versions ≥ 2.11 make sure to also install and use
 paru version ≥ 0.4.2 because of breaking changes in pandoc; otherwise
 install and use paru version 0.4.1.
 
-Acknowledgements
-----------------
+## Acknowledgements
 
 I would like to thank [Ian](https://github.com/iandol) for his
 contribution of patches, bug reports, fixes, and suggestions. With your
 help pandocomatic is growing beyond a simple tool for personal use into
 a useful addition to the pandoc ecosystem.
 
-Installation
-------------
+## Installation
 
 Pandocomatic is a [Ruby](https://www.ruby-lang.org/en/) program and can
 be installed through [RubyGems](https://rubygems.org/) as follows:
@@ -68,8 +65,7 @@ cd /directory/you/downloaded/the/gem/to
 gem install pandocomatic-0.2.7.4.gem
 ```
 
-Why pandocomatic?
------------------
+## Why pandocomatic?
 
 I use pandoc a lot. I use it to write all my papers, notes, websites,
 reports, outlines, summaries, and books. Time and again I was invoking
@@ -171,11 +167,9 @@ like that, pandocomatic can be used as a *static site generator*!
 
 ------------------------------------------------------------------------
 
-Using pandocomatic: Quick start and overview {#using-pandocomatic}
-============================================
+# Using pandocomatic: Quick start and overview {#using-pandocomatic}
 
-Converting a single document
-----------------------------
+## Converting a single document
 
 Pandocomatic allows you to put [pandoc command-line
 options](http://pandoc.org/MANUAL.html) in the document to be converted
@@ -294,8 +288,7 @@ metadata blocks, only the first `pandocomatic_` property is used; all
 other occurrences are discarded. If this happens, pandocomatic will show
 a warning.
 
-Converting a series of documents
---------------------------------
+## Converting a series of documents
 
 ### Using external templates
 
@@ -446,8 +439,7 @@ See the [Section on extending pandocomatic
 templates](#extending-pandocomatic-templates) for more information about
 this extension mechanism.
 
-Converting a directory tree of documents
-----------------------------------------
+## Converting a directory tree of documents
 
 Once you have created a number of documents that can be converted by
 pandocomatic and you change something significant in one of the
@@ -498,11 +490,9 @@ For more detailed information about pandocomatic, please see the
 
 ------------------------------------------------------------------------
 
-Reference: All about pandocomatic {#reference}
-=================================
+# Reference: All about pandocomatic {#reference}
 
-Pandocomatic command-line interface {#pandocomatic-cli}
------------------------------------
+## Pandocomatic command-line interface {#pandocomatic-cli}
 
 Pandocomatic takes a number of arguments which should at least include
 the input file or directory. The general form of a pandocomatic
@@ -609,8 +599,7 @@ When pandocomatic runs into a problem, it will return with status codes
 any conversion is started and the latter when something goes wrong
 during the conversion process.
 
-Pandocomatic configuration
---------------------------
+## Pandocomatic configuration
 
 Pandocomatic can be configured by means of a *pandocomatic configuration
 file*, which is a YAML file. For example, the following YAML code is a
@@ -791,8 +780,7 @@ will result in the following result\"
 That is, all `.md` files are converted to HTML and all other files are
 copied, recursively.
 
-Pandocomatic templates
-----------------------
+## Pandocomatic templates
 
 Pandocomatic automates the use of pandoc by extracting common patterns
 of using pandoc into so called *pandocomatic templates*. You can then
@@ -883,7 +871,7 @@ You can specify these types of paths as follows:
     backslashes might need escaping, like `C:\\`.
 
 3.  Paths *relative* to the *pandocomatic data directory* do not start
-    with a `./` nor a `/`. These paths are resolved by prepending the
+    with a `./` nor a `/`. These paths are resolved by appending the
     path to the *pandocomatic data directory*. These come in handy for
     defining general usable *external pandocomatic templates*.
 
@@ -1321,11 +1309,9 @@ such that it is applicable to all used *external pandocomatic templates*
 
 ------------------------------------------------------------------------
 
-Appendix
-========
+# Appendix
 
-Frequently asked questions (FAQ) {#faq}
---------------------------------
+## Frequently asked questions (FAQ) {#faq}
 
 ### How do I use pandoc2 with pandocomatic?
 
@@ -1353,8 +1339,7 @@ command-line option. For example:
 pandocomatic --quiet some-file-to-export.md
 ```
 
-Glossary
---------
+## Glossary
 
 pandocomatic template
 

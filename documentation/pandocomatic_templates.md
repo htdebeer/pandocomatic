@@ -69,7 +69,7 @@ You can specify these types of paths as follows:
     a colon and a backslash, for example `C:\`.  Note
     that backslashes might need escaping, like `C:\\`.
 3.  Paths *relative* to the *pandocomatic data directory* do not start with a
-    `./` nor a `/`. These paths are resolved by prepending the path to the
+    `./` nor a `/`. These paths are resolved by appending the path to the
     *pandocomatic data directory*. These come in handy for defining general
     usable *external pandocomatic templates*.
 

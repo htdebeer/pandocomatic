@@ -1,8 +1,7 @@
 [![Gem
 Version](https://badge.fury.io/rb/pandocomatic.svg)](https://badge.fury.io/rb/pandocomatic)
 
-Pandocomatic—Automate the use of pandoc
-=======================================
+# Pandocomatic—Automate the use of pandoc
 
 Pandocomatic is a tool to automate the use of
 [pandoc](https://pandoc.org/). With pandocomatic you can express common
@@ -32,8 +31,7 @@ See [pandocomatic’s
 manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for an
 extensive description of pandocomatic.
 
-Why pandocomatic?
------------------
+## Why pandocomatic?
 
 I use pandoc a lot. I use it to write all my papers, notes, websites,
 reports, outlines, summaries, and books. Time and again I was invoking
@@ -140,8 +138,7 @@ is released under the
 pandocomatic’s source code on
 [github](https://github.com/htdebeer/pandocomatic).
 
-Installation
-------------
+## Installation
 
 Pandocomatic is a [Ruby](https://www.ruby-lang.org/en/) program and can
 be installed through [RubyGems](https://rubygems.org/) as follows:
@@ -166,8 +163,7 @@ cd /directory/you/downloaded/the/gem/to
 gem install pandocomatic-0.2.7.4.gem
 ```
 
-Examples
---------
+## Examples
 
 ### Convert a single file
 
@@ -304,8 +300,7 @@ pandocomatic_:
 Pandocomatic allows you to generalize common aspects of running pandoc
 while still offering the ability to be as specific as needed.
 
-More information
-----------------
+## More information
 
 See [pandocomatic’s
 manual](https://heerdebeer.org/Software/markdown/pandocomatic/) for more
