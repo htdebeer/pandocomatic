@@ -42,7 +42,7 @@ module Pandocomatic
         #
         # @return [String]
         def to_s()
-            erb = ERB.new(File.read(@template), 0, '>')
+            erb = ERB.new(File.read(@template), trim_mode: '>')
             erb.result(binding())
         end
 
