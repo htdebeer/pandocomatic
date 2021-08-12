@@ -155,12 +155,12 @@ guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest gem,
-[pandocomatic-0.2.7.5](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.7.5.gem),
+[pandocomatic-0.2.7.6](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.7.6.gem),
 from Github and install it manually as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.2.7.5.gem
+gem install pandocomatic-0.2.7.6.gem
 ```
 
 ## Examples
@@ -284,7 +284,7 @@ the `to` property with `markdown_github`.
 Similarly, in the input file
 [`manual.md`](https://github.com/htdebeer/pandocomatic/blob/master/documentation/manual.md),
 an extra filter is specified,
-[‘number\_chapters\_and\_sections\_and\_figures.rb’](https://github.com/htdebeer/pandocomatic/blob/master/documentation/data-dir/filters/number_chapters_and_sections_and_figures.rb),
+[‘number_chapters_and_sections_and_figures.rb’](https://github.com/htdebeer/pandocomatic/blob/master/documentation/data-dir/filters/number_chapters_and_sections_and_figures.rb),
 to number the chapters and sections in the manual, which is not needed
 for the README, by using the following pandocomatic metadata in the
 manual input file:

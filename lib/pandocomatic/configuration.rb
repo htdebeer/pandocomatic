@@ -303,7 +303,6 @@ module Pandocomatic
             # If a temporary file has been created while concatenating
             # multiple input files, ensure it is removed.
             if @input.is_a? MultipleFilesInput then
-                warn "CLEAN UP"
                 @input.destroy!
             end
         end
