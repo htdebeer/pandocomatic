@@ -744,7 +744,7 @@ module Pandocomatic
                     if @templates.has_key? name
                         merge resolved_template, clone_template(@templates[name])
                     else 
-                        warn "Cannot find template with name '#{parent_template_name}'. Skipping this template while extending: '#{template.to_s}'."
+                        warn "Cannot find template with name '#{name}'. Skipping this template while extending: '#{template.to_s}'."
                     end
                 end
 
