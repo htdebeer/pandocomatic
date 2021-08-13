@@ -168,7 +168,10 @@ Setup scripts are run before the conversion process starts.
 
 **Examples**
 
--   ```{.yaml}
+-   Run script "create_working_directory.sh" before starting the conversion
+    process:
+
+    ```{.yaml}
     setup:
     - scripts/create_working_directory.sh
     ```
