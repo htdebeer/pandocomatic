@@ -11,17 +11,20 @@ DESCRIPTION
   tree. Configure the conversion process through configuration files.  Each
   input file that is converted by pandocomatic is processed as follows:
 
+    setup(0) ... setup(K)
     input_file -> 
       preprocessor(0) -> ... -> preprocessor(N) ->
         pandoc -> 
           postprocessor(0) -> ... -> postprocessor(M) -> 
             output_file
+    cleanup(0) ... cleanup(L)
 
-  The preprocessors and postprocessors used in the conversion process are
-  configured in pandocomatic templates. Besides processors, you can also
-  specify pandoc options to use to convert the input file. These templates are
-  specified in a configuration file. Templates can be used over and over, thus
-  automating the use of pandoc.
+  The setup and cleanup scripts are run before and after the conversion
+  process, respectively. The preprocessors and postprocessors used in the
+  conversion process are configured in pandocomatic templates. Besides
+  processors, you can also specify pandoc options to use to convert the input
+  file. These templates are specified in a configuration file. Templates can
+  be used over and over, thus automating the use of pandoc.
 
 OPTIONS
 
@@ -95,14 +98,17 @@ OPTIONS
                   destination files will be converted, copied, or linked.
                   Default is FALSE.
 
-  -q, --quiet     Run pandocomatic quietly. Default is FALSE.
+  -V, --verbose   Run pandocomatic verbosely. Default is FALSE. Pandocomatic
+                  runs quietly unless the verbose, debug, or dry-run options
+                  are given.
 
   -b, --debug     Run pandocomatic in debug mode: show the pandoc invocations
-                  before each conversion. Default is FALSE. Only works
-                  when not quiet.
+                  before each conversion. Default is FALSE. In debug mode,
+                  pandocomatic runs verbosely.
 
   -y, --dry-run   Configure pandocomatic to run the conversion process, but do
-                  not actually run it. Default is FALSE.
+                  not actually run it. Default is FALSE. When using this
+                  dry-run option, pandocomatic runs verbosely.
   
 
   Experimental:
@@ -135,7 +141,7 @@ EXAMPLE:
 
 SEE ALSO
 
-  - Pandocomatic's documentation
+  - Pandocomatic's manual
     https://heerdebeer.org/Software/markdown/pandocomatic/
 
   - Pandoc's user guide
@@ -146,11 +152,11 @@ SEE ALSO
 
 AUTHOR
 
-  Huub de Beer <Huub@heerdebeer.org>
+  Huub de Beer <huub@heerdebeer.org>
 
 LICENSE
 
-  Copyright 2014—2020 Huub de Beer <huub@heerdebeer.org>
+  Copyright 2014—2021 Huub de Beer <huub@heerdebeer.org>
 
   Pandocomatic is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by the

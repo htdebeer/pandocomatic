@@ -54,20 +54,18 @@ module Pandocomatic
       parser = Optimist::Parser.new do
         # General options 
         opt :dry_run, 'Do a dry run', :short => '-y'
-        opt :quiet, 'Run quietly', :short => '-q'
+        opt :verbose, 'Run verbosely', :short => '-V'
         opt :debug, 'Debug mode, shows pandoc invocations', :short => '-b'
         opt :modified_only, 'Modified files only', :short => '-m'
 
         # Configuration of the converter
         opt :data_dir, 'Data dir', :short => '-d', :type => String
         opt :config, 'Configuration file', :short => '-c', :type => String
+        opt :root_path, 'Root path', :short => '-r', :type => String
 
         # What to convert and where to put it
         opt :output, 'Output', :short => '-o', :type => String
         opt :input, 'Input', :short => '-i', :type => String, :multi => true
-
-        # Experimental
-        opt :root_path, 'Root path', :short => '-r', :type => String
 
         # Common
         opt :show_version, 'Version', :short => '-v', :long => 'version'

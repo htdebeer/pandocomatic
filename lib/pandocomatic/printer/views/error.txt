@@ -1,4 +1,4 @@
-Pandocomatic has encountered an error:
+[ERROR] Pandocomatic encountered the following error(s):
 
     <%= @error.message %>
     <%= @error.data %>

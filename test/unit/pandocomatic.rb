@@ -278,7 +278,16 @@ class TestPandocomaticRun < Minitest::Test
     Dir.mktmpdir('automatic_output') do |dir|
       input = File.join ['example', 'hello_world.md']
       assert_output(/hello_world\.html/) do
-        Pandocomatic::Pandocomatic.run "-i #{input}"
+        Pandocomatic::Pandocomatic.run "-i #{input} --verbose"
+      end
+    end
+  end
+  
+  def test_verbose_output()
+    Dir.mktmpdir('automatic_output') do |dir|
+      input = File.join ['example', 'hello_world.md']
+      assert_output() do
+        Pandocomatic::Pandocomatic.run "-i #{input} --verbose"
       end
     end
   end

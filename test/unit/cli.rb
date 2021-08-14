@@ -13,13 +13,13 @@ class TestPandocomaticCLI < Minitest::Test
   def test_version
       assert cli('-v').show_version?
       assert cli('--version').show_version?
-      assert cli('-q --version').show_version?
+      assert cli('--verbose --version').show_version?
       assert cli('--version test/files/readable_test_file').show_version?
   end
 
   def test_help
       assert cli('-h').show_help?
-      assert cli('-h -q').show_help?
+      assert cli('-h --verbose').show_help?
       assert cli('-i test/files/readable_test_file -h').show_help?
       assert cli('--help').show_help?
   end
@@ -129,9 +129,20 @@ class TestPandocomaticCLI < Minitest::Test
 
   def test_other_options
     assert cli('-i test/files/readable_test_file -y').dry_run?
-    assert cli('-i test/files/readable_test_file -q').quiet?
+    assert cli('-i test/files/readable_test_file --verbose').verbose?
     assert cli('-i test/files/readable_test_file -m').modified_only?
     assert cli('-i test/files/readable_test_file -b').debug?
+  end
+
+
+  def test_quiet_mode
+    assert cli('-i test/files/readable_test_file').quiet?
+    assert cli('-i test/files/readable_test_file -m').quiet?
+    # Quiet mode is disabled for "verbose" options like "verbose", "debug",
+    # and "dry run".
+    refute cli('-i test/files/readable_test_file -y').quiet?
+    refute cli('-i test/files/readable_test_file --verbose').quiet?
+    refute cli('-i test/files/readable_test_file -b').quiet?
   end
 
   def test_problematic_invocation

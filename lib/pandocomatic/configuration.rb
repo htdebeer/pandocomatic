@@ -197,11 +197,11 @@ module Pandocomatic
             @options[:dry_run_given] and @options[:dry_run]
         end
 
-        # Is the quiet CLI option given?
-        #
+        # Is the verbose CLI option given?
+        # 
         # @return [Boolean]
-        def quiet?()
-            @options[:quiet_given] and @options[:quiet]
+        def verbose?()
+          @options[:verbose_given] and @options[:verbose]
         end
 
         # Is the debug CLI option given?
@@ -209,6 +209,13 @@ module Pandocomatic
         # @return [Boolean]
         def debug?()
             @options[:debug_given] and @options[:debug]
+        end
+
+        # Run pandocomatic in quiet mode? 
+        #
+        # @return [Boolean]
+        def quiet?()
+          [verbose?, debug?, dry_run?].none?
         end
 
         # Is the modified only CLI option given?

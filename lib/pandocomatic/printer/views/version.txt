@@ -1,8 +1,8 @@
 Pandocomatic version <%=@version.join('.')%>
 
-© 2014—2020 Huub de Beer <Huub@heerdebeer.org>
+© 2014—2021 Huub de Beer <huub@heerdebeer.org>
 
 Pandocomatic is free software; pandocomatic is released under the GPLv3.
 
-For more information about pandocomatic run 'pandocomatic --help' or read its
-documentation at https://heerdebeer.org/Software/markdown/pandocomatic/.
+For more information about pandocomatic run 'pandocomatic --help' or read
+pandocomatic's manual at https://heerdebeer.org/Software/markdown/pandocomatic/.
