@@ -1,5 +1,5 @@
 #--
-# Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017—2021, Huub de Beer <huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -136,6 +136,7 @@ module Pandocomatic
             output = postprocess input, template
 
             begin
+                # Either output to file or to STDOUT
                 unless use_output_option @dst then
                     File.open(@dst, 'w') do |file| 
                         raise IOError.new(:file_is_not_a_file, nil, @dst) unless File.file? @dst

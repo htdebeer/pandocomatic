@@ -1,5 +1,5 @@
 #--
-# Copyright 2014—2019, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2014—2021, Huub de Beer <huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -113,7 +113,7 @@ module Pandocomatic
             rescue StandardError => e
                 # An unexpected error has occurred; break off the program drastically
                 # for now. This is likely a bug: ask the user to report it.
-                warn "An unexpected error has occurred. You can report this bug via https://github.com/htdebeer/pandocomatic/issues/new."
+                warn "[UNEXPECTED ERROR] An unexpected error has occurred. You can report this bug via https://github.com/htdebeer/pandocomatic/issues/new."
                 raise e
             ensure
                 configuration.clean_up! unless configuration.nil?
