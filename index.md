@@ -57,12 +57,12 @@ guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest gem,
-[pandocomatic-0.2.7.6](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.7.6.gem),
+[pandocomatic-0.2.7.7](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.7.7.gem),
 from Github and install it manually as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.2.7.6.gem
+gem install pandocomatic-0.2.7.7.gem
 ```
 
 ## Why pandocomatic?
@@ -974,7 +974,13 @@ Setup scripts are run before the conversion process starts.
 
 **Examples**
 
--   `{.yaml}     setup:     - scripts/create_working_directory.sh`
+-   Run script "create_working_directory.sh" before starting the
+    conversion process:
+
+    ``` yaml
+    setup:
+    - scripts/create_working_directory.sh
+    ```
 
 ##### preprocessors
 
