@@ -29,9 +29,7 @@ source code of pandocomatic in its
 
 **Note.** Pandocomatic is build on top of
 [paru](https://github.com/htdebeer/paru), which is a wrapper around
-pandoc. For pandoc versions ≥ 2.11 make sure to also install and use
-paru version ≥ 0.4.2 because of breaking changes in pandoc; otherwise
-install and use paru version 0.4.1.
+pandoc.
 
 ## Acknowledgements
 
@@ -57,12 +55,12 @@ guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest gem,
-[pandocomatic-0.2.7.8](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.7.8.gem),
+[pandocomatic-0.2.8](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.8.gem),
 from Github and install it manually as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.2.7.8.gem
+gem install pandocomatic-0.2.8.gem
 ```
 
 ## Why pandocomatic?

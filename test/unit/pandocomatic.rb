@@ -328,4 +328,18 @@ class TestPandocomaticRun < Minitest::Test
           assert_directories_equal example_output, output
       end
   end
+
+  def test_empty_yaml_properties()
+      Dir.mktmpdir('empty-yaml-propertiess') do |dir|
+          input = File.join ['example', 'empty-properties.md']
+          output = File.join [dir, 'empty-properties.html']
+          config = File.join ['example', 'empty-properties.yaml']
+
+          Pandocomatic::Pandocomatic.run "-i #{input} -c  #{config} -o #{output}"
+
+          example_output = File.join ['example', 'empty-properties.html']
+          assert_files_equal example_output, output
+      end
+
+  end
 end

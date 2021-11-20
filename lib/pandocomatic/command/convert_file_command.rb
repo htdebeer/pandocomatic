@@ -184,6 +184,10 @@ module Pandocomatic
             Dir.chdir(src_dir) do
                 converter = Paru::Pandoc.new
                 options.each do |option, value|
+                    # Options come from a YAML string. In YAML, properties without a value get value nil. 
+                    # Interpret these empty properties as "skip this property"  
+                    next if value.nil?
+
                     if PANDOC_OPTIONS_WITH_PATH.include? option
                         is_executable = option == "filter"
                         if value.is_a? Array
