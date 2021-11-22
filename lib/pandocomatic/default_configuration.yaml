@@ -3,3 +3,7 @@ settings:
     follow-symlinks: false
     skip: ['.*', 'pandocomatic.yaml']
     match-files: 'first'
+templates:
+  empty:
+    metadata:
+      empty: true

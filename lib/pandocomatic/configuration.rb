@@ -1,5 +1,5 @@
 #--
-# Copyright 2014—2021 Huub de Beer <huub@heerdebeer.org>
+# Copyright 2014—2021 Huub de Beer <Huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -31,33 +31,67 @@ module Pandocomatic
     DEFAULT_CONFIG = YAML.load_file File.join(__dir__, 'default_configuration.yaml')
 
     # Maps pandoc output formats to their conventional default extension.
+    # Updated and in order of `pandoc --list-output-formats`.
     DEFAULT_EXTENSION = {
-        'native' => 'hs',
-        'plain' => 'txt',
-        'markdown' => 'md',
-        'markdown_strict' => 'md',
-        'markdown_phpextra' => 'md',
-        'markdown_mmd' => 'md',
-        'gfm' => 'md',
-        'commonmark' => 'md',
-        'html4' => 'html',
-        'html5' => 'html',
-        'latex' => 'tex',
-        'beamer' => 'tex',
-        'context' => 'tex',
-        'docbook4' => 'docbook',
-        'docbook5' => 'docbook',
-        'opendocument' => 'odt',
-        'epub2' => 'epub',
-        'epub3' => 'epub',
-        'asciidoc' => 'adoc',
-        'slidy' => 'html',
-        'slideous' => 'html',
-        'dzslides' => 'html',
-        'revealjs' => 'html',
-        's5' => 'html',
-        'bibtex' => 'bib',
-        'biblatex' => 'bib'
+        'asciidoc'                => 'adoc',
+        'asciidoctor'             => 'adoc',
+        'beamer'                  => 'tex',
+        'bibtex'                  => 'bib',
+        'biblatex'                => 'bib',
+        'commonmark'              => 'md',
+        'context'                 => 'tex',
+        'csljson'                 => 'json',
+        'docbook'                 => 'docbook',
+        'docbook4'                => 'docbook',
+        'docbook5'                => 'docbook',
+        'docx'                    => 'docx',
+        'dokuwiki'                => 'txt',
+        'dzslides'                => 'html',
+        'epub'                    => 'epub',
+        'epub2'                   => 'epub',
+        'epub3'                   => 'epub',
+        'fb2'                     => 'fb2',
+        'gfm'                     => 'md',
+        'haddock'                 => 'hs',
+        'html'                    => 'html',
+        'html4'                   => 'html',
+        'html5'                   => 'html',
+        'icml'                    => 'icml',
+        'ipynb'                   => 'ipynb',
+        'jats'                    => 'jats',
+        'jats_archiving'          => 'jats',
+        'jats_articleauthoring'   => 'jats',
+        'jats_publishing'         => 'jats',
+        'jira'                    => 'jira',
+        'json'                    => 'json',
+        'latex'                   => 'tex',
+        'man'                     => 'man',
+        'markdown'                => 'md',
+        'markdown_github'         => 'md',
+        'markdown_mmd'            => 'md',
+        'markdown_phpextra'       => 'md',
+        'markdown_strict'         => 'md',
+        'media_wiki'              => 'mediawiki',
+        'ms'                      => 'ms',
+        'muse'                    => 'muse',
+        'native'                  => 'hs',
+        'odt'                     => 'odt',
+        'opendocument'            => 'odt',
+        'opml'                    => 'opml',
+        'org'                     => 'org',
+        'pdf'                     => 'pdf',
+        'plain'                   => 'txt',
+        'pptx'                    => 'pptx',
+        'revealjs'                => 'html',
+        'rst'                     => 'rst',
+        's5'                      => 'html',
+        'slideous'                => 'html',
+        'slidy'                   => 'html',
+        'tei'                     => 'tei',
+        'texinfo'                 => 'texi',
+        'textile'                 => 'textile',
+        'xwiki'                   => 'xwiki',
+        'zimwiki'                 => 'zimwiki'
     }
 
     # Indicator for paths that should be treated as "relative to the root
@@ -75,10 +109,23 @@ module Pandocomatic
         # Create a new Configuration instance based on the command-line options
         def initialize options, input
             @options = options
-            @data_dir = determine_data_dir options
-            config_file = determine_config_file(options, @data_dir)
+            data_dirs = determine_data_dirs options
+            @data_dir = data_dirs.first
 
-            load config_file unless config_file.nil? or config_file.empty?
+            # hidden files will always be skipped, as will pandocomatic
+            # configuration files, unless explicitly set to not skip via the
+            # "unskip" option
+            @settings = {
+                'skip' => ['.*', 'pandocomatic.yaml'],
+                'recursive' => true,
+                'follow-links' => false,
+                'match-files' => 'first'
+            } 
+
+            @templates = {}
+            @convert_patterns = {}
+
+            load_configuration_hierarchy options, data_dirs
             
             @input = if input.nil? or input.empty? then
                          nil
@@ -126,24 +173,11 @@ module Pandocomatic
                 raise ConfigurationError.new(:unable_to_load_config_file, e, filename)
             end
 
-            # hidden files will always be skipped, as will pandocomatic
-            # configuration files, unless explicitly set to not skip via the
-            # "unskip" option
-
-            @settings = {
-                'skip' => ['.*', 'pandocomatic.yaml'],
-                'recursive' => true,
-                'follow-links' => false,
-                'match-files' => 'first'
-            } 
-
-            @templates = {}
-            @convert_patterns = {}
-
             configure settings
         end
 
-        # Update this configuration with a configuration file
+        # Update this configuration with a configuration file and return a new
+        # configuration
         #
         # @param [String] filename path to the configuration file
         #
@@ -769,7 +803,7 @@ module Pandocomatic
         #   this Configuarion with
         def reset_template(name, template)
             extended_template = extend_template template
-            
+
             if @templates.has_key? name then
                 merge @templates[name], extended_template
             else
@@ -882,25 +916,41 @@ module Pandocomatic
 
                 "#{root}/#{path}"
             end
-
-
         end
 
-        def determine_config_file(options, data_dir = Dir.pwd)
-            config_file = ''
+        # Read a list of configuration files and create a
+        # pandocomatic object that mixes templates from most generic to most
+        # specific.
+        def load_configuration_hierarchy(options, data_dirs)
+          config_files = determine_config_files(options, data_dirs) 
 
-            if options[:config_given]
-                config_file = options[:config]
-            elsif Dir.entries(data_dir).include? CONFIG_FILE
-                config_file = File.join(data_dir, CONFIG_FILE)
-            elsif Dir.entries(Dir.pwd()).include? CONFIG_FILE
-                config_file = File.join(Dir.pwd(), CONFIG_FILE)
-            else
-                # Fall back to default configuration file distributed with
-                # pandocomatic
-                config_file = File.join(__dir__, 'default_configuration.yaml')
+          # Read and mixin templates from most generic config file to most
+          # specific, thus in reverse order.
+          config_files.reverse.each do |config_file|
+            begin
+              configure YAML.load_file(config_file)
+            rescue StandardError => e
+              raise ConfigurationError.new(:unable_to_load_config_file, e, filename)
             end
+          end
 
+          load config_files.first
+        end
+
+        def determine_config_files(options, data_dirs = [])
+          config_files = []
+          # Get config file from option, if any
+          config_files << options[:config] if options[:config_given]
+          
+          # Get config file in each data_dir
+          data_dirs.each do |data_dir|
+            config_files << File.join(data_dir, CONFIG_FILE) if Dir.entries(data_dir).include? CONFIG_FILE
+          end
+                
+          # Default configuration file distributes with pandocomatic
+          config_files << File.join(__dir__, 'default_configuration.yaml')
+         
+          config_files.map do |config_file|
             path = File.absolute_path config_file
 
             raise ConfigurationError.new(:config_file_does_not_exist, nil, path) unless File.exist? path
@@ -908,34 +958,42 @@ module Pandocomatic
             raise ConfigurationError.new(:config_file_is_not_readable, nil, path) unless File.readable? path
 
             path
+          end
         end
 
-        def determine_data_dir(options)
-            data_dir = ''
+        def determine_config_file(options, data_dir = Dir.pwd)
+            determine_config_files(options, [data_dir]).first
+        end
 
-            if options[:data_dir_given]
-                data_dir = options[:data_dir]
+        # Determine all data directories to use
+        def determine_data_dirs(options)
+          data_dirs = []
+
+          # Data dir from CLI option
+          data_dirs << options[:data_dir] if options[:data_dir_given]
+
+          # Pandoc's default data dir
+          begin
+            data_dir = Paru::Pandoc.info()[:data_dir]
+
+            # If pandoc's data dir does not exist, however, fall back
+            # to the current directory
+            if File.exist? File.absolute_path(data_dir)
+              data_dirs << data_dir
             else
-                # No data-dir option given: try to find the default one from pandoc
-                begin
-                    data_dir = Paru::Pandoc.info()[:data_dir]
-
-                    # If pandoc's data dir does not exist, however, fall back
-                    # to the current directory
-                    unless File.exist? File.absolute_path(data_dir)
-                        data_dir = Dir.pwd
-                    end
-                rescue Paru::Error => e
-                    # If pandoc cannot be run, continuing probably does not work out
-                    # anyway, so raise pandoc error
-                    raise PandocError.new(:error_running_pandoc, e, data_dir)
-                rescue StandardError => e
-                    # Ignore error and use the current working directory as default working directory
-                    data_dir = Dir.pwd
-                end
+              data_dirs << Dir.pwd
             end
+          rescue Paru::Error => e
+            # If pandoc cannot be run, continuing probably does not work out
+            # anyway, so raise pandoc error
+            raise PandocError.new(:error_running_pandoc, e, data_dir)
+          rescue StandardError => e
+            # Ignore error and use the current working directory as default working directory
+            data_dirs << Dir.pwd
+          end
 
-            # check if data directory does exist and is readable
+          # check if data directories do exist and are readable
+          data_dirs.uniq.map do |data_dir|
             path = File.absolute_path data_dir
 
             raise ConfigurationError.new(:data_dir_does_not_exist, nil, path) unless File.exist? path
@@ -943,6 +1001,11 @@ module Pandocomatic
             raise ConfigurationError.new(:data_dir_is_not_readable, nil, path) unless File.readable? path
 
             path
+          end
+        end
+
+        def determine_data_dir(options)
+          determine_data_dirs(config).first
         end
 
         def determine_root_path(options)

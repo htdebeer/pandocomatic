@@ -29,9 +29,7 @@ source code of pandocomatic in its
 
 **Note.** Pandocomatic is build on top of
 [paru](https://github.com/htdebeer/paru), which is a wrapper around
-pandoc. For pandoc versions ≥ 2.11 make sure to also install and use
-paru version ≥ 0.4.2 because of breaking changes in pandoc; otherwise
-install and use paru version 0.4.1.
+pandoc.
 
 ## Acknowledgements
 
@@ -57,12 +55,12 @@ guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest gem,
-[pandocomatic-0.2.7.6](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.7.6.gem),
+[pandocomatic-0.3.α](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.3.α.gem),
 from Github and install it manually as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.2.7.6.gem
+gem install pandocomatic-0.3.α.gem
 ```
 
 ## Why pandocomatic?
@@ -974,7 +972,13 @@ Setup scripts are run before the conversion process starts.
 
 **Examples**
 
--   `{.yaml}     setup:     - scripts/create_working_directory.sh`
+-   Run script "create_working_directory.sh" before starting the
+    conversion process:
+
+    ``` yaml
+    setup:
+    - scripts/create_working_directory.sh
+    ```
 
 ##### preprocessors
 

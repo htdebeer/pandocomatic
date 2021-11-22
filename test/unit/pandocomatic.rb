@@ -337,4 +337,33 @@ class TestPandocomaticRun < Minitest::Test
           assert_directories_equal example_output, output
       end
   end
+
+  def test_empty_yaml_properties()
+      Dir.mktmpdir('empty-yaml-propertiess') do |dir|
+          input = File.join ['example', 'empty-properties.md']
+          output = File.join [dir, 'empty-properties.html']
+
+          Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
+
+          example_output = File.join ['example', 'empty-properties.html']
+          assert_files_equal example_output, output
+      end
+
+  end
+
+  def test_global_inheritance()
+    Dir.mktmpdir('global-inheritance') do |dir|
+      input = File.join ['example', 'inheritance', 'second.md']
+      data_dir = File.join ['example', 'inheritance', 'data-dir']
+      config = File.join ['example', 'inheritance', 'first.yaml']
+
+      output = File.join [dir, 'second.html']
+
+      Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
+
+      example_output = File.join ['example', 'inheritance', 'second.html']
+      assert_files_equal example_output, output
+    end
+
+  end
 end

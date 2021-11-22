@@ -1,0 +1,10 @@
+templates:
+  mine:
+    metadata:
+      author: Huub de Beer
+  page:
+    pandoc:
+      from: markdown
+      to: html
+      template: "template.html"
+      css: ["base.css"]
