@@ -55,12 +55,12 @@ guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest gem,
-[pandocomatic-0.2.8](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.2.8.gem),
+[pandocomatic-0.3.α](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.3.α.gem),
 from Github and install it manually as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.2.8.gem
+gem install pandocomatic-0.3.α.gem
 ```
 
 ## Why pandocomatic?
