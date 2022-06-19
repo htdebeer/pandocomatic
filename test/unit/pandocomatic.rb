@@ -292,7 +292,7 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
 
-  def test_root_path()
+  def test_root_path_with_root_path()
       # check various scenarios with root paths
       # Build the output test files using absolute paths to output and root.
       # Otherwise it cannot find the paths 
@@ -309,7 +309,9 @@ class TestPandocomaticRun < Minitest::Test
           example_output = File.join ['example', 'root_paths', 'www-with-root-path']
           assert_directories_equal example_output, output
       end
+  end
       
+  def test_root_path_with_root_path_not_a_subdir()
       # With root path not a subdir:
       Dir.mktmpdir("with_root") do |dir|
           config = File.join ['example', 'root_paths', 'config.yaml']
@@ -323,7 +325,9 @@ class TestPandocomaticRun < Minitest::Test
           example_output = File.join ['example', 'root_paths', 'www-with-non-subdir-root-path']
           assert_directories_equal example_output, output
       end
+  end
 
+  def test_root_path_without_root_path()
       # Without root path:
       Dir.mktmpdir("without_root") do |dir|
           config = File.join ['example', 'root_paths', 'config.yaml']

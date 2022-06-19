@@ -7,3 +7,8 @@ documentation/api-doc
 .yardoc
 
 hello_world.html
+
+# Artifacts from running rake in docker 
+.bash_history
+.texlive2020/
+

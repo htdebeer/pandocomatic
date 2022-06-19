@@ -843,7 +843,7 @@ module Pandocomatic
 
             command, *parameters = script.shellsplit # split on spaces unless it is preceded by a backslash
 
-            if not File.exists? command
+            if not File.exist? command
                 command = Configuration.which(command)
                 script = "#{command} #{parameters.join(' ')}"
 
