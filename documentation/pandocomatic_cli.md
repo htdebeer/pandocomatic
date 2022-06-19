@@ -40,6 +40,13 @@ pandocomatic options [INPUT]
 The input and output should both be files or both be directories. Pandocomatic
 will complain if the input and output types do not match.
 
+`-s, --stdout`
+
+:   Print result of converstion to standard output.
+
+    You cannot combine this option with `--output` or with a directory as
+    input.
+
 ### Arguments to configure pandocomatic
 
 `-d DIR, --data-dir DIR`
