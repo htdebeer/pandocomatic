@@ -137,8 +137,10 @@ module Pandocomatic
 
             @output = if output? then 
                           options[:output] 
+                      elsif to_stdout? options then
+                          Tempfile.new(@input.base)
                       elsif @input.is_a? Input then 
-                          @input.base 
+                          @input.base
                       else 
                           nil 
                       end
@@ -427,6 +429,10 @@ module Pandocomatic
         #   convert to destination
         # @param metadata [PandocMetadata] the metadata in the source file
         def set_destination(dst, template_name, metadata)
+            if use_stdout? dst then
+              return dst
+            end
+
             dir = File.dirname dst
 
             # Use the output option when set.
@@ -708,6 +714,10 @@ module Pandocomatic
             end
         end
 
+        def use_stdout?(destination)
+          destination.is_a? Tempfile
+        end
+
         private 
 
         # Reset the settings for pandocomatic based on a new settings Hash
@@ -874,13 +884,16 @@ module Pandocomatic
             @data_dir, @settings, @templates, @convert_patterns = array
         end
 
-
         def is_absolute_path?(path)
             if Gem.win_platform? then
                 path.match("^[a-zA-Z]:\\\\\.*$")
             else
                 path.start_with? "/"
             end
+        end
+
+        def to_stdout?(options)
+            options[:stdout_given] and options[:stdout]
         end
 
         def is_root_relative_path?(path)

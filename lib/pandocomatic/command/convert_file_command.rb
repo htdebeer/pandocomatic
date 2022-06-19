@@ -136,12 +136,18 @@ module Pandocomatic
             output = postprocess input, template
 
             begin
-                # Either output to file or to STDOUT
-                unless use_output_option @dst then
-                    File.open(@dst, 'w') do |file| 
-                        raise IOError.new(:file_is_not_a_file, nil, @dst) unless File.file? @dst
-                        raise IOError.new(:file_is_not_writable, nil, @dst) unless File.writable? @dst
-                        file << output
+                # Either output to file or to STDOUT. 
+              
+              if @config.use_stdout? @dst then
+                    puts output
+                    @dst.close!
+                else 
+                    unless use_output_option @dst then
+                        File.open(@dst, 'w') do |file| 
+                            raise IOError.new(:file_is_not_a_file, nil, @dst) unless File.file? @dst
+                            raise IOError.new(:file_is_not_writable, nil, @dst) unless File.writable? @dst
+                            file << output
+                        end
                     end
                 end
             rescue StandardError => e

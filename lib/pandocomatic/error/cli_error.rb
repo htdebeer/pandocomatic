@@ -37,6 +37,9 @@ module Pandocomatic
       # :output_is_not_a_directory,
       # :output_is_not_a_file,
       # :output_it_not_writable,
+            
+      # :cannot_use_stdout_with_directory
+      # :cannot_use_both_output_and_stdout
 
       # :unknown_option,
       # :problematic_invocation,

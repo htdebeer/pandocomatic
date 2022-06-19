@@ -31,7 +31,11 @@ module Pandocomatic
             super 'summary.txt'
             @command = command
             @input = configuration.input.to_s
-            @output = configuration.output
+            if configuration.use_stdout? configuration.output then
+                @output = nil
+            else
+                @output = configuration.output 
+            end
         end
 
         # A string representation of the commands being executed

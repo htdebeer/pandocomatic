@@ -66,6 +66,7 @@ module Pandocomatic
         # What to convert and where to put it
         opt :output, 'Output', :short => '-o', :type => String
         opt :input, 'Input', :short => '-i', :type => String, :multi => true
+        opt :stdout, 'Output to standard out', :short => '-s'
 
         # Common
         opt :show_version, 'Version', :short => '-v', :long => 'version'
@@ -109,13 +110,23 @@ module Pandocomatic
           File.absolute_path input_file
         end
 
-        if options[:output_given]
-          output = File.absolute_path options[:output]
-          # Input and output should be both files or directories
-          match_file_types input.first, output
+        # You cannot use the --stdout option while converting directories
+        if options[:stdout_given] and File.directory? input.first
+            raise CLIError.new(:cannot_use_stdout_with_directory)
+        end
 
-          # The output, if it already exist, should be writable
-          raise CLIError.new(:output_is_not_writable, nil, output) unless not File.exist? output or File.writable? output
+        if options[:output_given]
+          # You cannot use --stdout with --output
+          if options[:stdout_given]
+              raise CLIError.new(:cannot_use_both_output_and_stdout)
+          else
+              output = File.absolute_path options[:output]
+              # Input and output should be both files or directories
+              match_file_types input.first, output
+
+              # The output, if it already exist, should be writable
+              raise CLIError.new(:output_is_not_writable, nil, output) unless not File.exist? output or File.writable? output
+          end
         else
           # If the input is a directory, an output directory should be
           # specified as well. If the input is a file, the output could be

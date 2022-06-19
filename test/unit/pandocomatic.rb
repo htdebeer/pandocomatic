@@ -293,7 +293,6 @@ class TestPandocomaticRun < Minitest::Test
   end
 
   def test_root_path_with_root_path()
-      # check various scenarios with root paths
       # Build the output test files using absolute paths to output and root.
       # Otherwise it cannot find the paths 
       # With root path:
