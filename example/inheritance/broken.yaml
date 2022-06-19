@@ -1,0 +1,5 @@
+templates:
+  inherited-page:
+    extends: ["mine", "non-existing"]
+    pandoc:
+      css: ["first.css"]

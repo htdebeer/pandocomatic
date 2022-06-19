@@ -368,6 +368,21 @@ class TestPandocomaticRun < Minitest::Test
       assert_files_equal example_output, output
     end
   end
+
+  def test_global_inheritance_extending_non_existing_template()
+    Dir.mktmpdir('global-inheritance') do |dir|
+      input = File.join ['example', 'inheritance', 'second.md']
+      data_dir = File.join ['example', 'inheritance', 'data-dir']
+      config = File.join ['example', 'inheritance', 'broken.yaml']
+
+      output = File.join [dir, 'second.html']
+      $stderr = StringIO.new
+      Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
+      error = $stderr.string.strip
+      expected = "Cannot find a template with name 'non-existing'. Skipping this template while extending template 'inherited-page'."
+      assert_equal expected + "\n" + expected, error
+    end
+  end
   
   def test_convert_to_stdout()
     Dir.mktmpdir('hello_world') do |dir|

@@ -788,7 +788,7 @@ module Pandocomatic
         #
         # @param template [Hash] the template to extend
         # @return [Hash] the resolved template
-        def extend_template(template)
+        def extend_template(template_name, template)
             resolved_template = {};
             if template.has_key? 'extends' and not template['extends'].empty?
                 to_extend = template['extends']
@@ -798,7 +798,7 @@ module Pandocomatic
                     if @templates.has_key? name
                         merge resolved_template, clone_template(@templates[name])
                     else 
-                        warn "Cannot find template with name '#{name}'. Skipping this template while extending: '#{template.to_s}'."
+                        warn "Cannot find a template with name '#{name}'. Skipping this template while extending template '#{template_name}'."
                     end
                 end
 
@@ -815,7 +815,7 @@ module Pandocomatic
         # @param template [Hash] the template to use to update the template in
         #   this Configuarion with
         def reset_template(name, template)
-            extended_template = extend_template template
+            extended_template = extend_template name, template
 
             if @templates.has_key? name then
                 merge @templates[name], extended_template
