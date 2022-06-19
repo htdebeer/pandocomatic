@@ -127,6 +127,19 @@ class TestPandocomaticCLI < Minitest::Test
       assert cli('-i test/files/readable_test_file -r somewhere/else').root_path?
   end
 
+  def test_stdout
+    refute cli('-i test/files/readable_test_file').stdout?
+    assert cli('-i test/files/readable_test_file -s').stdout?
+    
+    e = assert_raises Pandocomatic::CLIError do
+      cli('-i test/files/readable_test_file -s -o some_output').stdout?
+    end
+
+    e = assert_raises Pandocomatic::CLIError do
+      cli('-i test/files/readable_test_dir -s').stdout?
+    end
+  end
+
   def test_other_options
     assert cli('-i test/files/readable_test_file -y').dry_run?
     assert cli('-i test/files/readable_test_file --verbose').verbose?

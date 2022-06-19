@@ -1,5 +1,5 @@
 #--
-# Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017, 2022, Huub de Beer <Huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 

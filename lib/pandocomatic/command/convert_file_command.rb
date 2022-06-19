@@ -1,5 +1,5 @@
 #--
-# Copyright 2017-2021, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017-2022, Huub de Beer <Huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -138,7 +138,7 @@ module Pandocomatic
             begin
                 # Either output to file or to STDOUT. 
               
-              if @config.use_stdout? @dst then
+              if @config.stdout? then
                     puts output
                     @dst.close!
                 else 

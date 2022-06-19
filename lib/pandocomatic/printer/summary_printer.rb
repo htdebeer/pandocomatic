@@ -1,5 +1,5 @@
 #--
-# Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017, 2022, Huub de Beer <Huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -31,7 +31,7 @@ module Pandocomatic
             super 'summary.txt'
             @command = command
             @input = configuration.input.to_s
-            if configuration.use_stdout? configuration.output then
+            if configuration.stdout? then
                 @output = nil
             else
                 @output = configuration.output 

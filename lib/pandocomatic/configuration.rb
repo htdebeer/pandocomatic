@@ -1,5 +1,5 @@
 #--
-# Copyright 2014—2021 Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2014—2022 Huub de Beer <Huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -233,6 +233,13 @@ module Pandocomatic
             @options[:dry_run_given] and @options[:dry_run]
         end
 
+        # Is the stdout CLI option given?
+        #
+        # @return [Boolean]
+        def stdout?()
+          not @options.nil? and @options[:stdout_given] and @options[:stdout]
+        end
+
         # Is the verbose CLI option given?
         # 
         # @return [Boolean]
@@ -429,7 +436,7 @@ module Pandocomatic
         #   convert to destination
         # @param metadata [PandocMetadata] the metadata in the source file
         def set_destination(dst, template_name, metadata)
-            if use_stdout? dst then
+            if dst.is_a? Tempfile
               return dst
             end
 
@@ -714,10 +721,6 @@ module Pandocomatic
             end
         end
 
-        def use_stdout?(destination)
-          destination.is_a? Tempfile
-        end
-
         private 
 
         # Reset the settings for pandocomatic based on a new settings Hash
@@ -893,7 +896,7 @@ module Pandocomatic
         end
 
         def to_stdout?(options)
-            options[:stdout_given] and options[:stdout]
+          not options.nil? and options[:stdout_given] and options[:stdout]
         end
 
         def is_root_relative_path?(path)

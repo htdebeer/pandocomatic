@@ -1,5 +1,5 @@
 #--
-# Copyright 2017-2021, Huub de Beer <huub@heerdebeer.org>
+# Copyright 2017-2022, Huub de Beer <huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -112,12 +112,14 @@ module Pandocomatic
 
         # You cannot use the --stdout option while converting directories
         if options[:stdout_given] and File.directory? input.first
+            options[:stdout] = false
             raise CLIError.new(:cannot_use_stdout_with_directory)
         end
 
         if options[:output_given]
           # You cannot use --stdout with --output
           if options[:stdout_given]
+              options[:stdout] = false
               raise CLIError.new(:cannot_use_both_output_and_stdout)
           else
               output = File.absolute_path options[:output]

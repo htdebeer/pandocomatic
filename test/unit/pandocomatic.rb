@@ -367,6 +367,20 @@ class TestPandocomaticRun < Minitest::Test
       example_output = File.join ['example', 'inheritance', 'second.html']
       assert_files_equal example_output, output
     end
+  end
+  
+  def test_convert_to_stdout()
+    Dir.mktmpdir('hello_world') do |dir|
+      # capture STDOUT afresh
+      $stdout = StringIO.new
 
+      # Setup a simple conversion to STDOUT
+      input = File.join ['example', 'hello_world.md']
+      Pandocomatic::Pandocomatic.run "-i #{input} -s"
+      output = $stdout.string.strip
+
+      expected = "<p><em>Hello world!</em>, from <strong>pandocomatic</strong>.</p>"
+      assert_equal expected, output
+    end
   end
 end

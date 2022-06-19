@@ -39,11 +39,17 @@ OPTIONS
                   are specified on the command-line. Pandocomatic treats 
                   the concatenated files as a single input file.
 
-  -o PATH, --output PATH
-                  Create converted files and directories in PATH.
-
 
   Optional:
+
+  -o PATH, --output PATH
+                  Create converted files and directories in PATH. Cannot be
+                  used together with the `--stdout` option.
+
+  -s, --stdout
+                  Write the converted files to STDOUT. Cannot be used when
+                  converting directories, nor in combination with the
+                  `--output` option.
 
   -d PATH, --data-dir PATH
                   Configure pandocomatic to use PATH as its data directory.
