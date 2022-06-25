@@ -25,6 +25,7 @@ module Pandocomatic
     require_relative './command/command.rb'
     require_relative './input.rb'
     require_relative './multiple_files_input.rb'
+    require_relative './template.rb'
 
     # The default configuration for pandocomatic is read from
     # default_configuration.yaml.
@@ -203,18 +204,7 @@ module Pandocomatic
             reset_settings settings['settings'] if settings.has_key? 'settings'
             if settings.has_key? 'templates' then
                 settings['templates'].each do |name, template|
-                    full_template = {
-                        'extends' => [],
-                        'glob' => [],
-                        'setup' => [],
-                        'preprocessors' => [],
-                        'metadata' => {},
-                        'pandoc' => {},
-                        'postprocessors' => [],
-                        'cleanup' => []
-                    }
-
-                    reset_template name, full_template.merge(template)
+                    reset_template Template.new(name, template)
                 end
             end
         end
@@ -462,8 +452,8 @@ module Pandocomatic
 
             # Output option in template's pandoc property is next
             if destination.nil? and not template_name.nil? and not template_name.empty? then
-                if @templates[template_name].has_key? "pandoc" and not @templates[template_name]["pandoc"].nil?
-                    pandoc = @templates[template_name]["pandoc"]
+                if @templates[template_name].has_pandoc?
+                    pandoc = @templates[template_name].pandoc
                     destination = determine_output_in_pandoc.call pandoc
                     rename_script ||= pandoc["rename"]
                 end
@@ -517,8 +507,8 @@ module Pandocomatic
                     extension = strip_extensions.call(metadata.pandoc_options["to"])
                 end
             else
-                if @templates[template_name].has_key? "pandoc" and not @templates[template_name]["pandoc"].nil?
-                    pandoc = @templates[template_name]["pandoc"]
+                if @templates[template_name].has_pandoc?
+                    pandoc = @templates[template_name].pandoc
                     ext = use_extension.call pandoc
 
                     if not ext.nil?
@@ -556,7 +546,7 @@ module Pandocomatic
         #
         # @param template_name [String] a template's name
         #
-        # @return [Hash] The template with template_name.
+        # @return [Template] The template with template_name.
         def get_template(template_name)
             @templates[template_name]
         end
@@ -740,91 +730,43 @@ module Pandocomatic
             end
         end
 
-        # Deep copy a template
-        #
-        # @param template [Hash]  the template to clone
-        # @return [Hash]
-        def clone_template(template)
-            Marshal.load(Marshal.dump(template))
-        end
-
-        # Merge two templates
-        #
-        # @param base_template [Hash] the base template
-        # @param mixin_template [Hash] the template to mixin into the base template
-        # @return [Hash] the merged templates
-        def merge(base_template, mixin_template)
-            if mixin_template['extends'] and mixin_template['extends'].is_a? String
-                mixin_template['extends'] = [mixin_template['extends']]
-            end
-
-            fields = [
-                'glob', 
-                'metadata',
-                'setup', 
-                'preprocessors', 
-                'pandoc', 
-                'postprocessors', 
-                'cleanup'
-            ]
-            
-            fields.each do |field|
-                parent = base_template[field]
-                current = mixin_template[field]
-                extended_value = Configuration.extend_value current, parent
-
-                if extended_value.nil?
-                    base_template.delete field
-                else
-                    base_template[field] = extended_value
-                end
-            end
-
-            base_template
-        end
-
         # Resolve the templates the templates extends and mixes them in, in
         # order of occurrence.
         #
-        # @param template [Hash] the template to extend
-        # @return [Hash] the resolved template
-        def extend_template(template_name, template)
-            resolved_template = {};
-            if template.has_key? 'extends' and not template['extends'].empty?
-                to_extend = template['extends']
-                to_extend = [to_extend] if to_extend.is_a? String
+        # @param template [Template] the template to extend
+        # @return [Template] the resolved template
+        def extend_template(template)
+            resolved_template = Template.new template.name
 
-                to_extend.each do |name|
-                    if @templates.has_key? name
-                        merge resolved_template, clone_template(@templates[name])
-                    else 
-                        warn "Cannot find a template with name '#{name}'. Skipping this template while extending template '#{template_name}'."
-                    end
+            template.extends.each do |name|
+                if @templates.has_key? name
+                    resolved_template.merge! Template.clone(@templates[name])
+                else 
+                   warn "Cannot find a template with name '#{name}'. Skipping this template while extending template '#{template.name}'."
                 end
-
-                resolved_template
             end
 
-            merge resolved_template, template
+            resolved_template.merge! template
+            resolved_template
         end
 
         # Reset the template with name in this Configuration based on a new
         # template
         #
-        # @param name [String] the name of the template in this Configuration
-        # @param template [Hash] the template to use to update the template in
+        # @param template [Template] the template to use to update the template in
         #   this Configuarion with
-        def reset_template(name, template)
-            extended_template = extend_template name, template
+        def reset_template(template)
+            name = template.name
+            extended_template = extend_template template
 
             if @templates.has_key? name then
-                merge @templates[name], extended_template
+                @templates[name].merge! extended_template
             else
                 @templates[name] = extended_template
             end
 
-            if extended_template.has_key? 'glob' then
-                @convert_patterns[name] = extended_template['glob']
+            if extended_template.has_glob? then
+                @convert_patterns[name] = extended_template.glob
             end
         end
 

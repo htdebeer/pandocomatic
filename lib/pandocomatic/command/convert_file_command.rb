@@ -29,6 +29,8 @@ module Pandocomatic
 
     require_relative '../configuration.rb'
 
+    require_relative '../template.rb'
+
     require_relative '../error/io_error.rb'
     require_relative '../error/configuration_error.rb'
     require_relative '../error/processor_error.rb'
@@ -50,6 +52,7 @@ module Pandocomatic
     # @!attribute dst
     #   @return [String] the path to the output file
     class ConvertFileCommand < Command
+
 
         attr_reader :config, :src, :dst
 
@@ -96,26 +99,29 @@ module Pandocomatic
         end
 
         private
+        
+        INTERNAL_TEMPLATE = "internal template"
 
         def convert_file
             pandoc_options = @metadata.pandoc_options || {}
-            template = {}
+            template = nil
 
             # Determine the actual options and settings to use when converting this
             # file.
             if not @template_name.nil? and not @template_name.empty?
                 raise ConfigurationError.new(:no_such_template, nil, @template_name) unless @config.has_template? @template_name
                 template = @config.get_template @template_name
-
-                pandoc_options = Configuration.extend_value(pandoc_options, template['pandoc'])
+                pandoc_options = Configuration.extend_value(pandoc_options, template.pandoc)
+            else
+                template = Template.new INTERNAL_TEMPLATE
             end
+               
+            template.merge! Template.new(INTERNAL_TEMPLATE, @metadata.pandocomatic) if @metadata.has_pandocomatic?
             
             # Write out the results of the conversion process to file.
             if @dst.to_s.empty? and @metadata.pandoc_options.has_key? 'output'
                 @dst = @metadata.pandoc_options['output']
             end
-               
-            template = Configuration.extend_value(@metadata.pandocomatic, template) if @metadata.has_pandocomatic?            
 
             # Run setup scripts
             setup template
@@ -127,7 +133,7 @@ module Pandocomatic
             # that is being converted and mix-in the template's metadata section as
             # well
             input = FileInfoPreprocessor.run input, @src, src_root, pandoc_options
-            input = MetadataPreprocessor.run input, template['metadata'] if template.has_key? 'metadata' and not template['metadata'].empty?
+            input = MetadataPreprocessor.run input, template.metadata if template.has_metadata?
 
             # Convert the file by preprocessing it, run pandoc on it, and
             # postprocessing the output
@@ -236,43 +242,43 @@ module Pandocomatic
         # Preprocess the input
         #
         # @param input [String] the input to preprocess
-        # @param config [Hash] template
+        # @param template [Template] template
         #
         # @return [String] the generated output
-        def preprocess(input, config = {})
-            process input, 'preprocessors', config
+        def preprocess(input, template)
+          process input, Template::PREPROCESSORS, template
         end
 
         # Postprocess the input
         #
         # @param input [String] the input to postprocess
-        # @param config [Hash] template
+        # @param template [Template] template
         #
         # @return [String] the generated output
-        def postprocess(input, config = {})
-            process input, 'postprocessors', config
+        def postprocess(input, template)
+            process input, Template::POSTPROCESSORS, template
         end
 
         # Run setup scripts
         #
-        # @param config [Hash] template
-        def setup(config = {})
-            process "", 'setup', config
+        # @param template [Template] template
+        def setup(template)
+            process "", Template::SETUP, template
         end
 
         # Run cleanup scripts
         #
-        # @param config [Hash] template
-        def cleanup(config = {})
-            process "", 'cleanup', config
+        # @param template [Template] template
+        def cleanup(template)
+            process "", Template::CLEANUP, template
         end
 
         # Run the input string through a list of filters called processors. There
         # are various types: preprocessors and postprocessors, setup and
         # cleanup, and rename
-        def process(input, type, config = {})
-            if config.has_key? type then
-                processors = config[type]
+        def process(input, type, template)
+            if template.send "has_#{type}?" then
+                processors = template.send type
                 output = input
                 processors.each do |processor|
                     script = if @config.is_local_path? processor
