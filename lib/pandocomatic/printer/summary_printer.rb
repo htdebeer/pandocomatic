@@ -36,6 +36,8 @@ module Pandocomatic
             else
                 @output = configuration.output 
             end
+
+            @config_files = configuration.config_files
         end
 
         # A string representation of the commands being executed

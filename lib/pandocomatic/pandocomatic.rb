@@ -97,7 +97,7 @@ module Pandocomatic
                     # Pandocomatic is successfully configured: running the
                     # actual conversion now. But first a short summary of the
                     # process to execute is printed.
-                    SummaryPrinter.new(command, configuration).print unless configuration.quiet? or not command.directory?
+                    SummaryPrinter.new(command, configuration).print if not configuration.quiet? or command.directory?
 
                     # Depending on the options dry-run and quiet, the command.execute
                     # method will actually performing the commands (dry-run = false) and

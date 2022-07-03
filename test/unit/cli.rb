@@ -155,6 +155,7 @@ class TestPandocomaticCLI < Minitest::Test
     # and "dry run".
     refute cli('-i test/files/readable_test_file -y').quiet?
     refute cli('-i test/files/readable_test_file --verbose').quiet?
+    refute cli('-i test/files/readable_test_file -V').quiet?
     refute cli('-i test/files/readable_test_file -b').quiet?
   end
 

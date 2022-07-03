@@ -20,7 +20,7 @@ module Pandocomatic
 
     # A pandocomatic template
     class Template 
-        attr_reader :name
+        attr_reader :name, :path
 
         # The name of the 'extends' section in a template
         EXTENDS = 'extends'
@@ -53,8 +53,9 @@ module Pandocomatic
         #
         # @param name [String] this template's name
         # @param template_hash [Hash] hash representing template
-        def initialize(name, template_hash = {})
+        def initialize(name, template_hash = {}, path = nil)
             @name = name
+            @path = path
 
             @data = {
                 EXTENDS         => [],
@@ -75,7 +76,21 @@ module Pandocomatic
         # @param template [Template] the template to copy
         # @return [Template] a deep copy of the input template
         def self.clone(template)
-            Template.new(template.name, Marshal.load(Marshal.dump(template.to_h)))
+            Template.new(template.name, Marshal.load(Marshal.dump(template.to_h)), template.path)
+        end
+
+        # Is this an internal template?
+        #
+        # @return [Bool]
+        def internal?()
+            @path.nil?
+        end
+
+        # Is this an external template?
+        #
+        # @return [Bool]
+        def external?()
+            !internal?
         end
 
         # Does this template have a 'extends' section?

@@ -379,7 +379,7 @@ class TestPandocomaticRun < Minitest::Test
       $stderr = StringIO.new
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
       error = $stderr.string.strip
-      expected = "Cannot find a template with name 'non-existing'. Skipping this template while extending template 'inherited-page'."
+      expected = "WARNING: Unable to find templates [non-existing] while resolving the external template 'inherited-page' from configuration file '/home/pandocomatic-user/example/inheritance/broken.yaml'."
       assert_equal expected + "\n" + expected, error
     end
   end

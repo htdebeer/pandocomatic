@@ -224,7 +224,7 @@ module Pandocomatic
                                 option == 'rename'
                         # don't let pandoc write the output to enable postprocessing
                     rescue
-                        warn "The pandoc option '#{option}' (with value '#{value}') is not recognized by paru. This option is skipped." if debug?
+                        warn "WARNING: The pandoc option '#{option}' (with value '#{value}') is not recognized by paru. This option is skipped." if debug?
                     end
                 end
 

@@ -102,7 +102,7 @@ module Pandocomatic
     # A Configuration object models a pandocomatic configuration.
     class Configuration
 
-        attr_reader :input
+        attr_reader :input, :config_files
 
         # Pandocomatic's default configuration file
         CONFIG_FILE = 'pandocomatic.yaml'
@@ -176,7 +176,7 @@ module Pandocomatic
                 raise ConfigurationError.new(:unable_to_load_config_file, e, filename)
             end
 
-            configure settings
+            configure settings, filename
         end
 
         # Update this configuration with a configuration file and return a new
@@ -189,7 +189,7 @@ module Pandocomatic
             begin
                 settings = YAML.load_file filename
                 new_config = Marshal.load(Marshal.dump(self))
-                new_config.configure settings
+                new_config.configure settings, filename
                 new_config
             rescue StandardError => e
                 raise ConfigurationError.new(:unable_to_load_config_file, e, filename)
@@ -199,12 +199,13 @@ module Pandocomatic
         # Configure pandocomatic based on a settings Hash
         #
         # @param settings [Hash] a settings Hash to mixin in this
+        # @param path [String] the configuration's path or filename
         # Configuration.
-        def configure(settings)
+        def configure(settings, path)
             reset_settings settings['settings'] if settings.has_key? 'settings'
             if settings.has_key? 'templates' then
                 settings['templates'].each do |name, template|
-                    reset_template Template.new(name, template)
+                    reset_template Template.new(name, template, path)
                 end
             end
         end
@@ -738,11 +739,21 @@ module Pandocomatic
         def extend_template(template)
             resolved_template = Template.new template.name
 
+            missing = []
+
             template.extends.each do |name|
                 if @templates.has_key? name
                     resolved_template.merge! Template.clone(@templates[name])
                 else 
-                   warn "Cannot find a template with name '#{name}'. Skipping this template while extending template '#{template.name}'."
+                    missing << name
+                end
+            end
+
+            if not missing.empty?
+                if template.internal?
+                    warn "WARNING: Unable to find templates [#{missing.join(", ")}] while resolving internal template."
+                else
+                    warn "WARNING: Unable to find templates [#{missing.join(", ")}] while resolving the external template '#{template.name}' from configuration file '#{template.path}'."
                 end
             end
 
@@ -880,19 +891,18 @@ module Pandocomatic
         # pandocomatic object that mixes templates from most generic to most
         # specific.
         def load_configuration_hierarchy(options, data_dirs)
-          config_files = determine_config_files(options, data_dirs) 
-
           # Read and mixin templates from most generic config file to most
           # specific, thus in reverse order.
-          config_files.reverse.each do |config_file|
+          @config_files = determine_config_files(options, data_dirs).reverse
+          @config_files.each do |config_file|
             begin
-              configure YAML.load_file(config_file)
+              configure YAML.load_file(config_file), config_file
             rescue StandardError => e
               raise ConfigurationError.new(:unable_to_load_config_file, e, filename)
             end
           end
 
-          load config_files.first
+          load @config_files.last
         end
 
         def determine_config_files(options, data_dirs = [])

@@ -1,5 +1,5 @@
 #--
-# Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017, 2022, Huub de Beer <Huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -57,8 +57,8 @@ module Pandocomatic
     # The number of commands to execute when this ConvertListCommand
     # is executed.
     def count()
-      @subcommands.reduce(if skip? then 0 else 1 end) do |total, subcommand|
-        total += subcommand.count
+      @subcommands.reduce(0) do |total, subcommand|
+        total + subcommand.count
       end
     end
 
@@ -67,7 +67,7 @@ module Pandocomatic
     # @return [Error[]]  
     def all_errors()
       @subcommands.reduce(@errors) do |total, subcommand|
-        total += subcommand.all_errors
+        total + subcommand.all_errors
       end
     end
 
