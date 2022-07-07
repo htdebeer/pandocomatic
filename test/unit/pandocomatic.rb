@@ -398,4 +398,20 @@ class TestPandocomaticRun < Minitest::Test
       assert_equal expected, output
     end
   end
+
+  def test_read_date_from_metadata()
+    Dir.mktmpdir('date_example') do |dir|
+        input = File.join ["example", "simple_date_in_metadata.md"]
+        data_dir = File.join ["example", "data-dir"]
+        output = File.join [dir, "date.md"]
+        
+        _, err = capture_io do
+            Pandocomatic::Pandocomatic.run "-i #{input} -d #{data_dir} -o #{output}"
+      end
+
+      assert_empty err
+      expected = "The date is: 2022-01-05"
+      assert_equal expected, File.read(output).strip
+    end
+  end
 end

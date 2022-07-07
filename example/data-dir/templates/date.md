@@ -1,0 +1,1 @@
+The date is: $date$

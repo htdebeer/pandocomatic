@@ -62,7 +62,7 @@ module Pandocomatic
             if yaml.empty? then
                 PandocMetadata.new
             else
-                PandocMetadata.new YAML.load(yaml), 1 >= pandocomatic_blocks
+                PandocMetadata.new YAML.load(yaml, permitted_classes: [Date]), 1 >= pandocomatic_blocks
             end
         end
 
@@ -187,7 +187,7 @@ module Pandocomatic
         def self.extract_metadata(input)
             metadata_blocks = input
                 .scan(METADATA_BLOCK)
-                .map {|match| YAML.load "---#{match.join()}..."}
+                .map {|match| YAML.load "---#{match.join()}...", permitted_classes: [Date]}
                 .select {|block| not block.nil? and not block.empty?}
             
             pandocomatic_blocks = metadata_blocks.count do |block|
