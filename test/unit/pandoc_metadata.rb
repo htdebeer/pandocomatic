@@ -41,7 +41,7 @@ class TestPandocMetadata < Minitest::Test
 
         inputs.each do |input, output|
             metadata = Pandocomatic::PandocMetadata.load(input)
-            assert metadata.has_key? "key"
+            assert metadata.key? "key"
             assert metadata["key"] = output["key"]
         end
     end
@@ -60,9 +60,9 @@ class TestPandocMetadata < Minitest::Test
 
         inputs.each do |input, output|
             metadata = Pandocomatic::PandocMetadata.load(input)
-            assert metadata.has_key? "key"
+            assert metadata.key? "key"
             assert metadata["key"] = output["key"]
-            assert metadata.has_key? "key2"
+            assert metadata.key? "key2"
             assert metadata["key2"] = output["key2"]
         end
     end
@@ -70,16 +70,16 @@ class TestPandocMetadata < Minitest::Test
     def test_load_single_pandocomatic_property()
         input = "---\npandocomatic_:\n  pandoc:\n    from: markdown\n    to: pdf\n...\n\nA document with a pandocomatic metadata property in a single metadata block."
         metadata = Pandocomatic::PandocMetadata.load(input)
-        assert metadata.has_key? "pandocomatic_"
-        assert metadata.has_pandocomatic?
-        assert metadata.has_pandoc_options?
+        assert metadata.key? "pandocomatic_"
+        assert metadata.pandocomatic?
+        assert metadata.pandoc_options?
         assert metadata.pandoc_options["from"] = "pdf"
 
         input = "---\ntitle: A document with two metadata blocks\n...\nThen some text, followed by the second block with a pandocomatic property\n---\npandocomatic_:\n  pandoc:\n    from: markdown\n    to: pdf\n...\n\nA document with a pandocomatic metadata property in two metadata blocks."
         metadata = Pandocomatic::PandocMetadata.load(input)
-        assert metadata.has_key? "pandocomatic_"
-        assert metadata.has_pandocomatic?
-        assert metadata.has_pandoc_options?
+        assert metadata.key? "pandocomatic_"
+        assert metadata.pandocomatic?
+        assert metadata.pandoc_options?
         assert metadata.unique?
         assert metadata.pandoc_options["from"] = "pdf"
     end
@@ -87,9 +87,9 @@ class TestPandocMetadata < Minitest::Test
     def test_load_multiple_pandocomatic_properties()
         input = "---\ntitle: A document with two metadata blocks and two pandocomatic properties\npandocomatic_:\n  pandoc:\n    from: latex\n...\nThen some text, followed by the second block with a pandocomatic property\n---\npandocomatic_:\n  pandoc:\n    from: markdown\n    to: pdf\n...\n\nA document with two pandocomatic metadata properties in two metadata blocks."
         metadata = Pandocomatic::PandocMetadata.load(input)
-        assert metadata.has_key? "pandocomatic_"
-        assert metadata.has_pandocomatic?
-        assert metadata.has_pandoc_options?
+        assert metadata.key? "pandocomatic_"
+        assert metadata.pandocomatic?
+        assert metadata.pandoc_options?
         refute metadata.unique?
         assert metadata.pandoc_options["from"] = "latex"
     end

@@ -1,1 +1,1 @@
-Pandocomatic needed <%=duration%> to convert '<%= @input %>'<%if has_output?%> to '<%= @output %>'<%end%>.
+Pandocomatic needed <%=duration%> to convert '<%= @input %>'<%if output?%> to '<%= @output %>'<%end%>.
