@@ -1,0 +1,9 @@
+templates:
+  red:
+    pandoc:
+      from: markdown
+      to: html
+      standalone: true
+      bibliography: data-dir/bib.bib
+      citeproc: true
+      #      include-in-header: ./data-dir/includes/red.css
