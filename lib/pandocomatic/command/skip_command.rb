@@ -64,7 +64,7 @@ module Pandocomatic
     # @return [String]
     def to_s
       "skipping #{File.basename @src}" + if has_message?
-        ": #{@message.to_s}"
+        ": #{@message}"
       end
     end
 

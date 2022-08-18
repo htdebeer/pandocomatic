@@ -204,9 +204,9 @@ module Pandocomatic
                     if PANDOC_OPTIONS_WITH_PATH.include? option
                         is_executable = option == "filter"
                         if value.is_a? Array
-                            value = value.map {|v| @config.update_path(v, src_dir, absolute_dst, is_executable)}
+                            value = value.map {|v| @config.update_path(v, absolute_dst, is_executable)}
                         else
-                            value = @config.update_path(value, src_dir, @dst, is_executable)
+                            value = @config.update_path(value, @dst, is_executable)
                         end
                     end
 
@@ -284,7 +284,7 @@ module Pandocomatic
                     script = if @config.is_local_path? processor
                                  processor
                              else
-                                 @config.update_path(processor, File.dirname(@src), @dst, true)
+                                 @config.update_path(processor, @dst, true)
                              end
 
                     command, *parameters = script.shellsplit # split on spaces unless it is preceded by a backslash
@@ -310,12 +310,7 @@ module Pandocomatic
             end
         end
 
-        private
-
-        def run_processor
-        end
-
-        def use_output_option(dst) 
+        private def use_output_option(dst) 
             OUTPUT_FORMATS.include?(File.extname(dst).slice(1..-1))
         end
 
@@ -324,7 +319,7 @@ module Pandocomatic
         #
         # @param options [Hash] the options to a paru pandoc converter
         # @return [String] the output format for the pdf engine to use.
-        def determine_output_for_pdf(options)
+        private def determine_output_for_pdf(options)
             if options.has_key? 'pdf-engine'
                 engine = options['pdf-engine']
                 case engine

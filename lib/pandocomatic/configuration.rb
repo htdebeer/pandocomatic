@@ -416,7 +416,7 @@ module Pandocomatic
             dir = File.dirname dst
             ext = File.extname dst
             basename = File.basename dst, ext
-            File.join dir, "#{basename}.#{find_extension(dst, template_name, metadata)}"
+            File.join dir, "#{basename}.#{find_extension(template_name, metadata)}"
         end
 
         # Set the destination file given this Confguration,
@@ -480,13 +480,12 @@ module Pandocomatic
         # Find the extension of the destination file given this Confguration,
         # template, and metadata
         #
-        # @param dst [String] path to a destination file
         # @param template_name [String] the name of the template used to
         #   convert to destination
         # @param metadata [PandocMetadata] the metadata in the source file
         #
         # @return [String] the extension to use for the destination file
-        def find_extension(dst, template_name, metadata)
+        def find_extension(template_name, metadata)
             extension = "html"
 
             # Pandoc supports enabling / disabling extensions
@@ -558,7 +557,7 @@ module Pandocomatic
         # @param src [String] path to the source document
         # @return [String] the template's name to use
         def determine_template(src)
-            @convert_patterns.select do |template_name, globs|
+            @convert_patterns.select do |_, globs|
                 globs.any? {|glob| File.fnmatch glob, File.basename(src)}
             end.keys.first
         end
@@ -569,7 +568,7 @@ module Pandocomatic
         # @param src [String] path to the source document
         # @return [Array[String]] the template's name to use
         def determine_templates(src)
-            matches = @convert_patterns.select do |template_name, globs|
+            matches = @convert_patterns.select do |_, globs|
                 globs.any? {|glob| File.fnmatch glob, File.basename(src)}
             end.keys
            
@@ -586,14 +585,12 @@ module Pandocomatic
         # Configuration
         #
         # @param path [String] path to the executable
-        # @param src_dir [String] the source directory from which pandocomatic
-        #   conversion process has been started
         # @param dst [String] the destination path
         # @param check_executable [Boolean = false] Should the executable be
         #   verified to be executable? Defaults to false.
         #
         # @return [String] the updated path.
-        def update_path(path, src_dir, dst = "", check_executable = false, output = false)
+        def update_path(path, dst = "", check_executable = false)
             updated_path = path
 
             if is_local_path? path
@@ -712,6 +709,24 @@ module Pandocomatic
             end
         end
 
+        # Cross-platform way of finding an executable in the $PATH.
+        # 
+        # which('ruby') #=> /usr/bin/ruby
+        #
+        # Taken from:
+        # http://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby#5471032
+        def self.which(cmd)
+            exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+            ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+                exts.each { |ext|
+                    exe = File.join(path, "#{cmd}#{ext}")
+                    return exe if File.executable?(exe) and
+                        not File.directory?(exe)
+                }
+            end
+            return nil
+        end
+
         private 
 
         # Reset the settings for pandocomatic based on a new settings Hash
@@ -781,31 +796,13 @@ module Pandocomatic
             end
         end
 
-        # Cross-platform way of finding an executable in the $PATH.
-        # 
-        # which('ruby') #=> /usr/bin/ruby
-        #
-        # Taken from:
-        # http://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby#5471032
-        def self.which(cmd)
-            exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
-            ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
-                exts.each { |ext|
-                    exe = File.join(path, "#{cmd}#{ext}")
-                    return exe if File.executable?(exe) and
-                        not File.directory?(exe)
-                }
-            end
-            return nil
-        end
-
         # Rename path by using rename script. If script fails somehow, warn
         # and return the original destination.
         #
         # @param rename_script [String] absolute path to script to run
         # @param dst [String] original destination to rename
         def rename_destination(rename_script, dst)
-            script = update_path(rename_script, File.dirname(dst))
+            script = update_path(rename_script)
 
             command, *parameters = script.shellsplit # split on spaces unless it is preceded by a backslash
 
@@ -824,7 +821,6 @@ module Pandocomatic
                     renamed_dst.strip
                 else
                     raise StandardError,new("Running rename script '#{script}' on destination '#{dst}' did not result in a renamed destination.")
-                    dst
                 end
             rescue StandardError => e
                 ProcessorError.new(:error_processing_script, e, [script, dst])
@@ -955,14 +951,14 @@ module Pandocomatic
             # If pandoc cannot be run, continuing probably does not work out
             # anyway, so raise pandoc error
             raise PandocError.new(:error_running_pandoc, e, data_dir)
-          rescue StandardError => e
+          rescue StandardError
             # Ignore error and use the current working directory as default working directory
             data_dirs << Dir.pwd
           end
 
           # check if data directories do exist and are readable
-          data_dirs.uniq.map do |data_dir|
-            path = File.absolute_path data_dir
+          data_dirs.uniq.map do |dir|
+            path = File.absolute_path dir
 
             raise ConfigurationError.new(:data_dir_does_not_exist, nil, path) unless File.exist? path
             raise ConfigurationError.new(:data_dir_is_not_a_directory, nil, path) unless File.directory? path
@@ -970,10 +966,6 @@ module Pandocomatic
 
             path
           end
-        end
-
-        def determine_data_dir(options)
-          determine_data_dirs(config).first
         end
 
         def determine_root_path(options)

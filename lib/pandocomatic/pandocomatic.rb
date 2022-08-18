@@ -1,5 +1,5 @@
 #--
-# Copyright 2014—2021, Huub de Beer <huub@heerdebeer.org>
+# Copyright 2014—2022, Huub de Beer <huub@heerdebeer.org>
 # 
 # This file is part of pandocomatic.
 # 
@@ -44,10 +44,10 @@ module Pandocomatic
     class Pandocomatic
         
         # Pandocomatic error status codes start from ERROR_STATUS
-        ERROR_STATUS = 1266 # This is the sum of the ascii values of the characters in 'pandocomatic'
+        ERROR_STATUS = 1266 # This is the sum of the ASCII values of the characters in 'pandocomatic'
 
         # Pandocomatic's current version
-        VERSION = [0, 2, 9]
+        VERSION = [0, 2, 10]
 
         # Run pandocomatic given options
         #

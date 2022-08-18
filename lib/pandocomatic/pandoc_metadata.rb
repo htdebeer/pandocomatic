@@ -169,8 +169,6 @@ module Pandocomatic
             has_pandocomatic? and pandocomatic.has_key? 'pandoc' and not pandocomatic['pandoc'].nil?
         end
 
-        private 
-
         # Extract the metadata from an input file
         #
         # @param input [String] the string to extract metadata from
@@ -184,7 +182,7 @@ module Pandocomatic
         # If more than one pandocomatic property is contained in the input,
         # all but the first are discarded and are not present in the
         # extracted metadata YAML string.
-        def self.extract_metadata(input)
+        private_class_method def self.extract_metadata(input)
             metadata_blocks = input
                 .scan(METADATA_BLOCK)
                 .map {|match| YAML.load "---#{match.join()}...", permitted_classes: [Date]}

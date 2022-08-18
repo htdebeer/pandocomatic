@@ -45,12 +45,10 @@ module Pandocomatic
       end
     end
 
-    private 
-
     # Parse pandocomatic's global options.
     #
     # @return [Configuration]
-    def self.parse_options(args)
+    private_class_method def self.parse_options(args)
       parser = Optimist::Parser.new do
         # General options 
         opt :dry_run, 'Do a dry run', :short => '-y'
@@ -164,7 +162,7 @@ module Pandocomatic
       Configuration.new options, input
     end
 
-    def self.options_need_to_be_validated? options
+    private_class_method def self.options_need_to_be_validated? options
       not options[:version_given] and not options[:help_given]
     end
 
@@ -175,7 +173,7 @@ module Pandocomatic
     # respectively.
     #++
     
-    def self.use_custom_version options
+    private_class_method def self.use_custom_version options
       if options[:show_version]
         options.delete :show_version
         options.delete :show_version_given
@@ -185,7 +183,7 @@ module Pandocomatic
       options
     end
 
-    def self.use_custom_help options
+    private_class_method def self.use_custom_help options
       if options[:show_help]
         options.delete :show_help
         options.delete :show_help_given
@@ -198,11 +196,11 @@ module Pandocomatic
     # If output does not exist, the output can be
     # created with the same type. If output does exist, however, it should
     # have the same type as the input.
-    def self.matching_file_types?(input, output)
+    private_class_method def self.matching_file_types?(input, output)
       not File.exist?(output) or File.ftype(input) == File.ftype(output)
     end
     
-    def self.match_file_types(input, output)
+    private_class_method def self.match_file_types(input, output)
         if not matching_file_types? input, output 
           raise CLIError.new(:output_is_not_a_file, nil, input) if File.file? input
           raise CLIError.new(:output_is_not_a_directory, nil, input) if File.directory? input
