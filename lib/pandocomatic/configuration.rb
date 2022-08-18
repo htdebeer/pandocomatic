@@ -26,11 +26,12 @@ module Pandocomatic
   require_relative './command/command'
   require_relative './input'
   require_relative './multiple_files_input'
+  require_relative './pandocomatic_yaml'
   require_relative './template'
 
   # The default configuration for pandocomatic is read from
   # default_configuration.yaml.
-  DEFAULT_CONFIG = YAML.load_file File.join(__dir__, 'default_configuration.yaml')
+  DEFAULT_CONFIG = PandocomaticYAML.load_file File.join(__dir__, 'default_configuration.yaml')
 
   # Maps pandoc output formats to their conventional default extension.
   # Updated and in order of `pandoc --list-output-formats`.
@@ -100,7 +101,7 @@ module Pandocomatic
   # path". These paths start with this ROOT_PATH_INDICATOR.
   ROOT_PATH_INDICATOR = '$ROOT$'
 
-  # A Configuration object models a pandocomatic configuration.
+  # Configuration models a pandocomatic configuration.
   class Configuration
     attr_reader :input, :config_files
 
@@ -160,7 +161,7 @@ module Pandocomatic
     def load(filename)
       begin
         path = File.absolute_path filename
-        settings = YAML.load_file path
+        settings = PandocomaticYAML.load_file path
         if settings['settings'] && settings['settings']['data-dir']
           data_dir = settings['settings']['data-dir']
           src_dir = File.dirname filename
@@ -184,7 +185,7 @@ module Pandocomatic
     #
     # @return [Configuration] a new configuration
     def reconfigure(filename)
-      settings = YAML.load_file filename
+      settings = PandocomaticYAML.load_file filename
       new_config = Marshal.load(Marshal.dump(self))
       new_config.configure settings, filename
       new_config
@@ -866,9 +867,9 @@ module Pandocomatic
       # specific, thus in reverse order.
       @config_files = determine_config_files(options, data_dirs).reverse
       @config_files.each do |config_file|
-        configure YAML.load_file(config_file), config_file
+        configure PandocomaticYAML.load_file(config_file), config_file
       rescue StandardError => e
-        raise ConfigurationError.new(:unable_to_load_config_file, e, filename)
+        raise ConfigurationError.new(:unable_to_load_config_file, e, config_file)
       end
 
       load @config_files.last

@@ -24,6 +24,7 @@ module Pandocomatic
   require 'paru'
 
   require_relative './error/pandoc_error'
+  require_relative './pandocomatic_yaml'
   require_relative './error/io_error'
 
   # Regular expression to find metadata blocks in a string.
@@ -47,22 +48,23 @@ module Pandocomatic
     # @return [PandocMetadata] the metadata in the source file, or an empty
     #   one if no such metadata is contained in the source file.
     def self.load_file(src)
-      load(File.read(src))
+      self.load File.read(src), src
     end
 
     # Collect the metadata embedded in the src file and create a new
     # PandocMetadata instance
     #
     # @param input [String] the string to load the metadata from
+    # @param path [String|Nil] the path to the source of the input, if any
     # @return [PandocMetadata] the metadata in the source file, or an empty
     #   one if no such metadata is contained in the source file.
-    def self.load(input)
-      yaml, pandocomatic_blocks = extract_metadata(input)
+    def self.load(input, path = nil)
+      yaml, pandocomatic_blocks = extract_metadata(input, path)
 
       if yaml.empty?
         PandocMetadata.new
       else
-        PandocMetadata.new YAML.safe_load(yaml, permitted_classes: [Date]), unique: pandocomatic_blocks <= 1
+        PandocMetadata.new PandocomaticYAML.load(yaml, path), unique: pandocomatic_blocks <= 1
       end
     end
 
@@ -182,27 +184,30 @@ module Pandocomatic
     # If more than one pandocomatic property is contained in the input,
     # all but the first are discarded and are not present in the
     # extracted metadata YAML string.
-    private_class_method def self.extract_metadata(input)
-      metadata_blocks = MetadataBlockList.new input
+    private_class_method def self.extract_metadata(input, path)
+      metadata_blocks = MetadataBlockList.new input, path
 
       ["#{YAML.dump(metadata_blocks.full)}...", metadata_blocks.count_pandocomatic_blocks]
     end
 
     # List of YAML metadata blocks present in some input source file
     class MetadataBlockList
-      def initialize(input)
+      def initialize(input, path)
         @metadata_blocks = input
                            .scan(METADATA_BLOCK)
-                           .map { |match| YAML.safe_load "---#{match.join}...", permitted_classes: [Date] }
+                           .map { |match| PandocomaticYAML.load "---#{match.join}...", path }
                            .select { |block| !block.nil? and !block.empty? }
       end
 
+      # Count the number of metadata blocks with a "pandocomatic_" property.
       def count_pandocomatic_blocks
         @metadata_blocks.count do |block|
           block.key? 'pandocomatic_' or block.key? 'pandocomatic'
         end
       end
 
+      # Combine all metadata blocks into a single metadata block
+      # @return [Hash]
       def full
         # According to the pandoc manual: "A document may contain multiple
         # metadata blocks. The metadata fields will be combined through a

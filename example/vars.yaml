@@ -1,0 +1,8 @@
+templates:
+  var-template:
+    pandoc:
+      from: markdown
+      to: $(P_OUTPUT_FORMAT)$
+      standalone: true
+    metadata:
+      author: $(P_AUTHOR)$
