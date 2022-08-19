@@ -55,12 +55,12 @@ guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest gem,
-[pandocomatic-0.3.α](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-0.3.α.gem),
+[pandocomatic-1.0.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-1.0.0.gem),
 from Github and install it manually as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-0.3.α.gem
+gem install pandocomatic-1.0.0.gem
 ```
 
 ## Why pandocomatic?
@@ -534,6 +534,13 @@ pandocomatic options [INPUT]
 
 The input and output should both be files or both be directories.
 Pandocomatic will complain if the input and output types do not match.
+
+`-s, --stdout`
+
+:   Print result of converstion to standard output.
+
+    You cannot combine this option with `--output` or with a directory
+    as input.
 
 ### Arguments to configure pandocomatic
 
@@ -1107,6 +1114,10 @@ else
 end
 ```
 
+**Note** Pandoc's command-line option `--verbose` might interfere with
+the inner working of pandocomatic. As a result, pandocomatic will ignore
+pandoc's `--verbose` option and warn you about this.
+
 ##### postprocessors
 
 Similar to the `preprocessors` property, the `postprocessors` property
@@ -1310,6 +1321,38 @@ you have to move the customization to the used *external pandocomatic
 templates* or you have customize the *internal pandocomatic template*
 such that it is applicable to all used *external pandocomatic templates*
 (as in the example above).
+
+### Making templates more flexible with environment variable substitution
+
+You can use environment variables in your templates to make them more
+flexible. For example, if you want to vary the output format depending
+on the value of environment variable `OUTPUT_FORMAT`, add the following
+format property to your template:
+
+``` yaml
+pandocomatic_:
+  # ...
+  pandoc:
+    # ...
+    format: $(OUTPUT_FORMAT)$
+```
+
+When pandocomatic reads this template, it replaces `$(OUTPUT_FORMAT)$`
+with the value of the environment variable `OUTPUT_FORMAT`. If no such
+variable exists, pandocomatic stops after printing an error message.
+Pandocomatic tells you in which template it encountered this
+non-existing environment variable so you can easily investigate and
+resolve the issue.
+
+In other words, all occurrences of `$(X)$` in an internal or external
+template are replaced by the the value of environment variable `X`. You
+can use environment variables anywhere in your templates, as property
+names, keys, or values. You can even use it to add YAML snippets to your
+templates.
+
+Combined with other tools, like bash scripts, make files, and the like,
+you can create a powerful and flexible template system for your
+situation.
 
 ------------------------------------------------------------------------
 
