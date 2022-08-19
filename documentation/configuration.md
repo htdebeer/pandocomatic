@@ -18,13 +18,13 @@ following properties:
 
 -   **settings**:
     -   **skip**: An array of glob patterns of files and directories to not
-        convert. By default hidden files (starting with a ".") and
+        convert. By default, hidden files (starting with a ".") and
         "pandocomatic.yaml" are skipped.
     -   **recursive**: A boolean telling pandocomatic to convert the
         subdirectories of a directory as well. By default this setting is
         `true`.
     -   **follow_links**: A boolean telling pandocomatic to follow symbolic
-        links. By default is `true`. Note, links that point outside the input
+        links. By default, this option is `true`. Note, links that point outside the input
         source's directory tree will not be visited.
 -   **templates**:
     -   **glob**: An array of glob patterns of files to convert using this
