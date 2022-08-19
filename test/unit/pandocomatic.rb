@@ -401,17 +401,90 @@ class TestPandocomaticRun < Minitest::Test
 
   def test_read_date_from_metadata()
     Dir.mktmpdir('date_example') do |dir|
-        input = File.join ["example", "simple_date_in_metadata.md"]
-        data_dir = File.join ["example", "data-dir"]
-        output = File.join [dir, "date.md"]
-        
-        _, err = capture_io do
-            Pandocomatic::Pandocomatic.run "-i #{input} -d #{data_dir} -o #{output}"
+      input = File.join ["example", "simple_date_in_metadata.md"]
+      data_dir = File.join ["example", "data-dir"]
+      output = File.join [dir, "date.md"]
+
+      _, err = capture_io do
+        Pandocomatic::Pandocomatic.run "-i #{input} -d #{data_dir} -o #{output}"
       end
 
       assert_empty err
       expected = "The date is: 2022-01-05"
       assert_equal expected, File.read(output).strip
     end
+  end
+
+  VARS = {
+    "P_OUTPUT_FORMAT" => "html",
+    "P_AUTHOR" => "Huub",
+    "P_TITLE" => "Hello with vars!"
+  }
+
+  def test_var_substitution()
+
+    VARS.each do |key, value|
+      ENV[key] = value
+    end
+
+    Dir.mktmpdir('vars') do |dir|
+      input = File.join ['example', 'hello_vars.md']
+      config = File.join ['example', 'vars.yaml']
+      output = File.join [dir, 'hello_vars.html']
+
+      Pandocomatic::Pandocomatic.run "-i #{input} -c #{config} -o #{output}"
+
+      example_output = File.join ['example', 'hello_vars.html']
+      assert_files_equal example_output, output
+    end
+
+    VARS.each do |key, _|
+      ENV.delete key if ENV.has_key? key
+    end
+  end
+
+  def test_non_existing_var_substitution()
+    VARS.each do |key, _|
+      ENV.delete key if ENV.has_key? key
+    end
+
+    Dir.mktmpdir('novars') do |dir|
+      input = File.join ['example', 'hello_vars.md']
+      config = File.join ['example', 'vars.yaml']
+      output = File.join [dir, 'hello_vars.html']
+
+      begin
+        $stderr = StringIO.new
+        Pandocomatic::Pandocomatic.run "-i #{input} -c #{config} -o #{output}"
+        error = $stderr.string.strip
+
+        expected_err = "Unable to load config file: '/home/pandocomatic-user/example/vars.yaml'. Environment variable 'P_OUTPUT_FORMAT' does not exist: No substitution possible."
+        assert_equal expected_err, error
+      rescue Exception => e
+        warn e
+      end
+
+
+      VARS.each do |key, value|
+        ENV[key] = value unless key == "P_TITLE"
+      end
+
+      begin
+        $stderr = StringIO.new
+        Pandocomatic::Pandocomatic.run "-i #{input} -c #{config} -o #{output}"
+        error = $stderr.string.strip
+
+        expected_err = "Environment variable 'P_TITLE' in '/home/pandocomatic-user/example/hello_vars.md' does not exist: No substitution possible."
+        assert_equal expected_err, error
+      rescue Exception => e
+        warn e
+      end
+      
+    end
+
+    VARS.each do |key, _|
+      ENV.delete key if ENV.has_key? key
+    end
+
   end
 end

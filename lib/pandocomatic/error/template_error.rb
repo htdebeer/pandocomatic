@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2022, Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -19,37 +19,32 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require 'erb'
+  require_relative './pandocomatic_error'
 
-  # Printer base class for printing information from pandocomatic
-  class Printer
-    # Create a new Printer
+  # A TemplateError
+  class TemplateError < PandocomaticError
+    # Create a new PandocomaticError
     #
-    # @param template_file [String = 'help.txt'] the template to use when
-    #   printing.
-    def initialize(template_file = 'help.txt')
-      template template_file
+    # @param type [Symbol = :unknown] the type of error, defaults to :unknown
+    # @param data [Object = nil] extra information attached to this
+    #   TemplateError, if any; optional
+    def initialize(type = :unknown, data = nil)
+      super(type, nil, data)
     end
 
-    # Set the template used by this Printer
-    #
-    # @param template_file [String] the template to use
-    def template(template_file)
-      dir = File.dirname(__FILE__)
-      @template = File.absolute_path(File.join(dir, 'views', template_file))
-    end
-
-    # Create a string based on this printer's template
-    #
+    # Represent this template error as a string.
     # @return [String]
     def to_s
-      erb = ERB.new(File.read(@template), trim_mode: '>')
-      erb.result(binding)
+      "Environment variable '#{@data[:key]}'"\
+      "#{" in '#{@data[:path]}'" unless @data[:path].nil?}"\
+      ' does not exist: No substitution possible.'
     end
 
-    # Print to STDOUT
-    def print
-      puts to_s
+    # The template to print this TemplateError
+    def template
+      'template_error.txt'
     end
+
+    # :environment_variable_does_not_exist
   end
 end

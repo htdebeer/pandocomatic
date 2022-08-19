@@ -1,1 +1,2 @@
-<%=@error.message%>: '<%= @error.data %>'.
+<%=@error.message%>: '<%= @error.data %>'.<% if @error.error? %> <%=
+@error.error.to_s %><% end %>

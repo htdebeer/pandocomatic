@@ -1,32 +1,33 @@
+# frozen_string_literal: true
+
 #--
 # Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
-# 
+#
 # This file is part of pandocomatic.
-# 
+#
 # Pandocomatic is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by the
 # Free Software Foundation, either version 3 of the License, or (at your
 # option) any later version.
-# 
+#
 # Pandocomatic is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License along
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
+  require_relative '../error/io_error'
 
-  require_relative '../error/io_error.rb'
-
-  require_relative 'command.rb'
-  require_relative 'create_link_command.rb'
-  require_relative 'convert_file_command.rb'
-  require_relative 'convert_list_command.rb'
-  require_relative 'convert_file_multiple_command.rb'
-  require_relative 'copy_file_command.rb'
-  require_relative 'skip_command.rb'
+  require_relative 'command'
+  require_relative 'create_link_command'
+  require_relative 'convert_file_command'
+  require_relative 'convert_list_command'
+  require_relative 'convert_file_multiple_command'
+  require_relative 'copy_file_command'
+  require_relative 'skip_command'
 
   # Commmand to convert a directory
   #
@@ -39,8 +40,9 @@ module Pandocomatic
   # @!attribute dst_dir
   #   @return [String] the destination directory to convert to
   class ConvertDirCommand < ConvertListCommand
-
     attr_reader :config, :src_dir, :dst_dir
+
+    # rubocop:disable Metrics
 
     # Create a new ConvertDirCommand
     #
@@ -76,80 +78,76 @@ module Pandocomatic
 
         dst = File.join @dst_dir, filename
 
-        if File.symlink? src and not config.follow_links?
+        if File.symlink?(src) && !config.follow_links?
           subcommand = CreateLinkCommand.new(src, dst)
-        elsif File.directory? src then
-          if config.recursive? then
-            subcommand = ConvertDirCommand.new(config, src, dst)
-          else
-            subcommand = SkipCommand.new(src, :skipping_directory)
-          end
-        elsif File.file? src 
-          if config.convert? src then
-              subcommand = ConvertFileMultipleCommand.new(config, src, dst)
-          else
-            if not modified_only? or file_modified? src, dst then
-              subcommand = CopyFileCommand.new(src, dst)
-            end
+        elsif File.directory? src
+          subcommand = if config.recursive?
+                         ConvertDirCommand.new(config, src, dst)
+                       else
+                         SkipCommand.new(src, :skipping_directory)
+                       end
+        elsif File.file? src
+          if config.convert? src
+            subcommand = ConvertFileMultipleCommand.new(config, src, dst)
+          elsif !modified_only? || file_modified?(src, dst)
+            subcommand = CopyFileCommand.new(src, dst)
           end
         else
           subcommand = SkipCommand.new(src, :unclear_what_to_do)
         end
 
-        push subcommand unless subcommand.nil? or subcommand.skip?
+        push subcommand unless subcommand.nil? || subcommand.skip?
       end
 
       # Empty commands do not count to the total amount of commands to execute
       uncount if skip?
     end
 
+    # rubocop:enable Metrics
+
     # Should this command be skipped?
     #
     # @return [Boolean] True if this command has no sub commands
-    def skip?()
+    def skip?
       @subcommands.empty?
     end
 
     # Converts this command a directory?
     #
     # @return [Boolean] true
-    def directory?()
+    def directory?
       true
     end
 
     # Convert this command to a String representation for a Printer
     #
     # @return [String]
-    def to_s()
-      "convert #{@src_dir}" + '; ' + if create_directory? then 'create and ' else '' end + "enter #{@dst_dir}"
+    def to_s
+      "convert #{@src_dir}; #{create_directory? ? 'create and ' : ''}enter #{@dst_dir}"
     end
 
     # Run this command
-    def run()
-      begin
-        Dir.mkdir @dst_dir if create_directory?
-      rescue SystemError => e
-        raise IOError.new(:error_creating_directory, e, @dst_dir)
-      end
+    def run
+      Dir.mkdir @dst_dir if create_directory?
+    rescue SystemError => e
+      raise IOError.new(:error_creating_directory, e, @dst_dir)
     end
 
     private
 
-    def create_directory?()
-      not File.exist? @dst_dir or not File.directory? @dst_dir
+    def create_directory?
+      !File.exist? @dst_dir or !File.directory? @dst_dir
     end
 
     # If the source directory contains a configuration file, use it to
     # reconfigure the converter. Otherwise, use the current configuration
     def reconfigure(current_config, src_dir)
       config_file = File.join src_dir, Configuration::CONFIG_FILE
-      if File.exist? config_file then
-        config = current_config.reconfigure config_file
+      if File.exist? config_file
+        current_config.reconfigure config_file
       else
-        config = current_config
+        current_config
       end
-      config
     end
-
   end
 end
