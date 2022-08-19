@@ -20,15 +20,15 @@
 #++
 module Pandocomatic
   require 'json'
-  require 'yaml'
   require 'paru'
+  require 'yaml'
 
   require_relative './error/pandoc_error'
-  require_relative './pandocomatic_yaml'
   require_relative './error/io_error'
+  require_relative './pandocomatic_yaml'
 
   # Regular expression to find metadata blocks in a string.
-  METADATA_BLOCK = /^---[ \t]*(\r\n|\r|\n)(.+?)^(?:---|\.\.\.)[ \t]*(\r\n|\r|\n)/m.freeze
+  METADATA_BLOCK = /^---[ \t]*(\r\n|\r|\n)(.+?)^(?:---|\.\.\.)[ \t]*(\r\n|\r|\n)/m
 
   # PandocMetadata represents the metadata with pandoc options set in
   # templates and input files.

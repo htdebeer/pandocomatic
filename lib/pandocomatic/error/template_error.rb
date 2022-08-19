@@ -36,8 +36,8 @@ module Pandocomatic
     # @return [String]
     def to_s
       "Environment variable '#{@data[:key]}'"\
-      "#{" in '#{@data[:path]}'" unless @data[:path].nil?}"\
-      ' does not exist: No substitution possible.'
+        "#{" in '#{@data[:path]}'" unless @data[:path].nil?}"\
+        ' does not exist: No substitution possible.'
     end
 
     # The template to print this TemplateError

@@ -19,7 +19,6 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require 'yaml'
   require 'paru/pandoc'
 
   require_relative './error/configuration_error'
@@ -27,11 +26,26 @@ module Pandocomatic
   require_relative './input'
   require_relative './multiple_files_input'
   require_relative './pandocomatic_yaml'
+  require_relative './path'
   require_relative './template'
 
   # The default configuration for pandocomatic is read from
   # default_configuration.yaml.
   DEFAULT_CONFIG = PandocomaticYAML.load_file File.join(__dir__, 'default_configuration.yaml')
+
+  # rubocop:disable Style/MutableConstant
+
+  # The default settings for pandocomatic:
+  # hidden files will always be skipped, as will pandocomatic
+  # configuration files, unless explicitly set to not skip via the
+  # "unskip" option
+  DEFAULT_SETTINGS = {
+    'skip' => ['.*', 'pandocomatic.yaml'],
+    'recursive' => true,
+    'follow-links' => false,
+    'match-files' => 'first'
+  }
+  # rubocop:enable Style/MutableConstant
 
   # Maps pandoc output formats to their conventional default extension.
   # Updated and in order of `pandoc --list-output-formats`.
@@ -97,33 +111,21 @@ module Pandocomatic
     'zimwiki' => 'zimwiki'
   }.freeze
 
-  # Indicator for paths that should be treated as "relative to the root
-  # path". These paths start with this ROOT_PATH_INDICATOR.
-  ROOT_PATH_INDICATOR = '$ROOT$'
+  # rubocop:disable Metrics
 
   # Configuration models a pandocomatic configuration.
   class Configuration
-    attr_reader :input, :config_files
+    attr_reader :input, :config_files, :data_dir, :root_path
 
     # Pandocomatic's default configuration file
     CONFIG_FILE = 'pandocomatic.yaml'
 
     # Create a new Configuration instance based on the command-line options
     def initialize(options, input)
-      @options = options
       data_dirs = determine_data_dirs options
+      @options = options
       @data_dir = data_dirs.first
-
-      # hidden files will always be skipped, as will pandocomatic
-      # configuration files, unless explicitly set to not skip via the
-      # "unskip" option
-      @settings = {
-        'skip' => ['.*', 'pandocomatic.yaml'],
-        'recursive' => true,
-        'follow-links' => false,
-        'match-files' => 'first'
-      }
-
+      @settings = DEFAULT_SETTINGS
       @templates = {}
       @convert_patterns = {}
 
@@ -145,7 +147,7 @@ module Pandocomatic
                   @input.base
                 end
 
-      @root_path = determine_root_path options
+      @root_path = Path.determine_root_path options
 
       # Extend the command classes by setting the source tree root
       # directory, and the options quiet and dry-run, which are used when
@@ -502,6 +504,10 @@ module Pandocomatic
       DEFAULT_EXTENSION[extension] || extension
     end
 
+    # Is filename a markdown file according to its extension?
+    #
+    # @param filename [String] the filename to check
+    # @return [Boolean] True if filename has a markdown extension.
     def markdown_file?(filename)
       if filename.nil?
         false
@@ -560,150 +566,6 @@ module Pandocomatic
       end
     end
 
-    # Update the path to an executable processor or executor given this
-    # Configuration
-    #
-    # @param path [String] path to the executable
-    # @param dst [String] the destination path
-    # @param check_executable [Boolean = false] Should the executable be
-    #   verified to be executable? Defaults to false.
-    #
-    # @return [String] the updated path.
-    def update_path(path, dst = '', check_executable: false)
-      updated_path = path
-
-      if local_path? path
-        # refers to a local dir; strip the './' before appending it to
-        # the source directory as to prevent /some/path/./to/path
-        updated_path = path[2..]
-      elsif absolute_path? path
-        updated_path = path
-      elsif root_relative_path? path
-        updated_path = make_path_root_relative path, dst, @root_path
-      else
-        updated_path = Configuration.which path if check_executable
-
-        if updated_path.nil? || !check_executable
-          # refers to data-dir
-          updated_path = File.join @data_dir, path
-        end
-      end
-
-      updated_path
-    end
-
-    # Extend the current value with the parent value. Depending on the
-    # value and type of the current and parent values, the extension
-    # differs.
-    #
-    # For simple values, the current value takes precedence over the
-    # parent value
-    #
-    # For Hash values, each parent value's property is extended as well
-    #
-    # For Arrays, the current overwrites and adds to parent value's items
-    # unless the current value is a Hash with a 'remove' and 'add'
-    # property. Then the 'add' items are added to the parent value and the
-    # 'remove' items are removed from the parent value.
-    #
-    # @param current [Object] the current value
-    # @param parent [Object] the parent value the current might extend
-    # @return [Object] the extended value
-    def self.extend_value(current, parent)
-      if parent.nil?
-        # If no parent value is specified, the current takes
-        # precedence
-        current
-      elsif current.nil?
-        nil
-      # Current nil removes value of parent; follows YAML spec.
-      # Note. take care to actually remove this value from a
-      # Hash. (Like it is done in the next case)
-      else
-        case parent
-        when Hash
-          if current.is_a? Hash
-            # Mixin current and parent values
-            parent.each_pair do |property, value|
-              if current.key? property
-                extended_value = Configuration.extend_value(current[property], value)
-                if extended_value.nil?
-                  current.delete property
-                else
-                  current[property] = extended_value
-                end
-              else
-                current[property] = value
-              end
-            end
-          end
-          current
-        when Array
-          case current
-          when Hash
-            if current.key? 'remove'
-              to_remove = current['remove']
-
-              if to_remove.is_a? Array
-                parent.delete_if { |v| current['remove'].include? v }
-              else
-                parent.delete to_remove
-              end
-            end
-
-            if current.key? 'add'
-              to_add = current['add']
-
-              if to_add.is_a? Array
-                parent = current['add'].concat(parent).uniq
-              else
-                parent.push(to_add).uniq
-              end
-            end
-
-            parent
-          when Array
-            # Just combine parent and current arrays, current
-            # values take precedence
-            current.concat(parent).uniq
-          else
-            # Unknown what to do, assuming current should take
-            # precedence
-            current
-          end
-        else
-          # Simple values: current replaces parent
-          current
-        end
-      end
-    end
-
-    def local_path?(path)
-      if Gem.win_platform?
-        path.match("^\\.\\\\\.*$")
-      else
-        path.start_with? './'
-      end
-    end
-
-    # Cross-platform way of finding an executable in the $PATH.
-    #
-    # which('ruby') #=> /usr/bin/ruby
-    #
-    # Taken from:
-    # http://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby#5471032
-    def self.which(cmd)
-      exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
-      ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
-        exts.each do |ext|
-          exe = File.join(path, "#{cmd}#{ext}")
-          return exe if File.executable?(exe) &&
-                        !File.directory?(exe)
-        end
-      end
-      nil
-    end
-
     private
 
     # Reset the settings for pandocomatic based on a new settings Hash
@@ -745,7 +607,8 @@ module Pandocomatic
         if template.internal?
           warn "WARNING: Unable to find templates [#{missing.join(', ')}] while resolving internal template."
         else
-          warn "WARNING: Unable to find templates [#{missing.join(', ')}] while resolving the external template '#{template.name}' from configuration file '#{template.path}'."
+          warn "WARNING: Unable to find templates [#{missing.join(', ')}] while resolving"\
+               " the external template '#{template.name}' from configuration file '#{template.path}'."
         end
       end
 
@@ -777,12 +640,12 @@ module Pandocomatic
     # @param rename_script [String] absolute path to script to run
     # @param dst [String] original destination to rename
     def rename_destination(rename_script, dst)
-      script = update_path(rename_script)
+      script = Path.update_path(self, rename_script)
 
       command, *parameters = script.shellsplit # split on spaces unless it is preceded by a backslash
 
       unless File.exist? command
-        command = Configuration.which(command)
+        command = Path.which(command)
         script = "#{command} #{parameters.join(' ')}"
 
         raise ProcessorError.new(:script_does_not_exist, nil, command) if command.nil?
@@ -795,8 +658,8 @@ module Pandocomatic
         if !renamed_dst.nil? && !renamed_dst.empty?
           renamed_dst.strip
         else
-          raise StandardError,
-                new("Running rename script '#{script}' on destination '#{dst}' did not result in a renamed destination.")
+          raise StandardError, new("Running rename script '#{script}' on destination '#{dst}'"\
+                                   ' did not result in a renamed destination.')
         end
       rescue StandardError => e
         ProcessorError.new(:error_processing_script, e, [script, dst])
@@ -812,51 +675,8 @@ module Pandocomatic
       @data_dir, @settings, @templates, @convert_patterns = array
     end
 
-    def absolute_path?(path)
-      if Gem.win_platform?
-        path.match("^[a-zA-Z]:\\\\\.*$")
-      else
-        path.start_with? '/'
-      end
-    end
-
     def to_stdout?(options)
       !options.nil? and options[:stdout_given] and options[:stdout]
-    end
-
-    def root_relative_path?(path)
-      path.start_with? ROOT_PATH_INDICATOR
-    end
-
-    def make_path_root_relative(path, dst, root)
-      # Find how to get to the root directopry from dst directory.
-      # Assumption is that dst is a subdirectory of root.
-      dst_dir = File.dirname(File.absolute_path(dst))
-
-      path.delete_prefix! ROOT_PATH_INDICATOR if root_relative_path? path
-
-      if File.exist?(root) && File.realpath(dst_dir.to_s).start_with?(File.realpath(root))
-        rel_start = ''
-
-        until File.identical?(File.realpath("#{dst_dir}/#{rel_start}"), File.realpath(root))
-          # invariant dst_dir/rel_start <= root
-          rel_start += '../'
-        end
-
-        if rel_start.end_with?('/') && path.start_with?('/')
-          "#{rel_start}#{path.delete_prefix('/')}"
-        else
-          "#{rel_start}#{path}"
-        end
-      else
-        # Because the destination is not in a subdirectory of root, a
-        # relative path to that root cannot be created. Instead,
-        # the path is assumed to be absolute relative to root
-        root = root.delete_suffix '/' if root.end_with? '/'
-        path = path.delete_prefix '/' if path.start_with? '/'
-
-        "#{root}/#{path}"
-      end
     end
 
     # Read a list of configuration files and create a
@@ -941,15 +761,6 @@ module Pandocomatic
         path
       end
     end
-
-    def determine_root_path(options)
-      if options[:root_path_given]
-        options[:root_path]
-      elsif options[:output_given]
-        File.absolute_path(File.dirname(options[:output]))
-      else
-        File.absolute_path '.'
-      end
-    end
   end
+  # rubocop:enable Metrics
 end

@@ -22,24 +22,50 @@ module Pandocomatic
   require 'paru'
   require 'shellwords'
 
-  require_relative '../pandoc_metadata'
-
-  require_relative '../processor'
-  require_relative '../processors/fileinfo_preprocessor'
-  require_relative '../processors/metadata_preprocessor'
-
-  require_relative '../configuration'
-
-  require_relative '../template'
-
+  require_relative 'command'
   require_relative '../error/io_error'
   require_relative '../error/configuration_error'
   require_relative '../error/processor_error'
-
-  require_relative 'command'
+  require_relative '../pandoc_metadata'
+  require_relative '../path'
+  require_relative '../processor'
+  require_relative '../processors/fileinfo_preprocessor'
+  require_relative '../processors/metadata_preprocessor'
+  require_relative '../template'
 
   # Output formats used in pandocomatic
   OUTPUT_FORMATS = %w[docx pptx odt pdf epub epub3 epub2].freeze
+
+  # Pandoc options that take a path as argument
+  PANDOC_OPTIONS_WITH_PATH = %w[
+    data-dir
+    filter
+    template
+    css
+    include-in-header
+    include-before-body
+    include-after-body
+    reference-odt
+    reference-docx
+    epub-stylesheet
+    epub-cover-image
+    epub-metadata
+    epub-embed-font
+    epub-subdirectory
+    bibliography
+    csl
+    syntax-definition
+    reference-doc
+    lua-filter
+    extract-media
+    resource-path
+    citation-abbreviations
+    abbreviations
+    log
+    resource-path
+  ].freeze
+
+  # rubocop:disable Metrics
 
   # Command to convert a file
   #
@@ -105,8 +131,6 @@ module Pandocomatic
 
     INTERNAL_TEMPLATE = 'internal template'
 
-    # rubocop:disable Metrics
-
     def convert_file
       pandoc_options = @metadata.pandoc_options || {}
       template = nil
@@ -120,7 +144,7 @@ module Pandocomatic
         end
 
         template = @config.get_template @template_name
-        pandoc_options = Configuration.extend_value(pandoc_options, template.pandoc)
+        pandoc_options = Template.extend_value(pandoc_options, template.pandoc)
       else
         template = Template.new INTERNAL_TEMPLATE
       end
@@ -128,7 +152,8 @@ module Pandocomatic
       # Ignore the `--verbose` option, and warn about ignoring it
       if pandoc_options.key? 'verbose'
         pandoc_options.delete 'verbose'
-        warn "WARNING: Ignoring the pandoc option --verbose because it might interfere with the working of pandocomatic."
+        warn 'WARNING: Ignoring the pandoc option --verbose because it'\
+             ' might interfere with the working of pandocomatic.'
       end
 
       template.merge! Template.new(INTERNAL_TEMPLATE, @metadata.pandocomatic) if @metadata.pandocomatic?
@@ -178,38 +203,6 @@ module Pandocomatic
       cleanup template
     end
 
-    # rubocop:enable Metrics
-
-    PANDOC_OPTIONS_WITH_PATH = %w[
-      data-dir
-      filter
-      template
-      css
-      include-in-header
-      include-before-body
-      include-after-body
-      reference-odt
-      reference-docx
-      epub-stylesheet
-      epub-cover-image
-      epub-metadata
-      epub-embed-font
-      epub-subdirectory
-      bibliography
-      csl
-      syntax-definition
-      reference-doc
-      lua-filter
-      extract-media
-      resource-path
-      citation-abbreviations
-      abbreviations
-      log
-      resource-path
-    ].freeze
-
-    # rubocop:disable Metrics
-
     def pandoc(input, options, src_dir)
       absolute_dst = File.expand_path @dst
       Dir.chdir(src_dir) do
@@ -222,9 +215,9 @@ module Pandocomatic
           if PANDOC_OPTIONS_WITH_PATH.include? option
             executable = option == 'filter'
             value = if value.is_a? Array
-                      value.map { |v| @config.update_path(v, absolute_dst, check_executable: executable) }
+                      value.map { |v| Path.update_path(@config, v, absolute_dst, check_executable: executable) }
                     else
-                      @config.update_path(value, @dst, check_executable: executable)
+                      Path.update_path(@config, value, @dst, check_executable: executable)
                     end
           end
 
@@ -260,8 +253,6 @@ module Pandocomatic
       end
     end
 
-    # rubocop:enable Metrics
-
     # Preprocess the input
     #
     # @param input [String] the input to preprocess
@@ -296,8 +287,6 @@ module Pandocomatic
       process '', Template::CLEANUP, template
     end
 
-    # rubocop:disable Metrics
-
     # Run the input string through a list of filters called processors. There
     # are various types: preprocessors and postprocessors, setup and
     # cleanup, and rename
@@ -306,16 +295,16 @@ module Pandocomatic
         processors = template.send type
         output = input
         processors.each do |processor|
-          script = if @config.local_path? processor
+          script = if Path.local_path? processor
                      processor
                    else
-                     @config.update_path(processor, @dst, check_executable: true)
+                     Path.update_path(@config, processor, @dst, check_executable: true)
                    end
 
           command, *parameters = script.shellsplit # split on spaces unless it is preceded by a backslash
 
           unless File.exist? command
-            command = Configuration.which(command)
+            command = Path.which(command)
             script = "#{command} #{parameters.join(' ')}"
 
             raise ProcessorError.new(:script_does_not_exist, nil, command) if command.nil?
@@ -334,8 +323,6 @@ module Pandocomatic
         input
       end
     end
-
-    # rubocop:enable Metrics
 
     def use_output_option(dst)
       OUTPUT_FORMATS.include?(File.extname(dst).slice(1..-1))
@@ -365,4 +352,6 @@ module Pandocomatic
       end
     end
   end
+
+  # rubocop:enable Metrics
 end

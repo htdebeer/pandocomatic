@@ -50,6 +50,18 @@ module Pandocomatic
     # List of the sections a template can contain
     SECTIONS = [EXTENDS, GLOB, SETUP, PREPROCESSORS, METADATA, PANDOC, POSTPROCESSORS, CLEANUP].freeze
 
+    # For each section in a template, generate methods to check if the section
+    # exists and to get that section's content.
+    SECTIONS.each do |sec|
+      define_method(sec.downcase.to_sym) do
+        section sec
+      end
+
+      define_method("#{sec.downcase}?".to_sym) do
+        section? sec
+      end
+    end
+
     # Create a new template based on a template hash
     #
     # @param name [String] this template's name
@@ -94,118 +106,15 @@ module Pandocomatic
       !internal?
     end
 
-    # Does this template have a 'extends' section?
-    #
-    # @return [Bool]
-    def extends?
-      section?(EXTENDS)
-    end
-
-    # List of template names that this template extends
+    # List of template names that this template extends.
     #
     # @return [Array<String>]
     def extends
+      # Overwriting automatically generated method with more specific
+      # behavior
       to_extend = section(EXTENDS)
       to_extend = [to_extend] if to_extend.is_a? String
       to_extend
-    end
-
-    # Does this template have a 'glob' section?
-    #
-    # @return [Bool]
-    def glob?
-      section?(GLOB)
-    end
-
-    # Get the list with glob patterns for this template
-    #
-    # @return [Array<String>]
-    def glob
-      section(GLOB)
-    end
-
-    # Does this template have a 'setup' section?
-    #
-    # @return [Bool]
-    def setup?
-      section?(SETUP)
-    end
-
-    # Get the list of setup scripts for this template
-    #
-    # @return [Array<String>]
-    def setup
-      section(SETUP)
-    end
-
-    # Does this template have a 'preprocessors' section?
-    #
-    # @return [Bool]
-    def preprocessors?
-      section?(PREPROCESSORS)
-    end
-
-    # Get the list of preprocessors scripts for this template
-    #
-    # @return [Array<String>]
-    def preprocessors
-      section(PREPROCESSORS)
-    end
-
-    # Does this template have a 'metadata' section?
-    #
-    # @return [Bool]
-    def metadata?
-      section?(METADATA)
-    end
-
-    # Get the metadata key-value pairs for this template
-    #
-    # @return [Hash]
-    def metadata
-      section(METADATA, {})
-    end
-
-    # Does this template have a 'pandoc' section?
-    #
-    # @return [Bool]
-    def pandoc?
-      section?(PANDOC)
-    end
-
-    # Get the pandoc configuration for this template
-    #
-    # @return [Hash]
-    def pandoc
-      section(PANDOC, {})
-    end
-
-    # Does this template have a 'postprocessors' section?
-    #
-    # @return [Bool]
-    def postprocessors?
-      section?(POSTPROCESSORS)
-    end
-
-    # Get the list of postprocessor scripts for this template
-    #
-    # @return [Array<String>]
-    def postprocessors
-      section(POSTPROCESSORS)
-    end
-
-    # Does this template have a 'cleanup' section?
-    #
-    # @return [Bool]
-    def cleanup?
-      section?(CLEANUP)
-    end
-
-    # Get the list of cleanup scripts for this template
-    #
-    # @return [Array<String>]
-    def cleanup
-      section(CLEANUP)
     end
 
     # Merge another template into this one.
@@ -215,7 +124,7 @@ module Pandocomatic
       SECTIONS.each do |section_name|
         current_section = section(section_name)
         other_section = other.send section_name
-        extended_section = Configuration.extend_value other_section, current_section
+        extended_section = Template.extend_value other_section, current_section
 
         if extended_section.nil?
           @data.delete section_name
@@ -231,6 +140,96 @@ module Pandocomatic
     def to_h
       @data
     end
+
+    # rubocop:disable Metrics
+
+    # Extend the current value with the parent value. Depending on the
+    # value and type of the current and parent values, the extension
+    # differs.
+    #
+    # For simple values, the current value takes precedence over the
+    # parent value
+    #
+    # For Hash values, each parent value's property is extended as well
+    #
+    # For Arrays, the current overwrites and adds to parent value's items
+    # unless the current value is a Hash with a 'remove' and 'add'
+    # property. Then the 'add' items are added to the parent value and the
+    # 'remove' items are removed from the parent value.
+    #
+    # @param current [Object] the current value
+    # @param parent [Object] the parent value the current might extend
+    # @return [Object] the extended value
+    def self.extend_value(current, parent)
+      if parent.nil?
+        # If no parent value is specified, the current takes
+        # precedence
+        current
+      elsif current.nil?
+        nil
+      # Current nil removes value of parent; follows YAML spec.
+      # Note. take care to actually remove this value from a
+      # Hash. (Like it is done in the next case)
+      else
+        case parent
+        when Hash
+          if current.is_a? Hash
+            # Mixin current and parent values
+            parent.each_pair do |property, value|
+              if current.key? property
+                extended_value = extend_value(current[property], value)
+                if extended_value.nil?
+                  current.delete property
+                else
+                  current[property] = extended_value
+                end
+              else
+                current[property] = value
+              end
+            end
+          end
+          current
+        when Array
+          case current
+          when Hash
+            if current.key? 'remove'
+              to_remove = current['remove']
+
+              if to_remove.is_a? Array
+                parent.delete_if { |v| current['remove'].include? v }
+              else
+                parent.delete to_remove
+              end
+            end
+
+            if current.key? 'add'
+              to_add = current['add']
+
+              if to_add.is_a? Array
+                parent = current['add'].concat(parent).uniq
+              else
+                parent.push(to_add).uniq
+              end
+            end
+
+            parent
+          when Array
+            # Just combine parent and current arrays, current
+            # values take precedence
+            current.concat(parent).uniq
+          else
+            # Unknown what to do, assuming current should take
+            # precedence
+            current
+          end
+        else
+          # Simple values: current replaces parent
+          current
+        end
+      end
+    end
+
+    # rubocop:enable Metrics
 
     private
 

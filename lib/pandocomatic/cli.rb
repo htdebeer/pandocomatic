@@ -145,8 +145,6 @@ module Pandocomatic
 
         # No check for root_path: a user can supply one that does not exists
         # at this location and still work on the output location.
-        if options[:root_path_given]
-        end
 
         # Data dir, if specified, should be an existing and readable directory
         if options[:data_dir_given]

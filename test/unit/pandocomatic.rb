@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require 'minitest/autorun'
 require 'tmpdir'
 require 'pandocomatic'
 
 class TestPandocomaticRun < Minitest::Test
-
   def assert_files_equal(expected, generated)
     assert File.exist?(generated), generated
     assert_equal File.basename(expected), File.basename(generated), generated
@@ -18,25 +19,24 @@ class TestPandocomaticRun < Minitest::Test
     assert_equal Dir.entries(expected).size, Dir.entries(generated).size, expected
 
     Dir.foreach(expected).each do |entry|
-      next if entry == '.' or entry == '..'
+      next if (entry == '.') || (entry == '..')
+
       expected_entry = File.join [expected, entry]
       generated_entry = File.join [generated, entry]
 
       if File.file? expected_entry
-          assert_files_equal expected_entry, generated_entry
+        assert_files_equal expected_entry, generated_entry
       elsif File.directory? expected_entry
-          assert_directories_equal expected_entry, generated_entry
-      else
-          # ?
+        assert_directories_equal expected_entry, generated_entry
       end
     end
   end
-  
-  def test_convert_hello_world()
+
+  def test_convert_hello_world
     Dir.mktmpdir('hello_world') do |dir|
       input = File.join ['example', 'hello_world.md']
       output = File.join [dir, 'hello_world.html']
-      
+
       Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
 
       example_output = File.join ['example', 'hello_world.html']
@@ -44,11 +44,11 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
 
-  def test_convert_with_dos_line_endings()
+  def test_convert_with_dos_line_endings
     Dir.mktmpdir('dos') do |dir|
       input = File.join ['example', 'dos.md']
       output = File.join [dir, 'dos.tex']
-      
+
       Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
 
       example_output = File.join ['example', 'dos.tex']
@@ -56,94 +56,91 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
 
-  def test_convert_with_only_comment_in_pandoc_metadata()
-      Dir.mktmpdir('only-comment-in-metadata') do |dir|
-          input = File.join ['example', 'only-comment-in-metadata.md']
-          output = File.join [dir, 'only-comment-in-metadata.html']
+  def test_convert_with_only_comment_in_pandoc_metadata
+    Dir.mktmpdir('only-comment-in-metadata') do |dir|
+      input = File.join ['example', 'only-comment-in-metadata.md']
+      output = File.join [dir, 'only-comment-in-metadata.html']
 
-          Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
+      Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
 
-          example_output = File.join ['example', 'only-comment-in-metadata.html']
-          assert_files_equal example_output, output
-      end
+      example_output = File.join ['example', 'only-comment-in-metadata.html']
+      assert_files_equal example_output, output
+    end
   end
 
-  def test_convert_blog()
+  def test_convert_blog
     Dir.mktmpdir('blog') do |dir|
-      input = File.join ['example', 'src', 'blog']
-      data_dir = File.join ['example', 'data-dir']
+      input = File.join %w[example src blog]
+      data_dir = File.join %w[example data-dir]
       config = File.join ['example', 'blog.yaml']
       output = File.join [dir, 'blog']
 
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
 
-      example_output = File.join ['example', 'dst', 'blog']
+      example_output = File.join %w[example dst blog]
       assert_directories_equal example_output, output
     end
   end
 
-  def test_convert_wiki()
+  def test_convert_wiki
     Dir.mktmpdir('wiki') do |dir|
-      input = File.join ['example', 'src', 'wiki']
-      data_dir = File.join ['example', 'data-dir']
+      input = File.join %w[example src wiki]
+      data_dir = File.join %w[example data-dir]
       config = File.join ['example', 'wiki.yaml']
       output = File.join [dir, 'wiki']
 
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
 
-      example_output = File.join ['example', 'dst', 'wiki']
+      example_output = File.join %w[example dst wiki]
       assert_directories_equal example_output, output
     end
   end
-  
-  def test_convert_authored_wiki()
+
+  def test_convert_authored_wiki
     Dir.mktmpdir('auhtorized_wiki') do |dir|
-      input = File.join ['example', 'src', 'authored_wiki']
-      data_dir = File.join ['example', 'data-dir']
+      input = File.join %w[example src authored_wiki]
+      data_dir = File.join %w[example data-dir]
       config = File.join ['example', 'authored_wiki.yaml']
       output = File.join [dir, 'authored_wiki']
 
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
 
-      example_output = File.join ['example', 'dst', 'authored_wiki']
+      example_output = File.join %w[example dst authored_wiki]
       assert_directories_equal example_output, output
     end
   end
-  
-  def test_convert_wiki_with_arguments()
+
+  def test_convert_wiki_with_arguments
     Dir.mktmpdir('wiki_with_arguments') do |dir|
-      input = File.join ['example', 'src', 'wiki_with_arguments']
-      data_dir = File.join ['example', 'data-dir']
+      input = File.join %w[example src wiki_with_arguments]
+      data_dir = File.join %w[example data-dir]
       config = File.join ['example', 'wiki_with_arguments.yaml']
       output = File.join [dir, 'wiki_with_arguments']
 
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
 
-      example_output = File.join ['example', 'dst', 'wiki_with_arguments']
+      example_output = File.join %w[example dst wiki_with_arguments]
       assert_directories_equal example_output, output
     end
   end
-  
-  def test_convert_setup_cleanup()
+
+  def test_convert_setup_cleanup
     temp_file_name = 'pandocomatic_temporary_file.txt'
     temp_file_name_path = File.join ['/tmp', temp_file_name]
 
-
     # remove temp file
-    if File.exist? temp_file_name_path
-        File.delete temp_file_name_path
-    end
+    File.delete temp_file_name_path if File.exist? temp_file_name_path
 
     Dir.mktmpdir('setup_cleanup') do |dir|
-      input = File.join ['example', 'src', 'setup-cleanup-wiki']
-      data_dir = File.join ['example', 'data-dir']
+      input = File.join %w[example src setup-cleanup-wiki]
+      data_dir = File.join %w[example data-dir]
       # setup.yaml is configured to create temp file
       config = File.join ['example', 'setup.yaml']
       output = File.join [dir, 'setup-cleanup-wiki']
 
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
 
-      example_output = File.join ['example', 'dst', 'setup-cleanup-wiki']
+      example_output = File.join %w[example dst setup-cleanup-wiki]
       assert_directories_equal example_output, output
 
       assert File.exist? temp_file_name_path
@@ -156,57 +153,56 @@ class TestPandocomaticRun < Minitest::Test
       assert_directories_equal example_output, output
 
       refute File.exist? temp_file_name_path
-
     end
   end
 
-  def test_convert_site()
+  def test_convert_site
     Dir.mktmpdir('site') do |dir|
-      input = File.join ['example', 'src']
-      data_dir = File.join ['example', 'data-dir']
+      input = File.join %w[example src]
+      data_dir = File.join %w[example data-dir]
       config = File.join ['example', 'site.yaml']
       output = File.join [dir, 'site']
 
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
 
-      example_output = File.join ['example', 'dst', 'site']
+      example_output = File.join %w[example dst site]
       assert_directories_equal example_output, output
     end
   end
 
-  def test_extending_templates()
+  def test_extending_templates
     Dir.mktmpdir('twice_extended_wiki') do |dir|
-      input = File.join ['example', 'src', 'twice_extended_wiki']
-      data_dir = File.join ['example', 'data-dir']
+      input = File.join %w[example src twice_extended_wiki]
+      data_dir = File.join %w[example data-dir]
       config = File.join ['example', 'twice_extended_wiki.yaml']
       output = File.join [dir, 'twice_extended_wiki']
 
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
 
-      example_output = File.join ['example', 'dst', 'twice_extended_wiki']
+      example_output = File.join %w[example dst twice_extended_wiki]
       assert_directories_equal example_output, output
     end
   end
 
-  def test_converting_dir_to_odt()
+  def test_converting_dir_to_odt
     Dir.mktmpdir('twice_extended_wiki') do |dir|
-      input = File.join ['example', 'src', 'odt_with_images']
-      data_dir = File.join ['example', 'data-dir']
+      input = File.join %w[example src odt_with_images]
+      data_dir = File.join %w[example data-dir]
       config = File.join ['example', 'odt_with_images.yaml']
       output = File.join [dir, 'odt_with_images']
 
       _, err = capture_io do
-          Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
+        Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
       end
 
       assert_empty err
 
-      example_output = File.join ['example', 'dst', 'odt_with_images']
+      example_output = File.join %w[example dst odt_with_images]
       assert_directories_equal example_output, output
     end
   end
 
-  def test_extensions()
+  def test_extensions
     current_dir = File.absolute_path Dir.getwd
 
     filenames = {
@@ -229,135 +225,134 @@ class TestPandocomaticRun < Minitest::Test
       Dir.chdir current_dir
     end
   end
-  
-  def test_convert_for_all_matching_templates()
+
+  def test_convert_for_all_matching_templates
     Dir.mktmpdir('wiki') do |dir|
-      input = File.join ['example', 'src', 'wiki']
-      data_dir = File.join ['example', 'data-dir']
+      input = File.join %w[example src wiki]
+      data_dir = File.join %w[example data-dir]
       config = File.join ['example', 'all_templates.yaml']
       output = File.join [dir, 'all_templates']
 
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
 
-      example_output = File.join ['example', 'dst', 'all_templates']
+      example_output = File.join %w[example dst all_templates]
       assert_directories_equal example_output, output
     end
   end
-  
-  def test_convert_for_all_matching_templates_with_renaming()
+
+  def test_convert_for_all_matching_templates_with_renaming
     Dir.mktmpdir('wiki') do |dir|
-      input = File.join ['example', 'src', 'wiki']
-      data_dir = File.join ['example', 'data-dir']
+      input = File.join %w[example src wiki]
+      data_dir = File.join %w[example data-dir]
       config = File.join ['example', 'all_templates_with_renaming.yaml']
       output = File.join [dir, 'all_templates_with_renaming']
 
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
 
-      example_output = File.join ['example', 'dst', 'all_templates_with_renaming']
+      example_output = File.join %w[example dst all_templates_with_renaming]
       assert_directories_equal example_output, output
     end
   end
 
-  def test_convert_multiple_files()
+  def test_convert_multiple_files
     Dir.mktmpdir('multiple_inputs') do |dir|
       inputs = [
-          File.join(['example', 'multiple_input_files', 'book.md']),
-          File.join(['example', 'multiple_input_files', 'chapter01.md']),
-          File.join(['example', 'multiple_input_files', 'chapter02.md'])
+        File.join(['example', 'multiple_input_files', 'book.md']),
+        File.join(['example', 'multiple_input_files', 'chapter01.md']),
+        File.join(['example', 'multiple_input_files', 'chapter02.md'])
       ]
       output = File.join [dir, 'multiple_inputs.html']
-      
-      Pandocomatic::Pandocomatic.run "#{inputs.map{|i| "-i #{i}"}.join(" ")} -o #{output}"
+
+      Pandocomatic::Pandocomatic.run "#{inputs.map { |i| "-i #{i}" }.join(' ')} -o #{output}"
 
       example_output = File.join ['example', 'multiple_input_files', 'multiple_inputs.html']
       assert_files_equal example_output, output
     end
   end
-  
-  def test_convert_automatic_output_extension()
-    Dir.mktmpdir('automatic_output') do |dir|
+
+  def test_convert_automatic_output_extension
+    Dir.mktmpdir('automatic_output') do |_dir|
       input = File.join ['example', 'hello_world.md']
       assert_output(/hello_world\.html/) do
         Pandocomatic::Pandocomatic.run "-i #{input} --verbose"
       end
     end
   end
-  
-  def test_verbose_output()
-    Dir.mktmpdir('automatic_output') do |dir|
+
+  def test_verbose_output
+    Dir.mktmpdir('automatic_output') do |_dir|
       input = File.join ['example', 'hello_world.md']
-      assert_output() do
+      assert_output do
         Pandocomatic::Pandocomatic.run "-i #{input} --verbose"
       end
     end
   end
 
-  def test_root_path_with_root_path()
-      # Build the output test files using absolute paths to output and root.
-      # Otherwise it cannot find the paths 
-      # With root path:
-      Dir.mktmpdir("with_root") do |dir|
-          config = File.join ['example', 'root_paths', 'config.yaml']
-          input = File.join ['example', 'root_paths', 'src']
-          output = File.join [dir, 'www-with-root-path']
-          root_path = File.join [dir, 'www-with-root-path']
-          data = File.join ['example', 'root_paths', 'data']
+  def test_root_path_with_root_path
+    # Build the output test files using absolute paths to output and root.
+    # Otherwise it cannot find the paths
+    # With root path:
+    Dir.mktmpdir('with_root') do |dir|
+      config = File.join ['example', 'root_paths', 'config.yaml']
+      input = File.join %w[example root_paths src]
+      output = File.join [dir, 'www-with-root-path']
+      root_path = File.join [dir, 'www-with-root-path']
+      data = File.join %w[example root_paths data]
 
-          Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -o #{output} -r #{root_path} -d #{data}"
-              
-          example_output = File.join ['example', 'root_paths', 'www-with-root-path']
-          assert_directories_equal example_output, output
-      end
-  end
-      
-  def test_root_path_with_root_path_not_a_subdir()
-      # With root path not a subdir:
-      Dir.mktmpdir("with_root") do |dir|
-          config = File.join ['example', 'root_paths', 'config.yaml']
-          input = File.join ['example', 'root_paths', 'src']
-          output = File.join [dir, 'www-with-non-subdir-root-path']
-          root_path = File.join ['some', 'path']
-          data = File.join ['example', 'root_paths', 'data']
+      Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -o #{output} -r #{root_path} -d #{data}"
 
-          Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -o #{output} -r #{root_path} -d #{data}"
-              
-          example_output = File.join ['example', 'root_paths', 'www-with-non-subdir-root-path']
-          assert_directories_equal example_output, output
-      end
+      example_output = File.join %w[example root_paths www-with-root-path]
+      assert_directories_equal example_output, output
+    end
   end
 
-  def test_root_path_without_root_path()
-      # Without root path:
-      Dir.mktmpdir("without_root") do |dir|
-          config = File.join ['example', 'root_paths', 'config.yaml']
-          input = File.join ['example', 'root_paths', 'src']
-          output = File.join [dir, 'www-without-root-path']
-          data = File.join ['example', 'root_paths', 'data']
+  def test_root_path_with_root_path_not_a_subdir
+    # With root path not a subdir:
+    Dir.mktmpdir('with_root') do |dir|
+      config = File.join ['example', 'root_paths', 'config.yaml']
+      input = File.join %w[example root_paths src]
+      output = File.join [dir, 'www-with-non-subdir-root-path']
+      root_path = File.join %w[some path]
+      data = File.join %w[example root_paths data]
 
-          Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -o #{output} -d #{data}"
-              
-          example_output = File.join ['example', 'root_paths', 'www-without-root-path']
-          assert_directories_equal example_output, output
-      end
+      Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -o #{output} -r #{root_path} -d #{data}"
+
+      example_output = File.join %w[example root_paths www-with-non-subdir-root-path]
+      assert_directories_equal example_output, output
+    end
   end
 
-  def test_empty_yaml_properties()
-      Dir.mktmpdir('empty-yaml-propertiess') do |dir|
-          input = File.join ['example', 'empty-properties.md']
-          output = File.join [dir, 'empty-properties.html']
+  def test_root_path_without_root_path
+    # Without root path:
+    Dir.mktmpdir('without_root') do |dir|
+      config = File.join ['example', 'root_paths', 'config.yaml']
+      input = File.join %w[example root_paths src]
+      output = File.join [dir, 'www-without-root-path']
+      data = File.join %w[example root_paths data]
 
-          Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
+      Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -o #{output} -d #{data}"
 
-          example_output = File.join ['example', 'empty-properties.html']
-          assert_files_equal example_output, output
-      end
-
+      example_output = File.join %w[example root_paths www-without-root-path]
+      assert_directories_equal example_output, output
+    end
   end
 
-  def test_global_inheritance()
+  def test_empty_yaml_properties
+    Dir.mktmpdir('empty-yaml-propertiess') do |dir|
+      input = File.join ['example', 'empty-properties.md']
+      output = File.join [dir, 'empty-properties.html']
+
+      Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
+
+      example_output = File.join ['example', 'empty-properties.html']
+      assert_files_equal example_output, output
+    end
+  end
+
+  def test_global_inheritance
     Dir.mktmpdir('global-inheritance') do |dir|
       input = File.join ['example', 'inheritance', 'second.md']
-      data_dir = File.join ['example', 'inheritance', 'data-dir']
+      data_dir = File.join %w[example inheritance data-dir]
       config = File.join ['example', 'inheritance', 'first.yaml']
 
       output = File.join [dir, 'second.html']
@@ -369,10 +364,10 @@ class TestPandocomaticRun < Minitest::Test
     end
   end
 
-  def test_global_inheritance_extending_non_existing_template()
+  def test_global_inheritance_extending_non_existing_template
     Dir.mktmpdir('global-inheritance') do |dir|
       input = File.join ['example', 'inheritance', 'second.md']
-      data_dir = File.join ['example', 'inheritance', 'data-dir']
+      data_dir = File.join %w[example inheritance data-dir]
       config = File.join ['example', 'inheritance', 'broken.yaml']
 
       output = File.join [dir, 'second.html']
@@ -380,12 +375,12 @@ class TestPandocomaticRun < Minitest::Test
       Pandocomatic::Pandocomatic.run "-d #{data_dir} -c #{config} -i #{input} -o #{output}"
       error = $stderr.string.strip
       expected = "WARNING: Unable to find templates [non-existing] while resolving the external template 'inherited-page' from configuration file '/home/pandocomatic-user/example/inheritance/broken.yaml'."
-      assert_equal expected + "\n" + expected, error
+      assert_equal "#{expected}\n#{expected}", error
     end
   end
-  
-  def test_convert_to_stdout()
-    Dir.mktmpdir('hello_world') do |dir|
+
+  def test_convert_to_stdout
+    Dir.mktmpdir('hello_world') do |_dir|
       # capture STDOUT afresh
       $stdout = StringIO.new
 
@@ -394,35 +389,34 @@ class TestPandocomaticRun < Minitest::Test
       Pandocomatic::Pandocomatic.run "-i #{input} -s"
       output = $stdout.string.strip
 
-      expected = "<p><em>Hello world!</em>, from <strong>pandocomatic</strong>.</p>"
+      expected = '<p><em>Hello world!</em>, from <strong>pandocomatic</strong>.</p>'
       assert_equal expected, output
     end
   end
 
-  def test_read_date_from_metadata()
+  def test_read_date_from_metadata
     Dir.mktmpdir('date_example') do |dir|
-      input = File.join ["example", "simple_date_in_metadata.md"]
-      data_dir = File.join ["example", "data-dir"]
-      output = File.join [dir, "date.md"]
+      input = File.join ['example', 'simple_date_in_metadata.md']
+      data_dir = File.join %w[example data-dir]
+      output = File.join [dir, 'date.md']
 
       _, err = capture_io do
         Pandocomatic::Pandocomatic.run "-i #{input} -d #{data_dir} -o #{output}"
       end
 
       assert_empty err
-      expected = "The date is: 2022-01-05"
+      expected = 'The date is: 2022-01-05'
       assert_equal expected, File.read(output).strip
     end
   end
 
   VARS = {
-    "P_OUTPUT_FORMAT" => "html",
-    "P_AUTHOR" => "Huub",
-    "P_TITLE" => "Hello with vars!"
-  }
+    'P_OUTPUT_FORMAT' => 'html',
+    'P_AUTHOR' => 'Huub',
+    'P_TITLE' => 'Hello with vars!'
+  }.freeze
 
-  def test_var_substitution()
-
+  def test_var_substitution
     VARS.each do |key, value|
       ENV[key] = value
     end
@@ -439,13 +433,13 @@ class TestPandocomaticRun < Minitest::Test
     end
 
     VARS.each do |key, _|
-      ENV.delete key if ENV.has_key? key
+      ENV.delete key if ENV.key? key
     end
   end
 
-  def test_non_existing_var_substitution()
+  def test_non_existing_var_substitution
     VARS.each do |key, _|
-      ENV.delete key if ENV.has_key? key
+      ENV.delete key if ENV.key? key
     end
 
     Dir.mktmpdir('novars') do |dir|
@@ -464,9 +458,8 @@ class TestPandocomaticRun < Minitest::Test
         warn e
       end
 
-
       VARS.each do |key, value|
-        ENV[key] = value unless key == "P_TITLE"
+        ENV[key] = value unless key == 'P_TITLE'
       end
 
       begin
@@ -479,23 +472,21 @@ class TestPandocomaticRun < Minitest::Test
       rescue Exception => e
         warn e
       end
-      
     end
 
     VARS.each do |key, _|
-      ENV.delete key if ENV.has_key? key
+      ENV.delete key if ENV.key? key
     end
-
   end
 
-  def test_warn_and_ignore_pandoc_verbose()
+  def test_warn_and_ignore_pandoc_verbose
     Dir.mktmpdir('verbose') do |dir|
       input = File.join ['example', 'hello_verbose_world.md']
       output = File.join [dir, 'hello_verbose_world.html']
-      assert_output(nil, /WARNING: Ignoring the pandoc option --verbose because it might interfere with the working of pandocomatic./) do
+      assert_output(nil,
+                    /WARNING: Ignoring the pandoc option --verbose because it might interfere with the working of pandocomatic./) do
         Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
-      end      
+      end
     end
   end
-
 end

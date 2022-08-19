@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
-require_relative '../lib/pandocomatic/pandocomatic.rb'
-Pandocomatic::Pandocomatic.run ARGV
+# frozen_string_literal: true
 
+require_relative '../lib/pandocomatic/pandocomatic'
+Pandocomatic::Pandocomatic.run ARGV

@@ -1,4 +1,5 @@
 require "rake/testtask"
+require "rubocop/rake_task"
 require "yard"
 
 Rake::TestTask.new do |t|
@@ -7,6 +8,11 @@ Rake::TestTask.new do |t|
     t.test_files = FileList["test/test_helper.rb", "test/unit/*.rb", "test/spec/*.rb"]
     t.warning = false
     t.verbose = true
+end
+
+RuboCop::RakeTask.new(:rubocop) do |t|
+  t.patterns = ['lib/']
+  t.fail_on_error = true
 end
 
 YARD::Rake::YardocTask.new do |t|
@@ -23,8 +29,9 @@ task :generate_docs do
 end
 
 task :build do
-    Rake::Task['test'].execute
-    Rake::Task['yard'].execute
+    Rake::Task[:rubocop].execute
+    Rake::Task[:test].execute
+    Rake::Task[:yard].execute
     sh "gem build pandocomatic.gemspec; mv *.gem releases"
     Rake::Task["generate_docs"].execute
 end
