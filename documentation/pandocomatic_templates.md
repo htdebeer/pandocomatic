@@ -295,8 +295,11 @@ if current_dst_filename.start_with? "index" and not dirname.nil?
 else 
     puts current_dst
 end
-
 ```
+
+**Note** Pandoc's command-line option `--verbose` might interfere with the
+inner working of pandocomatic. As a result, pandocomatic will ignore pandoc's
+`--verbose` option and warn you about this.
 
 ##### postprocessors
 

@@ -21,7 +21,7 @@
 module Pandocomatic
   require_relative './pandocomatic_error'
 
-  # A command line error.
+  # A command-line error.
   class CLIError < PandocomaticError
     # Get the template used to print this CLIError
     def template

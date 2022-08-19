@@ -1,4 +1,4 @@
-Pandocomatic is configured by command line options and configuration files.
+Pandocomatic is configured by command-line options and configuration files.
 Each input file that is converted by pandocomatic is processed as follows:
 
     input_file -> 

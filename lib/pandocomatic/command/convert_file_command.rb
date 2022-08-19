@@ -125,6 +125,12 @@ module Pandocomatic
         template = Template.new INTERNAL_TEMPLATE
       end
 
+      # Ignore the `--verbose` option, and warn about ignoring it
+      if pandoc_options.key? 'verbose'
+        pandoc_options.delete 'verbose'
+        warn "WARNING: Ignoring the pandoc option --verbose because it might interfere with the working of pandocomatic."
+      end
+
       template.merge! Template.new(INTERNAL_TEMPLATE, @metadata.pandocomatic) if @metadata.pandocomatic?
 
       # Write out the results of the conversion process to file.

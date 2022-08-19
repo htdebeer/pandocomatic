@@ -36,7 +36,7 @@ and I have been using it for all my writings since then.
 
 Using pandoc is quite straightforward. At the least, you need to specify the
 input format, the output format, the input file, and the output file. The
-conversion process can be influenced by a whole range of [command line
+conversion process can be influenced by a whole range of [command-line
 options](http://pandoc.org/MANUAL.html#options). You can choose to generate a
 table of contents, render mathematics, an output template to use, and so on.
 

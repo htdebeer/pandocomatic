@@ -487,4 +487,15 @@ class TestPandocomaticRun < Minitest::Test
     end
 
   end
+
+  def test_warn_and_ignore_pandoc_verbose()
+    Dir.mktmpdir('verbose') do |dir|
+      input = File.join ['example', 'hello_verbose_world.md']
+      output = File.join [dir, 'hello_verbose_world.html']
+      assert_output(nil, /WARNING: Ignoring the pandoc option --verbose because it might interfere with the working of pandocomatic./) do
+        Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
+      end      
+    end
+  end
+
 end

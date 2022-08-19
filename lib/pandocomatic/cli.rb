@@ -32,7 +32,7 @@ module Pandocomatic
     # Parse the arguments, returns a triplet with the global options, an
     # optional subcommand, and the (optional) options for that subcommand.
     #
-    # @param args [String, Array] A command line invocation string or a list of strings like ARGV
+    # @param args [String, Array] A command-line invocation string or a list of strings like ARGV
     #
     # @return [Configuration] The configuration for running pandocomatic given
     # the command-line options.
