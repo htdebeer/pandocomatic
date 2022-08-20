@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.7.6
+  TargetRubyVersion: 2.6.8
   NewCops: enable
 Metrics/ClassLength:
   Max: 150
