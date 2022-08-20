@@ -184,7 +184,7 @@ module Pandocomatic
     # If more than one pandocomatic property is contained in the input,
     # all but the first are discarded and are not present in the
     # extracted metadata YAML string.
-    private_class_method def self.extract_metadata(input, path)
+    private_class_method def self.extract_metadata(input, path = nil)
       metadata_blocks = MetadataBlockList.new input, path
 
       ["#{YAML.dump(metadata_blocks.full)}...", metadata_blocks.count_pandocomatic_blocks]
