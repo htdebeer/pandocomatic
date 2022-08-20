@@ -19,6 +19,7 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
+  require 'date'
   require 'yaml'
 
   require_relative './error/template_error'
