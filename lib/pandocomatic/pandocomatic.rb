@@ -48,7 +48,7 @@ module Pandocomatic
     ERROR_STATUS = 1266 # This is the sum of the ASCII values of the characters in 'pandocomatic'
 
     # Pandocomatic's current version
-    VERSION = [1, 0, 2].freeze
+    VERSION = [1, 0, 3].freeze
 
     # rubocop:disable Metrics
 

@@ -32,7 +32,7 @@ module Pandocomatic
     PERMITTED_YAML_CLASSES = [Date].freeze
 
     # Regular expression representing environment variables in templates
-    VAR_PATTERN = /\$\((?<var>[a-zA-Z_][a-zA-Z0-9_]*)\)\$/
+    VAR_PATTERN = /\$\((?<var>[a-zA-Z_][a-zA-Z0-9_]*)\)\$/.freeze
 
     # Load a string, substitute any variables, and parse as YAML.
     #
@@ -61,7 +61,7 @@ module Pandocomatic
       str.gsub(VAR_PATTERN) do |_match|
         key = Regexp.last_match(1)
 
-        raise TemplateError.new :environment_variable_does_not_exist, { key:, path: } unless ENV.key? key
+        raise TemplateError.new :environment_variable_does_not_exist, { key: key, path: path } unless ENV.key? key
 
         ENV[key]
       end

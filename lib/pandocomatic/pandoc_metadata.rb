@@ -28,7 +28,7 @@ module Pandocomatic
   require_relative './pandocomatic_yaml'
 
   # Regular expression to find metadata blocks in a string.
-  METADATA_BLOCK = /^---[ \t]*(\r\n|\r|\n)(.+?)^(?:---|\.\.\.)[ \t]*(\r\n|\r|\n)/m
+  METADATA_BLOCK = /^---[ \t]*(\r\n|\r|\n)(.+?)^(?:---|\.\.\.)[ \t]*(\r\n|\r|\n)/m.freeze
 
   # PandocMetadata represents the metadata with pandoc options set in
   # templates and input files.
