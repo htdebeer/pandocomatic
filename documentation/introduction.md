@@ -13,3 +13,7 @@ You will find the source code of pandocomatic in its
 
 **Note.** Pandocomatic is build on top of
 [paru](https://github.com/htdebeer/paru), which is a wrapper around pandoc.
+
+**Note.** If you're using pandoc 3, use pandocomatic version 1.1.x or higher;
+pandocomatic 1.0.x doesn't work with pandoc 3. If you're still using pandoc
+version 2, use pandocomatic version 1.0.x instead. 

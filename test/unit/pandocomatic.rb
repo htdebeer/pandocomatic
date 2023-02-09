@@ -290,6 +290,12 @@ class TestPandocomaticRun < Minitest::Test
 
   def test_root_path_with_root_path
     # Build the output test files using absolute paths to output and root.
+    # I.e.:
+    #        cd example/root_paths
+    #        ../../test/pandocomatic.rb -c config.yaml \
+    #             -i src -d data \
+    #             -o /home/pandocomatic-user/example/root_paths/www-with-root-path \
+    #             -r /home/pandocomatic-user/example/root_paths/www-with-root-path
     # Otherwise it cannot find the paths
     # With root path:
     Dir.mktmpdir('with_root') do |dir|

@@ -31,6 +31,10 @@ source code of pandocomatic in its
 [paru](https://github.com/htdebeer/paru), which is a wrapper around
 pandoc.
 
+**Note.** If you're using pandoc 3, use pandocomatic version 1.1.x or
+higher; pandocomatic 1.0.x doesn't work with pandoc 3. If you're still
+using pandoc version 2, use pandocomatic version 1.0.x instead.
+
 ## Acknowledgements
 
 I would like to thank [Ian](https://github.com/iandol) for his
@@ -55,12 +59,12 @@ guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest gem,
-[pandocomatic-1.0.4](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-1.0.4.gem),
+[pandocomatic-1.1.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-1.1.0.gem),
 from Github and install it manually as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-1.0.4.gem
+gem install pandocomatic-1.1.0.gem
 ```
 
 ## Why pandocomatic?
