@@ -610,8 +610,8 @@ during the conversion process.
 
 ## Pandocomatic configuration
 
-Pandocomatic can be configured by means of a *pandocomatic configuration
-file*, which is a YAML file. For example, the following YAML code is a
+Pandocomatic can be configured by means of *pandocomatic configuration
+files*, which are YAML files. For example, the following YAML code is a
 valid *pandocomatic configuration file*:
 
 ``` yaml
@@ -632,13 +632,15 @@ valid *pandocomatic configuration file*:
              - postprocessors/tidy.sh
 ```
 
-By default, pandocomatic looks for the configuration file in the
-*pandocomatic data directory*; by convention this file is named
+By default, pandocomatic looks for the configuration files in both the
+**pandoc** data directory and the *pandocomatic data directory*; by
+convention, pandocomatic expects these files to be named
 `pandocomatic.yaml`.
 
-You can tell pandocomatic to use a different configuration file via the
-command-line option `--config`. For example, if you want to use a
-configuration file `my-config.yaml`, invoke pandocomatic as follows:
+On top of that, you can tell pandocomatic to use a specific
+configuration file via the command-line option `--config`. For example,
+if you want to use a configuration file `my-config.yaml`, invoke
+pandocomatic as follows:
 
 ``` bash
 pandocomatic --config my-config.yaml some-file-to-convert.md
@@ -649,10 +651,41 @@ A *pandocomatic configuration file* contains two properties:
 1.  global `settings`
 2.  external `templates`
 
-These two properties are discussed after presenting an example of a
-configuration file. For more in-depth information about pandocomatic
-templates, please see the [Chapter on pandocomatic
+I discuss these two properties next. Before I do, however, I describe
+pandocomatic's configuration hierarchy. For more in-depth information
+about pandocomatic templates, please see the [Chapter on pandocomatic
 templates](#pandocomatic-templates).
+
+### Pandocomatic's configuration hierarchy
+
+If you're using pandocomatic a lot, you might have collected many useful
+templates that you often use. Instead of having to copy them to a new
+configuration file each time you start a new project, you can put them
+in a configuration file in one of pandocomatic's data directories.
+Pandocomatic will construct a configuration hierarchy based on these
+more global configuration files as follows:
+
+1.  This configuration hierarchy starts with the [default
+    configuration](https://github.com/htdebeer/pandocomatic/blob/master/lib/pandocomatic/default_configuration.yaml)
+    that's part of pandocomatic. This is the base configuration that's
+    always there.
+
+2.  Then pandocomatic mixes in the configuration files named
+    `pandocomatic.yaml` found in the data directories in the following
+    order:
+
+    -   The configuration file in the *pandocomatic data directory*
+        specified on the command line with option "--data-dir" or "-d".\
+    -   The configuration file in the *pandoc data directory*, if it
+        exists. Otherwise, as a fall-back, the current working directory
+        is used. Note, a missing pandoc data directory is likely a sign
+        of a broken pandoc installation.
+
+3.  Finally, the configuration file given on the command line with the
+    "--config" or "-c" option is mixed in.
+
+If you run pandocomatic with command-line option `--verbose`, it should
+print this configuration hierarchy.
 
 ### Settings
 
