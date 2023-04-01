@@ -13,3 +13,5 @@ hello_world.html
 .texlive2020/
 
 .cache
+
+*.code-workspace
