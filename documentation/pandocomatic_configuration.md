@@ -46,14 +46,20 @@ configuration files as follows:
 2. Then pandocomatic mixes in the configuration files named
    `pandocomatic.yaml` found in the data directories in the following order:
 
-   - The configuration file in the *pandocomatic data directory* specified on
-     the command line with option "--data-dir" or "-d".  
-   - The configuration file in the *pandoc data directory*, if it exists.
-     Otherwise, as a fall-back, the current working directory is used. Note, a
-     missing pandoc data directory is likely a sign of a broken pandoc
-     installation.
+   1. The configuration file in the *pandocomatic data directory* specified on
+      the command line with option "--data-dir" or "-d".  
+   2. The configuration file in the *pandoc data directory*, if it exists.
+      Otherwise, as a fall-back, the current working directory is used. Note, a
+      missing pandoc data directory is likely a sign of a broken pandoc
+      installation.
 3. Finally, the configuration file given on the command line with the
    "--config" or "-c" option is mixed in.
+
+Pandodomatic always constructs the configuration hierarchy in this exact
+order, skipping any configuration that's missing.  Thus, the default
+configuration is extended first by the configuration from pandocomatic's data
+directory, then by the configuration from pandoc's data directory, and finally
+by the configuration specified with the `--config` option.
 
 If you run pandocomatic with command-line option `--verbose`, it should print
 this configuration hierarchy.
