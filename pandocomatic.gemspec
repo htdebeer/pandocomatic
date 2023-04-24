@@ -1,8 +1,8 @@
-require_relative "lib/pandocomatic/pandocomatic.rb"
+require_relative "lib/pandocomatic/version.rb"
 
 Gem::Specification.new do |s|
   s.name = 'pandocomatic'
-  s.version = Pandocomatic::Pandocomatic::VERSION.join "."
+  s.version = Pandocomatic::VERSION.join "."
   s.license = 'GPL-3.0'
   s.date = '2023-02-09'
   s.summary = 'Automate the use of pandoc'
@@ -19,7 +19,9 @@ Gem::Specification.new do |s|
   s.files += Dir['lib/pandocomatic/printer/views/*.txt']
   s.add_runtime_dependency 'paru', '~> 1.1', '>= 1.1.0'
   s.add_runtime_dependency 'optimist', '~> 3.0.0', '>= 3.0.0'
+  s.add_development_dependency 'minitest', '~> 5.15'
   s.add_development_dependency 'minitest-reporters', '~> 1.5'
+  s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'yard', '~> 0.9.27'
   s.add_development_dependency 'rubocop', '~> 1.25.0'
   s.executables << 'pandocomatic'

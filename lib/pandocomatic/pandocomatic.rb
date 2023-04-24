@@ -42,13 +42,12 @@ module Pandocomatic
   require_relative './command/convert_file_command'
   require_relative './command/convert_file_multiple_command'
 
+  require_relative './version'
+
   # The Pandocomatic class controlls the pandocomatic conversion process
   class Pandocomatic
     # Pandocomatic error status codes start from ERROR_STATUS
     ERROR_STATUS = 1266 # This is the sum of the ASCII values of the characters in 'pandocomatic'
-
-    # Pandocomatic's current version
-    VERSION = [1, 1, 0].freeze
 
     # rubocop:disable Metrics
 
