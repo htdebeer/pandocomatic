@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.files += Dir['lib/pandocomatic/processors/*.rb']
   s.files += Dir['lib/pandocomatic/printer/*.rb']
   s.files += Dir['lib/pandocomatic/printer/views/*.txt']
-  s.add_runtime_dependency 'paru', '~> 1.1', '>= 1.1.1'
+  s.add_runtime_dependency 'paru', '~> 1.1', '>= 1.1.2'
   s.add_runtime_dependency 'optimist', '~> 3.0.0', '>= 3.0.0'
   s.add_development_dependency 'minitest', '~> 5.15'
   s.add_development_dependency 'minitest-reporters', '~> 1.5'
