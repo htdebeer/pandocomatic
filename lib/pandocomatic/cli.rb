@@ -21,8 +21,8 @@
 module Pandocomatic
   require 'optimist'
 
-  require_relative './error/cli_error'
-  require_relative './configuration'
+  require_relative 'error/cli_error'
+  require_relative 'configuration'
 
   ##
   # Command line options parser for pandocomatic using optimist.

@@ -82,9 +82,9 @@ class TestPandocMetadata < Minitest::Test
     end
 
     # Two or more three dashes lines should throw an error
-    e = assert_raises Pandocomatic::PandocMetadataError do
+    assert_raises Pandocomatic::PandocMetadataError do
       input = "---\nkey: value\n...\n\nhello\n\n---\n\nworld\n\n---\n\nend"
-      metadata = Pandocomatic::PandocMetadata.load(input)
+      Pandocomatic::PandocMetadata.load(input)
     end
   end
 
@@ -114,5 +114,4 @@ class TestPandocMetadata < Minitest::Test
     refute metadata.unique?
     assert metadata.pandoc_options['from'] = 'latex'
   end
-
 end

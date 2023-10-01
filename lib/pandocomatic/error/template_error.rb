@@ -19,7 +19,7 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './pandocomatic_error'
+  require_relative 'pandocomatic_error'
 
   # A TemplateError
   class TemplateError < PandocomaticError
@@ -35,9 +35,9 @@ module Pandocomatic
     # Represent this template error as a string.
     # @return [String]
     def to_s
-      "Environment variable '#{@data[:key]}'"\
-        "#{" in '#{@data[:path]}'" unless @data[:path].nil?}"\
-        ' does not exist: No substitution possible.'
+      "Environment variable '#{@data[:key]}'" \
+        "#{" in '#{@data[:path]}'" unless @data[:path].nil?} " \
+        'does not exist: No substitution possible.'
     end
 
     # The template to print this TemplateError

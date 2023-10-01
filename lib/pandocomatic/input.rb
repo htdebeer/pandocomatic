@@ -19,7 +19,7 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './configuration'
+  require_relative 'configuration'
 
   # Generic class to handle input files and directories in a general manner.
   class Input

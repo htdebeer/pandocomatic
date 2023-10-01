@@ -28,7 +28,7 @@ class TestPandocomaticYAML < Minitest::Test
     hash = Pandocomatic::PandocomaticYAML.load yaml
 
     assert hash.key? 'key'
-    assert_equal hash['key'], ENV['PATH']
+    assert_equal hash['key'], ENV.fetch('PATH', nil)
   end
 
   def test_existing_vars
@@ -42,10 +42,10 @@ class TestPandocomaticYAML < Minitest::Test
     hash = Pandocomatic::PandocomaticYAML.load yaml
 
     assert hash.key? 'key'
-    assert_equal hash['key'], ENV['PATH']
+    assert_equal hash['key'], ENV.fetch('PATH', nil)
 
     assert hash.key? 'another'
-    assert_equal hash['another'], ENV['HOME']
+    assert_equal hash['another'], Dir.home
   end
 
   def test_non_existing_var
@@ -78,7 +78,7 @@ class TestPandocomaticYAML < Minitest::Test
       hash = Pandocomatic::PandocomaticYAML.load_file path
 
       assert hash.key? 'key'
-      assert_equal hash['key'], ENV['PATH']
+      assert_equal hash['key'], ENV.fetch('PATH', nil)
     end
   end
 end

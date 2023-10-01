@@ -20,7 +20,7 @@
 #++
 module Pandocomatic
   require 'tempfile'
-  require_relative './input'
+  require_relative 'input'
 
   # A specific Input class to handle multiple input files
   class MultipleFilesInput < Input
@@ -95,10 +95,10 @@ module Pandocomatic
       metadata = PandocMetadata.load contents
 
       unless metadata.unique?
-        warn "\nWarning: Encountered the pandocomatic metadata property in"\
-             ' more than one YAML metadata block. Only the pandocomatic property'\
-             ' from the first YAML metadata block is being used; the other'\
-             " pandocomatic properties have been discarded.\n\n"
+        warn "\nWarning: Encountered the pandocomatic metadata property in " \
+             'more than one YAML metadata block. Only the pandocomatic property ' \
+             'from the first YAML metadata block is being used; the other ' \
+             "pandocomatic properties have been discarded.\n\n"
       end
 
       @tmp_file.write contents

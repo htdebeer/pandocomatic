@@ -21,13 +21,13 @@
 module Pandocomatic
   require 'paru/pandoc'
 
-  require_relative './error/configuration_error'
-  require_relative './command/command'
-  require_relative './input'
-  require_relative './multiple_files_input'
-  require_relative './pandocomatic_yaml'
-  require_relative './path'
-  require_relative './template'
+  require_relative 'error/configuration_error'
+  require_relative 'command/command'
+  require_relative 'input'
+  require_relative 'multiple_files_input'
+  require_relative 'pandocomatic_yaml'
+  require_relative 'path'
+  require_relative 'template'
 
   # The default configuration for pandocomatic is read from
   # default_configuration.yaml.
@@ -310,7 +310,7 @@ module Pandocomatic
     #
     # @return [String]
     def src_root
-      @input.nil? ? nil : @input.absolute_path
+      @input&.absolute_path
     end
 
     # Have input CLI options be given?
@@ -607,8 +607,8 @@ module Pandocomatic
         if template.internal?
           warn "WARNING: Unable to find templates [#{missing.join(', ')}] while resolving internal template."
         else
-          warn "WARNING: Unable to find templates [#{missing.join(', ')}] while resolving"\
-               " the external template '#{template.name}' from configuration file '#{template.path}'."
+          warn "WARNING: Unable to find templates [#{missing.join(', ')}] while resolving " \
+               "the external template '#{template.name}' from configuration file '#{template.path}'."
         end
       end
 
@@ -658,8 +658,8 @@ module Pandocomatic
         if !renamed_dst.nil? && !renamed_dst.empty?
           renamed_dst.strip
         else
-          raise StandardError, new("Running rename script '#{script}' on destination '#{dst}'"\
-                                   ' did not result in a renamed destination.')
+          raise StandardError, new("Running rename script '#{script}' on destination '#{dst}' " \
+                                   'did not result in a renamed destination.')
         end
       rescue StandardError => e
         ProcessorError.new(:error_processing_script, e, [script, dst])

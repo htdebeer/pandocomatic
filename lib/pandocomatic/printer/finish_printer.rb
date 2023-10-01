@@ -19,7 +19,7 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './summary_printer'
+  require_relative 'summary_printer'
 
   # Printer for the end of the conversion process in non-quiet mode
   class FinishPrinter < SummaryPrinter

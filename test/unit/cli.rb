@@ -131,11 +131,11 @@ class TestPandocomaticCLI < Minitest::Test
     refute cli('-i test/files/readable_test_file').stdout?
     assert cli('-i test/files/readable_test_file -s').stdout?
 
-    e = assert_raises Pandocomatic::CLIError do
+    assert_raises Pandocomatic::CLIError do
       cli('-i test/files/readable_test_file -s -o some_output').stdout?
     end
 
-    e = assert_raises Pandocomatic::CLIError do
+    assert_raises Pandocomatic::CLIError do
       cli('-i test/files/readable_test_dir -s').stdout?
     end
   end

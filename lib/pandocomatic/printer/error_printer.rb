@@ -19,7 +19,7 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './printer'
+  require_relative 'printer'
 
   # Printer for Errors in non-quiet mode
   class ErrorPrinter < Printer
@@ -36,7 +36,7 @@ module Pandocomatic
 
     # Print an Error to STDERR rather than STDOUT
     def print
-      warn to_s
+      warn self
     end
   end
 end

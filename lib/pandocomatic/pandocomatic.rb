@@ -25,24 +25,24 @@ module Pandocomatic
   require 'paru'
   require 'tempfile'
 
-  require_relative './error/pandocomatic_error'
-  require_relative './error/pandoc_error'
+  require_relative 'error/pandocomatic_error'
+  require_relative 'error/pandoc_error'
 
-  require_relative './cli'
+  require_relative 'cli'
 
-  require_relative './printer/help_printer'
-  require_relative './printer/version_printer'
-  require_relative './printer/error_printer'
-  require_relative './printer/configuration_errors_printer'
-  require_relative './printer/finish_printer'
-  require_relative './printer/summary_printer'
+  require_relative 'printer/help_printer'
+  require_relative 'printer/version_printer'
+  require_relative 'printer/error_printer'
+  require_relative 'printer/configuration_errors_printer'
+  require_relative 'printer/finish_printer'
+  require_relative 'printer/summary_printer'
 
-  require_relative './command/convert_dir_command'
-  require_relative './command/convert_list_command'
-  require_relative './command/convert_file_command'
-  require_relative './command/convert_file_multiple_command'
+  require_relative 'command/convert_dir_command'
+  require_relative 'command/convert_list_command'
+  require_relative 'command/convert_file_command'
+  require_relative 'command/convert_file_multiple_command'
 
-  require_relative './version'
+  require_relative 'version'
 
   # The Pandocomatic class controlls the pandocomatic conversion process
   class Pandocomatic

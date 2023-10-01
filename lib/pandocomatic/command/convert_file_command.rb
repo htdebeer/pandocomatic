@@ -120,9 +120,9 @@ module Pandocomatic
     def to_s
       str = "convert #{File.basename @src} #{"-> #{File.basename @dst}" unless @dst.nil?}"
       unless @metadata.unique?
-        str += "\n\t encountered multiple YAML metadata blocks with a pandocomatic property."\
-               ' Only the pandocomatic property in the first YAML metadata block is being used;'\
-               ' the others are discarded.'
+        str += "\n\t encountered multiple YAML metadata blocks with a pandocomatic property. " \
+               'Only the pandocomatic property in the first YAML metadata block is being used; ' \
+               'the others are discarded.'
       end
       str
     end
@@ -152,8 +152,8 @@ module Pandocomatic
       # Ignore the `--verbose` option, and warn about ignoring it
       if pandoc_options.key? 'verbose'
         pandoc_options.delete 'verbose'
-        warn 'WARNING: Ignoring the pandoc option --verbose because it'\
-             ' might interfere with the working of pandocomatic.'
+        warn 'WARNING: Ignoring the pandoc option --verbose because it ' \
+             'might interfere with the working of pandocomatic.'
       end
 
       template.merge! Template.new(INTERNAL_TEMPLATE, @metadata.pandocomatic) if @metadata.pandocomatic?
@@ -236,8 +236,8 @@ module Pandocomatic
             # don't let pandoc write the output to enable postprocessing
           rescue StandardError
             if debug?
-              warn "WARNING: The pandoc option '#{option}' (with value '#{value}')"\
-                   ' is not recognized by paru. This option is skipped.'
+              warn "WARNING: The pandoc option '#{option}' (with value '#{value}') " \
+                   'is not recognized by paru. This option is skipped.'
             end
           end
         end

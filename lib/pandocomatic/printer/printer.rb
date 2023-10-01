@@ -49,7 +49,7 @@ module Pandocomatic
 
     # Print to STDOUT
     def print
-      puts to_s
+      puts self
     end
   end
 end

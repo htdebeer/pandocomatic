@@ -19,7 +19,7 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './pandocomatic_error'
+  require_relative 'pandocomatic_error'
 
   # A PandocMetadataError
   class PandocMetadataError < PandocomaticError
@@ -28,9 +28,7 @@ module Pandocomatic
       'pandoc_metadata_error.txt'
     end
 
-
     # :file_contains_horizontal_lines_with_three_dashes
     # :cannot_parse_YAML_metadata
   end
 end
-

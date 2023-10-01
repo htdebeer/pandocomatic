@@ -87,7 +87,7 @@ module Pandocomatic
     # @return [Boolean]
     def self.local_path?(path)
       if Gem.win_platform?
-        path.match("^\\.\\\\\.*$")
+        path.match('^\\.\\\\.*$')
       else
         path.start_with? './'
       end
@@ -99,7 +99,7 @@ module Pandocomatic
     # @return [Boolean]
     def self.absolute_path?(path)
       if Gem.win_platform?
-        path.match("^[a-zA-Z]:\\\\\.*$")
+        path.match('^[a-zA-Z]:\\\\.*$')
       else
         path.start_with? '/'
       end

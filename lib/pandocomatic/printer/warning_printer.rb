@@ -19,7 +19,7 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './printer'
+  require_relative 'printer'
 
   # Printer for warnings
   class WarningPrinter < Printer
@@ -34,7 +34,7 @@ module Pandocomatic
 
     # Print warnings to STDERR rather than STDOUT
     def print
-      warn to_s
+      warn self
     end
   end
 end

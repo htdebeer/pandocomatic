@@ -129,7 +129,7 @@ class TestPandocomaticRun < Minitest::Test
     temp_file_name_path = File.join ['/tmp', temp_file_name]
 
     # remove temp file
-    File.delete temp_file_name_path if File.exist? temp_file_name_path
+    FileUtils.rm_f temp_file_name_path
 
     Dir.mktmpdir('setup_cleanup') do |dir|
       input = File.join %w[example src setup-cleanup-wiki]

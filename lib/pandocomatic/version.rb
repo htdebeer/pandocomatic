@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #--
 # Copyright 2023, Huub de Beer <Huub@heerdebeer.org>
 #

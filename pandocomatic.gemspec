@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'minitest-reporters', '~> 1.5'
   s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'yard', '~> 0.9.27'
-  s.add_development_dependency 'rubocop', '~> 1.25.0'
+  s.add_development_dependency 'rubocop', '~> 1.56.4'
   s.executables << 'pandocomatic'
   s.homepage = 'https://heerdebeer.org/Software/markdown/pandocomatic/'
   s.requirements << 'pandoc, a universal document converter'

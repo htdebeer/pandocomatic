@@ -19,7 +19,7 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './pandocomatic_error'
+  require_relative 'pandocomatic_error'
 
   # A ConfigurationError
   class ConfigurationError < PandocomaticError

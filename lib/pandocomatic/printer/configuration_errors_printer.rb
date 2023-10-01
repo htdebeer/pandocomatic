@@ -19,7 +19,7 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative './printer'
+  require_relative 'printer'
 
   # Printer for ConfigurationErrors in non-quiet mode
   class ConfigurationErrorsPrinter < Printer
