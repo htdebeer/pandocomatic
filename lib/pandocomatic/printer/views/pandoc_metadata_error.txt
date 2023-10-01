@@ -1,0 +1,2 @@
+Error extracting pandoc's metadata blocks: <%=@error.message%>.
+<% if @error.error? %>Cause: <%= @error.error.to_s %><% end %>

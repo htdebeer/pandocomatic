@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017 Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2023 Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -21,22 +21,16 @@
 module Pandocomatic
   require_relative './pandocomatic_error'
 
-  # A ConfigurationError
-  class ConfigurationError < PandocomaticError
+  # A PandocMetadataError
+  class PandocMetadataError < PandocomaticError
     # The template to print this ConfigurationError
     def template
-      'configuration_error.txt'
+      'pandoc_metadata_error.txt'
     end
 
-    # :data_dir_does_not_exist,
-    # :data_dir_is_not_a_directory,
-    # :data_dir_is_not_readable,
 
-    # :config_file_does_not_exist,
-    # :config_file_is_not_a_file,
-    # :config_file_is_not_readable,
-    # :unable_to_load_config_file
-
-    # :no_such_template
+    # :file_contains_horizontal_lines_with_three_dashes
+    # :cannot_parse_YAML_metadata
   end
 end
+

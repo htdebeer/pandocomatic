@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2014-2022, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2014-2023, Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -23,11 +23,13 @@ module Pandocomatic
   require 'paru'
   require 'yaml'
 
-  require_relative './error/pandoc_error'
-  require_relative './error/io_error'
+  require_relative './error/pandoc_metadata_error.rb'
   require_relative './pandocomatic_yaml'
 
-  # Regular expression to find metadata blocks in a string.
+  # Regular expression to find metadata blocks in a string. This regular
+  # expression does interfere with pandoc's horizontal line syntax when using
+  # three dashes for horizontal lines. Therefore, use four or more dashes in
+  # your pandoc documents.
   METADATA_BLOCK = /^---[ \t]*(\r\n|\r|\n)(.+?)^(?:---|\.\.\.)[ \t]*(\r\n|\r|\n)/m.freeze
 
   # PandocMetadata represents the metadata with pandoc options set in
@@ -58,6 +60,9 @@ module Pandocomatic
     # @param path [String|Nil] the path to the source of the input, if any
     # @return [PandocMetadata] the metadata in the source file, or an empty
     #   one if no such metadata is contained in the source file.
+    #
+    # @raise [PandocomaticError] when the pandoc metadata cannot be
+    # extracted.
     def self.load(input, path = nil)
       yaml, pandocomatic_blocks = extract_metadata(input, path)
 
@@ -184,6 +189,8 @@ module Pandocomatic
     # If more than one pandocomatic property is contained in the input,
     # all but the first are discarded and are not present in the
     # extracted metadata YAML string.
+    #
+    # @raise [PandocomaticError] when pandoc metadata cannot be extracted.
     private_class_method def self.extract_metadata(input, path = nil)
       metadata_blocks = MetadataBlockList.new input, path
 
@@ -193,10 +200,20 @@ module Pandocomatic
     # List of YAML metadata blocks present in some input source file
     class MetadataBlockList
       def initialize(input, path)
-        @metadata_blocks = input
-                           .scan(METADATA_BLOCK)
-                           .map { |match| PandocomaticYAML.load "---#{match.join}...", path }
-                           .select { |block| !block.nil? and !block.empty? }
+        begin
+          blocks = input
+                    .scan(METADATA_BLOCK)
+                    .map { |match| PandocomaticYAML.load "---#{match.join}...", path }
+                    .select { |block| !block.nil? and !block.empty? }
+
+          if blocks.any? {|block| not block.is_a? Hash}
+            raise PandocMetadataError.new :check_horizontal_lines_have_four_dashes_or_more
+          else
+            @metadata_blocks = blocks
+          end
+        rescue Exception => e
+          raise PandocMetadataError.new :unexpected_parse_error, e
+        end
       end
 
       # Count the number of metadata blocks with a "pandocomatic_" property.

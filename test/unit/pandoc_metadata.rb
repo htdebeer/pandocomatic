@@ -69,6 +69,25 @@ class TestPandocMetadata < Minitest::Test
     end
   end
 
+  def test_load_pandoc_metadata_from_file_with_horizontal_lines
+    input_with_working_lines = [
+      "---\nkey: value\n...\n\nhello\n\n---\n\nworld\n\nwith a single three dashes line",
+      "---\nkey: value\n...\n\nhello\n\n----\n\nworld\n\n----\n\nwith two or more four dashes lines"
+    ]
+
+    input_with_working_lines.each do |input|
+      metadata = Pandocomatic::PandocMetadata.load(input)
+      assert metadata.key? 'key'
+      assert metadata['key'] = 'value'
+    end
+
+    # Two or more three dashes lines should throw an error
+    e = assert_raises Pandocomatic::PandocMetadataError do
+      input = "---\nkey: value\n...\n\nhello\n\n---\n\nworld\n\n---\n\nend"
+      metadata = Pandocomatic::PandocMetadata.load(input)
+    end
+  end
+
   def test_load_single_pandocomatic_property
     input = "---\npandocomatic_:\n  pandoc:\n    from: markdown\n    to: pdf\n...\n\nA document with a pandocomatic metadata property in a single metadata block."
     metadata = Pandocomatic::PandocMetadata.load(input)
@@ -95,4 +114,5 @@ class TestPandocMetadata < Minitest::Test
     refute metadata.unique?
     assert metadata.pandoc_options['from'] = 'latex'
   end
+
 end
