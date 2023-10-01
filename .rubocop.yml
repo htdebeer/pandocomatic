@@ -1,6 +1,7 @@
 AllCops:
   TargetRubyVersion: 3.2
   NewCops: enable
+  StyleGuideBaseURL: https://rubystyle.guide  
 Metrics/ClassLength:
   Max: 150
 Metrics/MethodLength:
