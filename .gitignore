@@ -2,6 +2,7 @@
 ~*
 *.swp
 *.bak
+*.log
 
 documentation/api-doc
 .yardoc

@@ -6,7 +6,7 @@
 # template.
 
 puts $stdin.read
-puts ""
-puts "---"
-puts "arguments: [#{ARGV.map{|a| "'#{a}'"}.join(', ')}]"
-puts "..."
+puts ''
+puts '---'
+puts "arguments: [#{ARGV.map { |a| "'#{a}'" }.join(', ')}]"
+puts '...'

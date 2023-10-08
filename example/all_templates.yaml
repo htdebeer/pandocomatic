@@ -20,6 +20,6 @@ templates:
       - 'preprocessors/now.rb'
     pandoc:
       from: markdown
-      to: latex
-      pdf-engine: lualatex
+      to: pdf
+      pdf-engine: pdfroff
       use-extension: pdf

@@ -26,6 +26,8 @@ module Pandocomatic
   require_relative 'error/pandoc_metadata_error'
   require_relative 'pandocomatic_yaml'
 
+  BLOCK_START = /^---[ \t]*$/
+
   # Regular expression to find metadata blocks in a string. This regular
   # expression does interfere with pandoc's horizontal line syntax when using
   # three dashes for horizontal lines. Therefore, use four or more dashes in
@@ -202,14 +204,11 @@ module Pandocomatic
     class MetadataBlockList
       def initialize(input, path)
         blocks = extract_blocks input, path
-
-        if blocks.any? { |block| !block.is_a? Hash }
-          raise PandocMetadataError, :check_horizontal_lines_have_four_dashes_or_more
+        if blocks.any? { |b| !b.is_a? Hash }
+          raise PandocMetadataError.new :found_horizontal_lines_with_three_dashes, nil, path
         end
 
         @metadata_blocks = blocks
-      rescue StandardError => e
-        raise PandocMetadataError.new :unexpected_parse_error, e
       end
 
       # Count the number of metadata blocks with a "pandocomatic_" property.
@@ -236,10 +235,21 @@ module Pandocomatic
       private
 
       def extract_blocks(input, path)
-        input
-          .scan(METADATA_BLOCK)
-          .map { |match| PandocomaticYAML.load "---#{match.join}...", path }
-          .select { |block| !block.nil? and !block.empty? }
+        starts = input.scan(BLOCK_START)
+        if starts.empty?
+          # No YAML metadata blocks expected
+          return []
+        end
+
+        # Expect YAML metadata blocks
+        begin
+          input
+            .scan(METADATA_BLOCK)
+            .map { |match| PandocomaticYAML.load "---#{match.join}...", path }
+            .select { |block| !block.nil? and !block.empty? }
+        rescue StandardError => e
+          raise PandocMetadataError.new :expected_to_find_YAML_metadata_blocks, e, path
+        end
       end
     end
 

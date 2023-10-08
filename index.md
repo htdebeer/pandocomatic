@@ -13,11 +13,11 @@ title: Pandocomatic
 
 # Introduction
 
-Pandocomatic is a tool to automate the use of
-[pandoc](https://pandoc.org/). With pandocomatic you can express common
-patterns of using pandoc for generating your documents. Applied to a
-directory, pandocomatic can act as a static site generator. For example,
-this manual is generated with pandocomatic!
+Pandocomatic automates the use of [pandoc](https://pandoc.org/). With
+pandocomatic you can express common patterns of using pandoc for
+generating your documents. Applied to a directory, pandocomatic acts as
+a static site generator. For example, this manual is generated with
+pandocomatic!
 
 Pandocomatic is [free
 software](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic
@@ -31,16 +31,12 @@ source code of pandocomatic in its
 [paru](https://github.com/htdebeer/paru), which is a wrapper around
 pandoc.
 
-**Note.** If you're using pandoc 3, use pandocomatic version 1.1.x or
-higher; pandocomatic 1.0.x doesn't work with pandoc 3. If you're still
-using pandoc version 2, use pandocomatic version 1.0.x instead.
-
 ## Acknowledgements
 
-I would like to thank [Ian](https://github.com/iandol) for his
-contribution of patches, bug reports, fixes, and suggestions. With your
-help pandocomatic is growing beyond a simple tool for personal use into
-a useful addition to the pandoc ecosystem.
+Thanks to [Ian](https://github.com/iandol) for his contribution of
+patches, bug reports, fixes, and suggestions. With your help
+pandocomatic is growing beyond a simple tool for personal use into a
+useful addition to the pandoc ecosystem.
 
 ## Installation
 
@@ -59,12 +55,12 @@ guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest gem,
-[pandocomatic-1.1.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-1.1.0.gem),
+[pandocomatic-1.1.1](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-1.1.1.gem),
 from Github and install it manually as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-1.1.0.gem
+gem install pandocomatic-1.1.1.gem
 ```
 
 ## Why pandocomatic?

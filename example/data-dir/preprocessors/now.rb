@@ -5,6 +5,6 @@
 # normally you would use something like Date.today.to_s instead.
 
 puts $stdin.read
-puts "---"
-puts "date: 2017-01-28"
-puts "..."
+puts '---'
+puts 'date: 2017-01-28'
+puts '...'
