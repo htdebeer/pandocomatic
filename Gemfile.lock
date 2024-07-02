@@ -1,0 +1,67 @@
+PATH
+  remote: .
+  specs:
+    pandocomatic (1.1.2)
+      optimist (~> 3.0.0, >= 3.0.0)
+      paru (~> 1.1, >= 1.2.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ansi (1.5.0)
+    ast (2.4.2)
+    base64 (0.1.1)
+    builder (3.3.0)
+    json (2.7.2)
+    language_server-protocol (3.17.0.3)
+    minitest (5.24.1)
+    minitest-reporters (1.7.1)
+      ansi
+      builder
+      minitest (>= 5.0)
+      ruby-progressbar
+    optimist (3.0.1)
+    parallel (1.25.1)
+    parser (3.3.3.0)
+      ast (~> 2.4.1)
+      racc
+    paru (1.2.1)
+    racc (1.8.0)
+    rainbow (3.1.1)
+    rake (13.2.1)
+    regexp_parser (2.9.2)
+    rexml (3.3.1)
+      strscan
+    rubocop (1.56.4)
+      base64 (~> 0.1.1)
+      json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
+      parallel (~> 1.10)
+      parser (>= 3.2.2.3)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.28.1, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.31.3)
+      parser (>= 3.3.1.0)
+    ruby-progressbar (1.13.0)
+    strscan (3.1.0)
+    unicode-display_width (2.5.0)
+    yard (0.9.36)
+
+PLATFORMS
+  ruby
+  x86_64-linux-gnu
+
+DEPENDENCIES
+  minitest (~> 5.15)
+  minitest-reporters (~> 1.5)
+  pandocomatic!
+  rake (~> 13.0)
+  rubocop (~> 1.56.4)
+  yard (~> 0.9.27)
+
+BUNDLED WITH
+   2.5.11
