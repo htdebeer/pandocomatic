@@ -16,6 +16,10 @@ class TestPandocomaticRun < Minitest::Test
 
   def assert_directories_equal(expected, generated)
     assert_equal File.basename(expected), File.basename(generated)
+    warn "expected: "
+    warn Dir.entries(expected)
+    warn "generated: "
+    warn Dir.entries(generated)
     assert_equal Dir.entries(expected).size, Dir.entries(generated).size, expected
 
     Dir.foreach(expected).each do |entry|
