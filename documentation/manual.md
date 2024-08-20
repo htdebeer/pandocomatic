@@ -11,6 +11,8 @@ keywords:
 - static site generator
 pandocomatic_:
   use-template: indexdoc
+  pandoc:
+    number-sections: false
 ...
 
 # Introduction {#introduction}
