@@ -11,4 +11,6 @@ templates:
       - filters/insert_pandocomatic_version.rb
   indexdoc:
       extends: mddoc
+      pandoc:
+        number-sections: false
       postprocessors: ['postprocessors/setup_for_website.rb']
