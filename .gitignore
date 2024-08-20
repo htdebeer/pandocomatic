@@ -16,3 +16,5 @@ hello_world.html
 .cache
 
 *.code-workspace
+
+.local

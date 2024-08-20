@@ -1492,4 +1492,5 @@ pandocomatic_:
     pandoc:
         filter:
         - './documentation/data-dir/filters/number_all_the_things.rb'
+        number-sections: false
 ...
