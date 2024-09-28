@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2023, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2023—2024 Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -20,5 +20,5 @@
 #++
 module Pandocomatic
   # Pandocomatic's current version.
-  VERSION = [1, 1, 3].freeze
+  VERSION = [1, 2, 0].freeze
 end

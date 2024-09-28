@@ -1,0 +1,4 @@
+settings:
+  recursive: true
+  follow-links: false
+  extract-metadata-from: ['*.docx']

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2019 Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2019—2024 Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -19,8 +19,6 @@
 # with pandocomatic.  If not, see <http://www.gnu.org/licenses/>.
 #++
 module Pandocomatic
-  require_relative 'configuration'
-
   # Generic class to handle input files and directories in a general manner.
   class Input
     attr_reader :errors

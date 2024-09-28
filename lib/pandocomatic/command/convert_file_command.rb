@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017-2022, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017-2024, Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -100,8 +100,7 @@ module Pandocomatic
                        else
                          template_name
                        end
-
-      @metadata = PandocMetadata.load_file @src
+      @metadata = @config.get_metadata @src, @template_name
       @dst = @config.set_destination @dst, @template_name, @metadata
 
       @errors.push IOError.new(:file_does_not_exist, nil, @src) unless File.exist? @src
@@ -181,7 +180,6 @@ module Pandocomatic
 
       begin
         # Either output to file or to STDOUT.
-
         if @config.stdout?
           puts output
           @dst.close!

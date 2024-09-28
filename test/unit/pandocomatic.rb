@@ -16,9 +16,9 @@ class TestPandocomaticRun < Minitest::Test
 
   def assert_directories_equal(expected, generated)
     assert_equal File.basename(expected), File.basename(generated)
-    warn "expected: "
+    warn 'expected: '
     warn Dir.entries(expected)
-    warn "generated: "
+    warn 'generated: '
     warn Dir.entries(generated)
     assert_equal Dir.entries(expected).size, Dir.entries(generated).size, expected
 
@@ -457,31 +457,40 @@ class TestPandocomaticRun < Minitest::Test
       config = File.join ['example', 'vars.yaml']
       output = File.join [dir, 'hello_vars.html']
 
-      begin
-        $stderr = StringIO.new
-        Pandocomatic::Pandocomatic.run "-i #{input} -c #{config} -o #{output}"
-        error = $stderr.string.strip
+      $stderr = StringIO.new
 
-        expected_err = "Unable to load config file: '/home/pandocomatic-user/example/vars.yaml'. Environment variable 'P_OUTPUT_FORMAT' does not exist: No substitution possible."
-        assert_equal expected_err, error
+      begin
+        Pandocomatic::Pandocomatic.run "-i #{input} -c #{config} -o #{output}"
       rescue Exception => e
         warn e
       end
+
+      error = $stderr.string.strip
+
+      expected_err = "Unable to load config file: '/home/pandocomatic-user/example/vars.yaml'. Environment variable 'P_OUTPUT_FORMAT' in '/home/pandocomatic-user/example/vars.yaml' does not exist: No substitution possible.
+exit"
+      assert_equal expected_err, error
 
       VARS.each do |key, value|
         ENV[key] = value unless key == 'P_TITLE'
       end
 
-      begin
-        $stderr = StringIO.new
-        Pandocomatic::Pandocomatic.run "-i #{input} -c #{config} -o #{output}"
-        error = $stderr.string.strip
+      $stderr = StringIO.new
 
-        expected_err = "Environment variable 'P_TITLE' in '/home/pandocomatic-user/example/hello_vars.md' does not exist: No substitution possible."
-        assert_equal expected_err, error
+      begin
+        Pandocomatic::Pandocomatic.run "-i #{input} -c #{config} -o #{output}"
       rescue Exception => e
         warn e
       end
+
+      error = $stderr.string.strip
+
+      expected_err = "Expected to extract YAML metadata blocks from file '/home/pandocomatic-user/example/hello_vars.md', but did not succeed. Make sure '/home/pandocomatic-user/example/hello_vars.md' is a pandoc markdown file. Check YAML syntax of all metadata blocks; make sure that all horizontal lines have at least four (4) dashes.
+
+Reported cause(s):
+  Environment variable 'P_TITLE' in '/home/pandocomatic-user/example/hello_vars.md' does not exist: No substitution possible.
+exit"
+      assert_equal expected_err, error
     end
 
     VARS.each do |key, _|
@@ -497,6 +506,49 @@ class TestPandocomaticRun < Minitest::Test
                     /WARNING: Ignoring the pandoc option --verbose because it might interfere with the working of pandocomatic./) do
         Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
       end
+    end
+  end
+
+  def test_warn_when_extracting_pandoc_yaml_metadata_fails
+    Dir.mktmpdir('extract_yaml_metadata') do |dir|
+      config = File.join ['example', 'extract_pandoc_metadata_from_docx.yaml']
+      input = File.join ['example', 'hello_world.docx']
+      output = File.join [dir, 'hello_world.tex']
+
+      $stderr = StringIO.new
+
+      begin
+        Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -o #{output}"
+      rescue Exception => e
+        warn e
+      end
+
+      err = $stderr.string.strip
+      expected = "Expected to extract YAML metadata blocks from file '/home/pandocomatic-user/example/hello_world.docx', but did not succeed. Make sure '/home/pandocomatic-user/example/hello_world.docx' is a pandoc markdown file. Check YAML syntax of all metadata blocks; make sure that all horizontal lines have at least four (4) dashes.
+
+Reported cause(s):
+  invalid byte sequence in UTF-8
+exit"
+      assert_equal expected, err
+    end
+  end
+
+  def test_always_try_to_extract_metadata_from_markdown_files
+    Dir.mktmpdir('extract_yaml_metadata') do |_dir|
+      config = File.join ['example', 'extract_pandoc_metadata_from_docx.yaml']
+      input = File.join ['example', 'hello_world_to_tex.md']
+
+      $stdout = StringIO.new
+
+      begin
+        Pandocomatic::Pandocomatic.run "-c #{config} -i #{input} -s"
+      rescue Exception => e
+        warn e
+      end
+
+      output = $stdout.string.strip
+      expected = '\\emph{Hello world!}, from \\textbf{pandocomatic}.'
+      assert_equal expected, output
     end
   end
 end

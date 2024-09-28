@@ -2,6 +2,7 @@ settings:
     recursive: true
     follow-symlinks: false
     skip: ['.*', 'pandocomatic.yaml']
+    extract-metadata-from: []
     match-files: 'first'
 templates:
   empty:

@@ -1,4 +1,4 @@
-Expected to extract YAML metadata blocks from file '<%= @error.data %>', but did not succeed. Check YAML syntax of all metadata blocks; make sure that all horizontal lines have at least four (4) dashes.
+Expected to extract YAML metadata blocks from file '<%= @error.data %>', but did not succeed. Make sure '<%= @error.data %>' is a pandoc markdown file. Check YAML syntax of all metadata blocks; make sure that all horizontal lines have at least four (4) dashes.
 
 <% if @error.error? %>Reported cause(s):
   <%= @error.error.to_s %><% end %>

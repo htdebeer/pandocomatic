@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics
 #--
-# Copyright 2014—2022 Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2014—2024 Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -41,6 +42,7 @@ module Pandocomatic
   # "unskip" option
   DEFAULT_SETTINGS = {
     'skip' => ['.*', 'pandocomatic.yaml'],
+    'extract-metadata-from' => [],
     'recursive' => true,
     'follow-links' => false,
     'match-files' => 'first'
@@ -111,7 +113,71 @@ module Pandocomatic
     'zimwiki' => 'zimwiki'
   }.freeze
 
-  # rubocop:disable Metrics
+  # Pandoc's mapping from file extensions to pandoc source format. Taken from 
+  # https://github.com/jgm/pandoc/blob/main/src/Text/Pandoc/Format.hs
+  PANDOCS_EXTENSION_TO_FORMAT_MAPPING = {
+    '.Rmd' => 'markdown',
+    '.adoc' => 'asciidoc',
+    '.asciidoc' => 'asciidoc',
+    '.bib' => 'biblatex',
+    '.context' => 'context',
+    '.csv' => 'csv',
+    '.ctx' => 'context',
+    '.db' => 'docbook',
+    '.dj' => 'djot',
+    '.docx' => 'docx',
+    '.dokuwiki' => 'dokuwiki',
+    '.epub' => 'epub',
+    '.fb2' => 'fb2',
+    '.htm' => 'html',
+    '.html' => 'html',
+    '.icml' => 'icml',
+    '.ipynb' => 'ipynb',
+    '.json' => 'json',
+    '.latex' => 'latex',
+    '.lhs' => 'markdown',
+    '.ltx' => 'latex',
+    '.markdown' => 'markdown',
+    '.markua' => 'markua',
+    '.md' => 'markdown',
+    '.mdown' => 'markdown',
+    '.mdwn' => 'markdown',
+    '.mkd' => 'markdown',
+    '.mkdn' => 'markdown',
+    '.ms' => 'ms',
+    '.muse' => 'muse',
+    '.native' => 'native',
+    '.odt' => 'odt',
+    '.opml' => 'opml',
+    '.org' => 'org',
+    '.pptx' => 'pptx',
+    '.ris' => 'ris',
+    '.roff' => 'ms',
+    '.rst' => 'rst',
+    '.rtf' => 'rtf',
+    '.s5' => 's5',
+    '.t2t' => 't2t',
+    '.tei' => 'tei',
+    '.tex' => 'latex',
+    '.texi' => 'texinfo',
+    '.texinfo' => 'texinfo',
+    '.text' => 'markdown',
+    '.textile' => 'textile',
+    '.tsv' => 'tsv',
+    '.typ' => 'typst',
+    '.txt' => 'markdown',
+    '.wiki' => 'mediawiki',
+    '.xhtml' => 'html',
+    '.1' => 'man',
+    '.2' => 'man',
+    '.3' => 'man',
+    '.4' => 'man',
+    '.5' => 'man',
+    '.6' => 'man',
+    '.7' => 'man',
+    '.8' => 'man',
+    '.9' => 'man'
+  }.freeze
 
   # Configuration models a pandocomatic configuration.
   class Configuration
@@ -357,6 +423,40 @@ module Pandocomatic
       end
     end
 
+    # Get a pandoc metadata object for given source file and template.
+    #
+    # @param src [String] path to source file
+    # @param template_name [String] template used; optional parameter
+    # @return [PandocMetadata] Pandoc's metadata for given file and template.
+    def get_metadata(src, template_name = nil)
+      if extract_metadata_from? src
+        PandocMetadata.load_file src
+      else
+        src_format = nil
+
+        # Determine source format based on template
+        if template_name && @templates.key?(template_name) && @templates[template_name].pandoc?
+          pandoc = @templates[template_name].pandoc
+          src_format = pandoc['from'] if pandoc.key? 'from'
+        end
+
+        if src_format.nil?
+          # Determine source format based on extension like pandoc does.
+          # See https://github.com/jgm/pandoc/blob/main/src/Text/Pandoc/Format.hs
+          # for that mapping
+          src_extension = File.extname src
+          src_format = PANDOCS_EXTENSION_TO_FORMAT_MAPPING[src_extension]
+        end
+
+        if !src_format || src_format == 'markdown'
+          # Behave like pandoc: If no source format can be determined, assume markdown
+          PandocMetadata.load_file src
+        else
+          PandocMetadata.empty src_format
+        end
+      end
+    end
+
     # Should the source file be converted given this Configuration?
     #
     # @param src [String] True if this source file matches the 'glob'
@@ -577,6 +677,8 @@ module Pandocomatic
         case setting
         when 'skip'
           @settings['skip'] = @settings['skip'].concat(value).uniq
+        when 'extract-metadata-from'
+          @settings['extract-metadata-from'] = @settings['extract-metadata-from'].concat(value).uniq
         when 'data-dir'
           next # skip data-dir setting; is set once in initialization
         else
@@ -761,6 +863,15 @@ module Pandocomatic
         path
       end
     end
+
+    # Should we try to extract pandoc YAML metadata from source file?
+    def extract_metadata_from?(src)
+      if @settings.key? 'extract-metadata-from'
+        @settings['extract-metadata-from'].any? { |glob| File.fnmatch glob, File.basename(src) }
+      else
+        false
+      end
+    end
   end
-  # rubocop:enable Metrics
 end
+# rubocop:enable Metrics

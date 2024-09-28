@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017, 2022, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017—2024 Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -49,11 +49,11 @@ module Pandocomatic
       @config = config
       @src = src
 
-      metadata = PandocMetadata.load_file @src
+      metadata = @config.get_metadata @src
 
       subcommands = []
 
-      if metadata.template?
+      if metadata&.template?
         # There are templates in this document's metadata, try to use
         # those.
         metadata.templates.each do |template_name|

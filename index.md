@@ -55,12 +55,12 @@ guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest gem,
-[pandocomatic-1.1.3](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-1.1.3.gem),
+[pandocomatic-1.2.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-1.2.0.gem),
 from Github and install it manually as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-1.1.3.gem
+gem install pandocomatic-1.2.0.gem
 ```
 
 ## Why pandocomatic?
@@ -695,9 +695,10 @@ You can configure five optional global settings:
 
 1.  `data-dir`
 2.  `match-files`
-3.  `skip`
-4.  `recursive`
-5.  `follow-links`
+3.  `extract-metadata-from`
+4.  `skip`
+5.  `recursive`
+6.  `follow-links`
 
 The latter three are used only when converting a whole directory tree
 with pandocomatic. These are discussed in the next sub section.
@@ -745,6 +746,34 @@ and `all`. Pandocomatic matches a file to a template as follows:
         to convert the file.
 
         This is the default.
+
+The third setting, `extract-metadata-from` controls from which files
+pandocomatic tries to extract pandoc metadata YAML blocks. In these
+metadata blocks, you can set metadata specific to the document in the
+file. This metadata can include instructions for pandocomatic, like
+selecting a template to use, or to setup an internal pandocomatic
+template.
+
+Pandocomatic always tries to extract metadata YAML blocks from markdown
+files. If pandocomatic doesn't know if the file it is processing is a
+markdown file, it falls back to pandoc's default behavior in recognizing
+markdown files. However, if you give your markdown files a file
+extension than isn't recognized by pandocomatic or pandoc as a markdown
+file, e.g., ".pandoc", use property `extract-metadata-from` to tell
+pandocomatic to extract metadata from those files.
+
+Property `extract-metadata-from` takes a list of glob patterns. For
+example, to extract metadata from ".pandoc" files, use:
+
+``` yaml
+settings:
+  # ...
+  extract-metadata-from: ['*.pandoc']
+  # ...
+```
+
+Note that the `extract-metadata-from` property cannot be used to stop
+pandocomatic from extracting metadata from markdown files.
 
 #### Configuring converting a directory tree {#global-settings}
 

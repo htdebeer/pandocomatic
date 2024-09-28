@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2014-2023, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2014-2024, Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -26,6 +26,7 @@ module Pandocomatic
   require_relative 'error/pandoc_metadata_error'
   require_relative 'pandocomatic_yaml'
 
+  # Regular expression to find the start of metadata blocks in a string.
   BLOCK_START = /^---[ \t]*$/
 
   # Regular expression to find metadata blocks in a string. This regular
@@ -43,6 +44,15 @@ module Pandocomatic
     # @return [String] the YAML data embedded in the input string
     def self.pandoc2yaml(input)
       extract_metadata(input).first
+    end
+
+    # Create an empty metadata object with only the source format set.
+    #
+    # @param src_format [String] the source format
+    # @return [PandocMetadata[ empty metadata with only pandoc's source format
+    # set.
+    def self.empty(src_format)
+      PandocMetadata.new({ 'pandocomatic_' => { 'pandoc' => { 'from' => src_format } } })
     end
 
     # Collect the metadata embedded in the src file and create a new
@@ -236,20 +246,19 @@ module Pandocomatic
 
       def extract_blocks(input, path)
         starts = input.scan(BLOCK_START)
+
         if starts.empty?
           # No YAML metadata blocks expected
           return []
         end
 
         # Expect YAML metadata blocks
-        begin
-          input
-            .scan(METADATA_BLOCK)
-            .map { |match| PandocomaticYAML.load "---#{match.join}...", path }
-            .select { |block| !block.nil? and !block.empty? }
-        rescue StandardError => e
-          raise PandocMetadataError.new :expected_to_find_YAML_metadata_blocks, e, path
-        end
+        input
+          .scan(METADATA_BLOCK)
+          .map { |match| PandocomaticYAML.load "---#{match.join}...", path }
+          .select { |block| !block.nil? and !block.empty? }
+      rescue StandardError => e
+        raise PandocMetadataError.new :expected_to_find_YAML_metadata_blocks, e, path
       end
     end
 
