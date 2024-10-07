@@ -113,7 +113,7 @@ module Pandocomatic
     'zimwiki' => 'zimwiki'
   }.freeze
 
-  # Pandoc's mapping from file extensions to pandoc source format. Taken from 
+  # Pandoc's mapping from file extensions to pandoc source format. Taken from
   # https://github.com/jgm/pandoc/blob/main/src/Text/Pandoc/Format.hs
   PANDOCS_EXTENSION_TO_FORMAT_MAPPING = {
     '.Rmd' => 'markdown',
@@ -304,18 +304,11 @@ module Pandocomatic
       @options[:verbose_given] and @options[:verbose]
     end
 
-    # Is the debug CLI option given?
-    #
-    # @return [Boolean]
-    def debug?
-      @options[:debug_given] and @options[:debug]
-    end
-
     # Run pandocomatic in quiet mode?
     #
     # @return [Boolean]
     def quiet?
-      [verbose?, debug?, dry_run?].none?
+      [verbose?, dry_run?].none?
     end
 
     # Is the modified only CLI option given?

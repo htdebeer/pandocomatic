@@ -105,16 +105,27 @@ OPTIONS
                   Default is FALSE.
 
   -V, --verbose   Run pandocomatic verbosely. Default is FALSE. Pandocomatic
-                  runs quietly unless the verbose, debug, or dry-run options
-                  are given.
-
-  -b, --debug     Run pandocomatic in debug mode: show the pandoc invocations
-                  before each conversion. Default is FALSE. In debug mode,
-                  pandocomatic runs verbosely.
+                  runs quietly unless the verbose, or dry-run options are given.
 
   -y, --dry-run   Configure pandocomatic to run the conversion process, but do
                   not actually run it. Default is FALSE. When using this
                   dry-run option, pandocomatic runs verbosely.
+
+  Logging:
+
+  -l [FILE], --log [FILE]
+
+                  Let pandocomatic log what it is doing to FILE. If FILE is
+                  not given, pandocomatic uses 'pandocomatic.log'. Control
+                  detail of logging with option '--log-level'.
+
+  --log-level [LEVEL]
+
+                  Let pandocomatic log with detail LEVEL. LEVEL should be one
+                  of 'fatal', 'error', 'warn', 'info', or 'debug'. By default, 
+                  pandocomatic logs at detail level info. Choose level 'debug'
+                  to see all steps pandocomatic takes to convert every
+                  directory and file.
   
 
   Experimental:

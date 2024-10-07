@@ -128,7 +128,10 @@ module Pandocomatic
 
     # Run this command
     def run
-      Dir.mkdir @dst_dir if create_directory?
+      if create_directory?
+        Pandocomatic::LOG.info "  Creating directory '#{@dst_dir}'"
+        Dir.mkdir @dst_dir
+      end
     rescue SystemError => e
       raise IOError.new(:error_creating_directory, e, @dst_dir)
     end

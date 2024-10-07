@@ -25,7 +25,7 @@ module Pandocomatic
   class CommandPrinter < Printer
     # Create a new CommandPrinter
     def initialize(command)
-      super 'command.txt'
+      super('command.txt')
       @command = command
     end
   end

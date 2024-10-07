@@ -49,6 +49,7 @@ module Pandocomatic
 
     # Print to STDOUT
     def print
+      Pandocomatic::LOG.info self
       puts self
     end
   end

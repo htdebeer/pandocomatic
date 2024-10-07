@@ -25,7 +25,7 @@ module Pandocomatic
   class VersionPrinter < Printer
     # Create a new VersionPrinter
     def initialize(version)
-      super 'version.txt'
+      super('version.txt')
       @version = version
     end
   end

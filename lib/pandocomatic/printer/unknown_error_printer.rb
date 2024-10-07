@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017—2024, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2024, Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -22,14 +22,10 @@ module Pandocomatic
   require_relative 'printer'
 
   # Printer for Errors in non-quiet mode
-  class ErrorPrinter < Printer
+  class UnknownErrorPrinter < Printer
     # Create a new ErrorPrinter
     def initialize(error)
-      template = if error.respond_to? :template
-                   error.template
-                 else
-                   'error.txt'
-                 end
+      template = 'unknown_error.txt'
       super(template)
       @error = error
     end

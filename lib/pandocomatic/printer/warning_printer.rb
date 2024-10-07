@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017—2024, Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -28,12 +28,13 @@ module Pandocomatic
     # @param warning [Warning] the warning to print
     def initialize(warning)
       template = 'warning.txt'
-      super template
+      super(template)
       @warning = warning
     end
 
     # Print warnings to STDERR rather than STDOUT
     def print
+      Pandocomatic::LOG.warn self
       warn self
     end
   end

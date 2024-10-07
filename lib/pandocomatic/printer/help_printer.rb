@@ -25,7 +25,7 @@ module Pandocomatic
   class HelpPrinter < Printer
     # Create a new HelpPrinter
     def initialize
-      super 'help.txt'
+      super('help.txt')
     end
   end
 end

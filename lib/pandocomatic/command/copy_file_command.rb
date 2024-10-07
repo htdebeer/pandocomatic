@@ -45,7 +45,10 @@ module Pandocomatic
 
     # Run this CopyFileCommand
     def run
-      FileUtils.cp(@src, @dst) if file_modified?(@src, @dst)
+      if file_modified?(@src, @dst)
+        Pandocomatic::LOG.info "Copying '#{@src}' → '#{@dst}'"
+        FileUtils.cp(@src, @dst)
+      end
     rescue StandardError => e
       raise IOError.new(:unable_to_copy_file, e, [@src, @dst])
     end

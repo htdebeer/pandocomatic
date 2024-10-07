@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017-2022, Huub de Beer <huub@heerdebeer.org>
+# Copyright 2017-2024, Huub de Beer <huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -32,11 +32,14 @@ module Pandocomatic
     # Parse the arguments, returns a triplet with the global options, an
     # optional subcommand, and the (optional) options for that subcommand.
     #
+    # As a side effect, this method will create and install a logger for
+    # Pandocomatic::LOG.
+    #
     # @param args [String, Array] A command-line invocation string or a list of strings like ARGV
     #
     # @return [Configuration] The configuration for running pandocomatic given
     # the command-line options.
-    def self.parse(args)
+    def self.parse!(args)
       args = args.split if args.is_a? String
 
       begin
@@ -56,8 +59,11 @@ module Pandocomatic
         # General options
         opt :dry_run, 'Do a dry run', short: '-y'
         opt :verbose, 'Run verbosely', short: '-V'
-        opt :debug, 'Debug mode, shows pandoc invocations', short: '-b'
         opt :modified_only, 'Modified files only', short: '-m'
+
+        # Logging
+        opt :log, 'Log to file', short: '-l', type: String, default: 'pandocomatic.log'
+        opt :log_level, 'Log level', type: String, default: 'INFO'
 
         # Configuration of the converter
         opt :data_dir, 'Data dir', short: '-d', type: String
@@ -75,19 +81,33 @@ module Pandocomatic
       end
 
       # All options should be parsed according to the specification given in the parser
+      # parser#parse removes arguments from args during parsing. Keep a copy for error reporting.
+      given_arguments = args.dup
+
       begin
         options = parser.parse args
       rescue Optimist::CommandlineError => e
-        raise CLIError.new(:problematic_invocation, e, args)
+        raise CLIError.new(:problematic_invocation, e, given_arguments)
       end
+
+      if options[:log_given]
+        log_file = options[:log]
+        log_level = options[:log_level]
+      end
+
+      Pandocomatic::LOG.install_file_logger(log_file, log_level)
 
       options = use_custom_version options
       options = use_custom_help options
 
       if options_need_to_be_validated? options
+        Pandocomatic::LOG.debug 'Validating command-line arguments:'
+
         # if no input option is specified, all items following the last option
         # are treated as input files.
         if !(options[:input_given])
+          Pandocomatic::LOG.debug '✓  Option \'--input\' not used:  ' \
+                                  'treat all arguments after last option as input files or directories.'
           options[:input] = args
           options[:input_given] = true
         elsif !args.empty?
@@ -99,6 +119,12 @@ module Pandocomatic
 
         # Support multiple input files for conversion
         multiple_inputs = options[:input].size > 1
+
+        if multiple_inputs
+          Pandocomatic::LOG.debug '✓  Convert multiple input files or directories.'
+        else
+          Pandocomatic::LOG.debug '✓  Convert single input file or directory.'
+        end
 
         # The input files or directories should exist
         input = options[:input].map do |input_file|
@@ -113,12 +139,14 @@ module Pandocomatic
 
           File.absolute_path input_file
         end
+        Pandocomatic::LOG.debug '✓  Input files and directories exist.'
 
         # You cannot use the --stdout option while converting directories
         if options[:stdout_given] && File.directory?(input.first)
           options[:stdout] = false
           raise CLIError, :cannot_use_stdout_with_directory
         end
+        Pandocomatic::LOG.debug '✓  Write output to STDOUT.' if options[:stdout_given]
 
         if options[:output_given]
           # You cannot use --stdout with --output
@@ -126,19 +154,23 @@ module Pandocomatic
             options[:stdout] = false
             raise CLIError, :cannot_use_both_output_and_stdout
           else
+            Pandocomatic::LOG.debug "✓  Write output to '#{options[:output]}'."
             output = File.absolute_path options[:output]
             # Input and output should be both files or directories
             match_file_types input.first, output
+            Pandocomatic::LOG.debug '✓  Input and outputs types match.'
 
             # The output, if it already exist, should be writable
             unless (!File.exist? output) || File.writable?(output)
               raise CLIError.new(:output_is_not_writable, nil,
                                  output)
             end
+            Pandocomatic::LOG.debug '✓  Existing output is writable.' if File.exist? output
           end
         elsif !multiple_inputs && File.directory?(input.first)
           raise CLIError, :no_output_given
         end
+
         # If the input is a directory, an output directory should be
         # specified as well. If the input is a file, the output could be
         # specified in the input file, or STDOUT could be used.
@@ -154,6 +186,7 @@ module Pandocomatic
           raise CLIError.new(:data_dir_is_not_readable, nil, data_dir) unless File.readable? data_dir
           raise CLIError.new(:data_dir_is_not_a_directory, nil, data_dir) unless File.directory? data_dir
         end
+        Pandocomatic::LOG.debug "✓  Can read data directory '#{options[:data_dir]}'." if options[:data_dir_given]
 
         # Config file, if specified, should be an existing and readable file
         if options[:config_given]
@@ -163,10 +196,10 @@ module Pandocomatic
           raise CLIError.new(:config_file_is_not_readable, nil, config) unless File.readable? config
           raise CLIError.new(:config_file_is_not_a_file, nil, config) unless File.file? config
         end
-
+        Pandocomatic::LOG.debug "✓  Can read configuration file '#{options[:config]}'." if options[:config_given]
       end
 
-      Configuration.new options, input
+      Configuration.new(options, input)
     end
 
     # rubocop:enable Metrics

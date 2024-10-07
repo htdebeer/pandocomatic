@@ -21,6 +21,7 @@
 module Pandocomatic
   require 'paru'
   require 'shellwords'
+  require 'yaml'
 
   require_relative 'command'
   require_relative '../error/io_error'
@@ -148,6 +149,12 @@ module Pandocomatic
         template = Template.new INTERNAL_TEMPLATE
       end
 
+      if template.name == INTERNAL_TEMPLATE
+        Pandocomatic::LOG.debug '  #  Using internal template.'
+      else
+        Pandocomatic::LOG.debug "  #  Using template '#{template.name}'."
+      end
+
       # Ignore the `--verbose` option, and warn about ignoring it
       if pandoc_options.key? 'verbose'
         pandoc_options.delete 'verbose'
@@ -157,6 +164,10 @@ module Pandocomatic
 
       template.merge! Template.new(INTERNAL_TEMPLATE, @metadata.pandocomatic) if @metadata.pandocomatic?
 
+      Pandocomatic::LOG.debug '  #  Template mixed with internal template and pandocomatic metadata' \
+                              "gives final template:#{Pandocomatic::LOG.indent(YAML.dump(template.to_h).sub('---', ''),
+                                                                               34)}"
+
       # Write out the results of the conversion process to file.
       @dst = @metadata.pandoc_options['output'] if @dst.to_s.empty? && @metadata.pandoc_options.key?('output')
 
@@ -164,6 +175,7 @@ module Pandocomatic
       setup template
 
       # Read in the file to convert
+      Pandocomatic::LOG.debug "  →  Reading source file: '#{@src}'"
       input = File.read @src
 
       # Run the default preprocessors to mix-in information about the file
@@ -181,10 +193,12 @@ module Pandocomatic
       begin
         # Either output to file or to STDOUT.
         if @config.stdout?
+          Pandocomatic::LOG.debug '  ←  Writing output to STDOUT.'
           puts output
           @dst.close!
         else
           unless use_output_option @dst
+            Pandocomatic::LOG.debug "  ←  Writing output to '#{@dst}'."
             File.open(@dst, 'w') do |file|
               raise IOError.new(:file_is_not_a_file, nil, @dst) unless File.file? @dst
               raise IOError.new(:file_is_not_writable, nil, @dst) unless File.writable? @dst
@@ -204,6 +218,7 @@ module Pandocomatic
     def pandoc(input, options, src_dir)
       absolute_dst = File.expand_path @dst
       Dir.chdir(src_dir) do
+        Pandocomatic::LOG.debug "     #  Changing directory to '#{src_dir}'"
         converter = Paru::Pandoc.new
         options.each do |option, value|
           # Options come from a YAML string. In YAML, properties without a value get value nil.
@@ -233,17 +248,16 @@ module Pandocomatic
                     (option == 'rename')
             # don't let pandoc write the output to enable postprocessing
           rescue StandardError
-            if debug?
-              warn "WARNING: The pandoc option '#{option}' (with value '#{value}') " \
-                   'is not recognized by paru. This option is skipped.'
-            end
+            Pandocomatic::LOG.warn "WARNING: The pandoc option '#{option}'"
+            " (with value '#{value}') is not recognized by paru. This option is skipped."
           end
         end
 
         converter.send 'output', absolute_dst if use_output_option absolute_dst
 
         begin
-          puts converter.to_command if debug?
+          Pandocomatic::LOG.debug '     #  Running pandoc'
+          Pandocomatic::LOG.debug "     |  #{Pandocomatic::LOG.indent(converter.to_command, 43)}"
           converter << input
         rescue Paru::Error => e
           raise PandocError.new(:error_running_pandoc, e, input)
@@ -291,6 +305,7 @@ module Pandocomatic
     def process(input, type, template)
       if template.send "#{type}?"
         processors = template.send type
+        Pandocomatic::LOG.debug "     #  Running #{type}:" unless processors.empty?
         output = input
         processors.each do |processor|
           script = if Path.local_path? processor
@@ -311,6 +326,7 @@ module Pandocomatic
           raise ProcessorError.new(:script_is_not_executable, nil, command) unless File.executable? command
 
           begin
+            Pandocomatic::LOG.debug "     |  #{script}"
             output = Processor.run(script, output)
           rescue StandardError => e
             ProcessorError.new(:error_processing_script, e, [script, @src])

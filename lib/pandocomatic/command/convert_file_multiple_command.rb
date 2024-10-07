@@ -99,7 +99,9 @@ module Pandocomatic
     def execute
       return if @subcommands.empty?
 
-      CommandPrinter.new(self).print unless quiet? || (@subcommands.size == 1)
+      description = CommandPrinter.new(self)
+      Pandocomatic::LOG.info description
+      description.print unless quiet? || (@subcommands.size == 1)
       run if !dry_run? && runnable?
 
       @subcommands.each(&:execute)

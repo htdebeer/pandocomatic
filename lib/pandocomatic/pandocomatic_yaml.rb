@@ -61,7 +61,7 @@ module Pandocomatic
       str.gsub(VAR_PATTERN) do |_match|
         key = Regexp.last_match(1)
 
-        raise TemplateError.new(:environment_variable_does_not_exist, { key: key, path: path }) unless ENV.key? key
+        raise TemplateError.new(:environment_variable_does_not_exist, { key:, path: }) unless ENV.key? key
 
         ENV.fetch(key, nil)
       end

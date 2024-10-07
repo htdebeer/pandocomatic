@@ -8,6 +8,7 @@ documentation/api-doc
 .yardoc
 
 hello_world.html
+pandocomatic.log
 
 # Artifacts from running rake in docker 
 .bash_history
@@ -18,3 +19,6 @@ hello_world.html
 *.code-workspace
 
 .local
+
+.bundle
+.pkg

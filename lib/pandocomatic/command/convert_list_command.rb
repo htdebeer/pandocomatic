@@ -36,7 +36,7 @@ module Pandocomatic
 
     # Create a new ConvertListCommand
     def initialize
-      super()
+      super
       @subcommands = []
     end
 
@@ -89,7 +89,9 @@ module Pandocomatic
     def execute
       return if @subcommands.empty?
 
-      CommandPrinter.new(self).print unless quiet?
+      description = CommandPrinter.new(self)
+      Pandocomatic::LOG.info description
+      description.print unless quiet?
       run if !dry_run? && runnable?
 
       @subcommands.each(&:execute)

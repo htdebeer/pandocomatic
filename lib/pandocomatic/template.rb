@@ -57,7 +57,7 @@ module Pandocomatic
         section sec
       end
 
-      define_method("#{sec.downcase}?".to_sym) do
+      define_method(:"#{sec.downcase}?") do
         section? sec
       end
     end

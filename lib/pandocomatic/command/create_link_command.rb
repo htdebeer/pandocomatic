@@ -67,7 +67,10 @@ module Pandocomatic
 
     # Run this CreateLinkCommand
     def run
-      File.symlink @dst_target, @dst unless File.exist? @dst
+      unless File.exist? @dst
+        File.symlink @dst_target, @dst
+        Pandocomatic::LOG.info "Creating symlink '#{@dst_target}' → '#{@dst}'"
+      end
     rescue StandardError => e
       raise IOError.new(:unable_to_create_symbolic_link, e, [@src, @dst])
     end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2014—2022, Huub de Beer <huub@heerdebeer.org>
+# Copyright 2014—2024, Huub de Beer <huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -22,6 +22,7 @@ module Pandocomatic
   Encoding.default_external = Encoding::UTF_8 # ensure unicode encoding
   Encoding.default_internal = Encoding::UTF_8
 
+  require 'logger'
   require 'paru'
   require 'tempfile'
 
@@ -36,6 +37,7 @@ module Pandocomatic
   require_relative 'printer/configuration_errors_printer'
   require_relative 'printer/finish_printer'
   require_relative 'printer/summary_printer'
+  require_relative 'printer/unknown_error_printer'
 
   require_relative 'command/convert_dir_command'
   require_relative 'command/convert_list_command'
@@ -45,7 +47,95 @@ module Pandocomatic
   require_relative 'version'
 
   # The Pandocomatic class controlls the pandocomatic conversion process
-  class Pandocomatic
+  module Pandocomatic
+    # Pandocomatic's log. Depending on given command-line arguments,
+    # pandocomatic will log its actions to file or not log anything at all.
+    class Log
+      # Add pandocomatic's command-line arguments to the log
+      #
+      # @param [String[]] args
+      def pandocomatic_called_with(args)
+        @args = if args.respond_to? :join
+                  args.join(' ')
+                else
+                  args
+                end
+      end
+
+      # Install a logger that writes to a given log file for given log level
+      #
+      # @param log_file [String] name or path to log file
+      # @param log_level [String] log level, one of "fatal", "error",
+      # "warning", or "debug". Defaults to "info"
+      def install_file_logger(log_file, log_level = 'info')
+        unless log_file.nil?
+          begin
+            @logger = Logger.new(log_file, level: log_level)
+            @logger.formatter = proc do |severity, datetime, _progname, msg|
+              date_format = datetime.strftime('%Y-%m-%d %H:%M:%S')
+              "#{date_format} #{severity.ljust(5)}: #{msg}\n"
+            end
+          rescue StandardError => e
+            warn "Unable to create log file '#{log_file}' with log level '#{log_level}' because:\n#{e}."
+            warn 'Continuing with logging disabled.'
+          end
+        end
+
+        info '------------ START ---------------'
+        info "Running #{$PROGRAM_NAME} #{@args}"
+      end
+
+      # Log a debug message
+      #
+      # @param [String] msg
+      def debug(msg)
+        @logger&.debug(msg)
+      end
+
+      # Log an error message
+      #
+      # @param [String] msg
+      def error(msg)
+        @logger&.error(msg)
+      end
+
+      # Log a fatal message
+      #
+      # @param [String] msg
+      def fatal(msg)
+        @logger&.fatal(msg)
+      end
+
+      # Log an informational message
+      #
+      # @param [String] msg
+      def info(msg)
+        @logger&.info(msg)
+      end
+
+      # Log a warning message
+      #
+      # @param [String] msg
+      def warn(msg)
+        @logger&.warn(msg)
+      end
+
+      # Indent given string with given number of spaces. Intended for logging
+      # purposes.
+      #
+      # @param str [String] string to indent
+      # @param number_of_spaces [Number] number of spaces to indent string
+      # @return [String] indented string
+      def indent(str, number_of_spaces)
+        str.split("\n").join("\n#{' ' * number_of_spaces}")
+      end
+    end
+
+    private_constant :Log
+
+    # Global logger for pandocomatic
+    LOG = Log.new
+
     # Pandocomatic error status codes start from ERROR_STATUS
     ERROR_STATUS = 1266 # This is the sum of the ASCII values of the characters in 'pandocomatic'
 
@@ -55,8 +145,12 @@ module Pandocomatic
     #
     # @param args [String[]] list of options to configure pandocomatic
     def self.run(args)
+      LOG.pandocomatic_called_with args
       start_time = Time.now
-      configuration = CLI.parse args
+
+      # Depending on given command-line arguments, CLI#parse! also
+      # installs a file logger in LOG.
+      configuration = CLI.parse! args
 
       if configuration.show_version?
         # The version option has precedence over all other options; if
@@ -73,6 +167,12 @@ module Pandocomatic
         if configuration.input.errors?
           ConfigurationErrorsPrinter.new(configuration.input.all_errors).print
           exit ERROR_STATUS
+        end
+
+        if configuration.dry_run?
+          LOG.debug 'Start dry-run conversion:'
+        else
+          LOG.debug 'Start conversion:'
         end
 
         # Run the pandocomatic converter configured according to the options
@@ -115,10 +215,11 @@ module Pandocomatic
     rescue StandardError => e
       # An unexpected error has occurred; break off the program drastically
       # for now. This is likely a bug: ask the user to report it.
-      warn '[UNEXPECTED ERROR] An unexpected error has occurred. You can report this bug via https://github.com/htdebeer/pandocomatic/issues/new.'
-      raise e
+      UnknownErrorPrinter.new(e).print
+      exit ERROR_STATUS + 2
     ensure
       configuration&.clean_up!
+      LOG.info "------------  END  ---------------\n"
     end
   end
 

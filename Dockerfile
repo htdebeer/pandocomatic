@@ -1,4 +1,4 @@
-FROM ruby:3.2
+FROM ruby:3.3
 ENV LANG C.UTF-8
 RUN apt-get update \
   ; apt-get install -y --no-install-recommends wget groff ghostscript \

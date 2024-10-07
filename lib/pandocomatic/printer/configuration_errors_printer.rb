@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017—2024, Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -25,8 +25,14 @@ module Pandocomatic
   class ConfigurationErrorsPrinter < Printer
     # Create a new ConfigurationErrorsPrinter
     def initialize(errors)
-      super 'configuration_errors.txt'
+      super('configuration_errors.txt')
       @errors = errors
+    end
+
+    # Print configuration errors to STDOUT
+    def print
+      Pandocomatic::LOG.warn self
+      warn self
     end
   end
 end

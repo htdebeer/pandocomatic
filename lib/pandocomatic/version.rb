@@ -20,5 +20,5 @@
 #++
 module Pandocomatic
   # Pandocomatic's current version.
-  VERSION = [1, 2, 0].freeze
+  VERSION = [1, 9, 0].freeze
 end

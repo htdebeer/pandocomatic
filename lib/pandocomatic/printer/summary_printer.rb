@@ -29,7 +29,7 @@ module Pandocomatic
     # @param configuration [Configuration] the configuration of the
     # pandocomatic invokation
     def initialize(command, configuration)
-      super 'summary.txt'
+      super('summary.txt')
       @command = command
       @input = configuration.input.to_s
       @output = if configuration.stdout?

@@ -583,10 +583,22 @@ Pandocomatic will complain if the input and output types do not match.
 :   Inspect the files and directories to convert, but do not actually
     run the conversion. Default is `false`.
 
-`-b, --debug`
+`-l [FILE], --log [FILE]`
 
-:   Run pandocomatic in debug mode. At the moment this means that all
-    pandoc invocations are printed as well.
+:   Let pandocomatic log what it is doing to `FILE`. If `FILE` is not
+    given, pandocomatic uses `pandocomatic.log` by default.
+
+    Control the level of logging detail with option `--log-level`.
+
+`--log-level [LEVEL]`
+
+:   Log with detail `LEVEL`. If `LEVEL` is not given, pandocomatic uses
+    `info` by default. `LEVEL` should be one of: `fatal`, `error`,
+    `warn`, `info`, or `debug`.
+
+    Choose level `debug` to see conversions in atomic detail. It will
+    show all processors, the actual pandoc invocation executed, and the
+    final template used.
 
 `-r PATH, --root-path PATH`
 

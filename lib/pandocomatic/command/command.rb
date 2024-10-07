@@ -39,7 +39,6 @@ module Pandocomatic
     @@total = 0
     @@dry_run = false
     @@quiet = false
-    @@debug = false
     @@src_root = '.'
     @@modified_only = false
 
@@ -57,7 +56,6 @@ module Pandocomatic
       @@src_root = configuration.src_root
       @@dry_run = configuration.dry_run?
       @@quiet = configuration.quiet?
-      @@debug = configuration.debug?
       @@modified_only = configuration.modified_only?
       @@total = 0
     end
@@ -81,13 +79,6 @@ module Pandocomatic
     # @return [Boolean]
     def quiet?
       @@quiet
-    end
-
-    # Is this Command executed in debug mode?
-    #
-    # @return [Boolean]
-    def debug?
-      @@debug
     end
 
     # Is this Command only executed on modified files?
@@ -127,7 +118,9 @@ module Pandocomatic
     # Execute this Command. A Command can be dry-run as well, in which it is
     # not actually run.
     def execute
-      CommandPrinter.new(self).print unless quiet?
+      description = CommandPrinter.new(self)
+      Pandocomatic::LOG.info description
+      description.print unless quiet?
       run if !dry_run? && runnable?
     end
 

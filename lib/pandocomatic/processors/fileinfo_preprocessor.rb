@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2014, 2015, 2016, 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2014—2024, Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -37,17 +37,22 @@ module Pandocomatic
     def self.run(input, path, src_path, options)
       created_at = File.stat(path).ctime
       modified_at = File.stat(path).mtime
-      output = input
-      output << "\n\n---\n"
-      output << "pandocomatic-fileinfo:\n"
-      output << "  from: #{options['from']}\n" if options.key? 'from'
-      output << "  to: #{options['to']}\n" if options.key? 'to'
-      output << "  template: #{options['template']}\n" if options.key? 'template'
-      output << "  path: '#{path}'\n"
-      output << "  src_path: '#{src_path}'\n"
-      output << "  created: #{created_at.strftime '%Y-%m-%d'}\n"
-      output << "  modified: #{modified_at.strftime '%Y-%m-%d'}\n"
-      output << "...\n\n"
+
+      file_info = "\npandocomatic-fileinfo:\n"
+      file_info += "  from: #{options['from']}\n" if options.key? 'from'
+      file_info += "  to: #{options['to']}\n" if options.key? 'to'
+      file_info += "  template: #{options['template']}\n" if options.key? 'template'
+      file_info += "  path: '#{path}'\n"
+      file_info += "  src_path: '#{src_path}'\n"
+      file_info += "  created: #{created_at.strftime '%Y-%m-%d'}\n"
+      file_info += "  modified: #{modified_at.strftime '%Y-%m-%d'}"
+
+      Pandocomatic::LOG.debug '     | FileInfoPreprocessor. Adding file information to metadata:' \
+        "#{Pandocomatic::LOG.indent(
+          file_info, 37
+        )}"
+
+      "#{input}\n\n---#{file_info}\n...\n\n"
     end
 
     # rubocop:enable Metrics/AbcSize

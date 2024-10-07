@@ -33,7 +33,7 @@ module Pandocomatic
     # pandocomatic invokation
     # @param start_time [Time] the time the command was started
     def initialize(command, configuration, start_time)
-      super command, configuration
+      super(command, configuration)
       template 'finish.txt'
 
       @start_time = start_time

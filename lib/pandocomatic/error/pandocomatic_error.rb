@@ -41,7 +41,7 @@ module Pandocomatic
     # @param data [Object = nil] extra information attached to this
     #   PandocomaticError, if any; optional
     def initialize(type = :unknown, error = nil, data = nil)
-      super type.to_s.gsub('_', ' ').capitalize
+      super(type.to_s.gsub('_', ' ').capitalize)
       @type = type
       @error = error
       @data = data

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017—2024, Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -32,10 +32,12 @@ module Pandocomatic
     #   preprocessed
     # @param metadata [Hash = {}] the metadata to mix-in
     def self.run(input, metadata = {})
-      output = input
-      output << "\n\n"
-      output << YAML.dump(metadata)
-      output << "...\n\n"
+      yaml = YAML.dump(metadata)
+      Pandocomatic::LOG.debug '     | MetadataPreprocessor. Adding mined YAML blocks to metadata:' \
+        "#{Pandocomatic::LOG.indent(
+          yaml.sub('---', ''), 37
+        )}"
+      "#{input}\n\n#{yaml}...\n\n"
     end
   end
 end
