@@ -208,7 +208,7 @@ module Pandocomatic
       @output = if output?
                   options[:output]
                 elsif to_stdout? options
-                  Tempfile.new(@input.base)
+                  Tempfile.new(@input.base) unless @input.nil?
                 elsif @input.is_a? Input
                   @input.base
                 end
@@ -351,6 +351,14 @@ module Pandocomatic
     # @return [Boolean]
     def config?
       @options[:config_given]
+    end
+
+    # Should given feature be enabled?
+    #
+    # @param feature [Symbol] feature toggle to check
+    # @return [Boolean]
+    def feature_enabled?(feature)
+      @options[:enable_given] and Pandocomatic::FEATURES.include?(feature) and @options[:enable].include?(feature)
     end
 
     # Is the output CLI option given and can that output be used?

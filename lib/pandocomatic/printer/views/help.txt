@@ -110,6 +110,21 @@ OPTIONS
   -y, --dry-run   Configure pandocomatic to run the conversion process, but do
                   not actually run it. Default is FALSE. When using this
                   dry-run option, pandocomatic runs verbosely.
+  
+  -r PATH, --root-path PATH  
+                  Set the root path to use with paths that are specified as
+                  relative to that root path. It is used mostly with the 
+                  --css pandoc option. It defaults to the directory of the
+                  specified output.
+
+  -e FEATURE, --enable FEATURE
+                  Enable FEATURE in pandocomatic. Pandocomatic supports the
+                  following feature toggles:
+
+                  - "pandoc-verbose" to enable using pandoc's verbose option.
+                    By default pandocomatic removes that verbose option
+                    because it can interfere with running pandoc filters or
+                    pandocomatic processors.
 
   Logging:
 
@@ -126,15 +141,6 @@ OPTIONS
                   pandocomatic logs at detail level info. Choose level 'debug'
                   to see all steps pandocomatic takes to convert every
                   directory and file.
-  
-
-  Experimental:
-
-  -r PATH, --root-path PATH  
-                  Set the root path to use with paths that are specified as
-                  relative to that root path. It is used mostly with the 
-                  --css pandoc option. It defaults to the directory of the
-                  specified output.
 
 
   Common:

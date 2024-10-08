@@ -60,6 +60,7 @@ module Pandocomatic
         opt :dry_run, 'Do a dry run', short: '-y'
         opt :verbose, 'Run verbosely', short: '-V'
         opt :modified_only, 'Modified files only', short: '-m'
+        opt :enable, 'Enable feature', short: '-e', multi: true, type: String
 
         # Logging
         opt :log, 'Log to file', short: '-l', type: String, default: 'pandocomatic.log'
@@ -197,6 +198,24 @@ module Pandocomatic
           raise CLIError.new(:config_file_is_not_a_file, nil, config) unless File.file? config
         end
         Pandocomatic::LOG.debug "✓  Can read configuration file '#{options[:config]}'." if options[:config_given]
+
+        if options[:enable_given]
+          Pandocomatic::LOG.info '-  Checking feature toggles:'
+
+          features = []
+
+          options[:enable].each do |feature_string|
+            feature = feature_string.downcase.sub('-', '_').to_sym
+            unless Pandocomatic::FEATURES.include? feature
+              raise CLIError.new(:feature_toggle_does_not_exist, nil, feature_string)
+            end
+
+            Pandocomatic::LOG.info "   ✓ Enabling feature '#{feature}'."
+            features << feature
+          end
+
+          options[:enable] = features
+        end
       end
 
       Configuration.new(options, input)

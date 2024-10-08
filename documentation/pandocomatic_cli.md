@@ -109,7 +109,15 @@ will complain if the input and output types do not match.
     with the --css pandoc option. It defaults to the directory of the specified 
     output.
 
-    Note. This option is experimental.
+`-e FEATURE, --enable FEATURE`
+
+:   Enable FEATURE in pandocomatic. Pandocomatic supports the following feature 
+    toggles:
+
+    - "pandoc-verbose" to enable using pandoc's verbose option.
+      By default pandocomatic removes that verbose option
+      because it can interfere with running pandoc filters or
+      pandocomatic processors.
 
 ### Status codes
 

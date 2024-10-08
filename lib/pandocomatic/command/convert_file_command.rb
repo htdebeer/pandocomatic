@@ -156,15 +156,17 @@ module Pandocomatic
       end
 
       # Ignore the `--verbose` option, and warn about ignoring it
-      if pandoc_options.key? 'verbose'
+      if pandoc_options.key?('verbose') && !@config.feature_enabled?(:pandoc_verbose)
         pandoc_options.delete 'verbose'
-        warn 'WARNING: Ignoring the pandoc option --verbose because it ' \
-             'might interfere with the working of pandocomatic.'
+        warn 'WARNING: Ignoring the pandoc option "--verbose" because it ' \
+             'might interfere with the working of pandocomatic. If you want to use ' \
+             '"--verbose" anyway, use pandocomatic\'s feature toggle ' \
+             '"--enable pandoc-verbose".'
       end
 
       template.merge! Template.new(INTERNAL_TEMPLATE, @metadata.pandocomatic) if @metadata.pandocomatic?
 
-      Pandocomatic::LOG.debug '  #  Template mixed with internal template and pandocomatic metadata' \
+      Pandocomatic::LOG.debug '  #  Selected template mixed with internal template and pandocomatic metadata ' \
                               "gives final template:#{Pandocomatic::LOG.indent(YAML.dump(template.to_h).sub('---', ''),
                                                                                34)}"
 

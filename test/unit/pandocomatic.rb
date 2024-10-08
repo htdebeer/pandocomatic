@@ -503,8 +503,12 @@ exit"
       input = File.join ['example', 'hello_verbose_world.md']
       output = File.join [dir, 'hello_verbose_world.html']
       assert_output(nil,
-                    /WARNING: Ignoring the pandoc option --verbose because it might interfere with the working of pandocomatic./) do
+                    /WARNING: Ignoring the pandoc option \"--verbose\" because it might interfere with the working of pandocomatic. If you want to use \"--verbose\" anyway, use pandocomatic's feature toggle \"--enable pandoc-verbose\"./) do
         Pandocomatic::Pandocomatic.run "-i #{input} -o #{output}"
+      end
+      assert_output(nil,
+                    "") do
+        Pandocomatic::Pandocomatic.run "-i #{input} -o #{output} -e pandoc-verbose"
       end
     end
   end

@@ -136,6 +136,9 @@ module Pandocomatic
     # Global logger for pandocomatic
     LOG = Log.new
 
+    # Feature toggles supported by pandocomatic
+    FEATURES = [:pandoc_verbose].freeze
+
     # Pandocomatic error status codes start from ERROR_STATUS
     ERROR_STATUS = 1266 # This is the sum of the ASCII values of the characters in 'pandocomatic'
 

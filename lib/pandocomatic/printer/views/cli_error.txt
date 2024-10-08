@@ -17,6 +17,9 @@ Using `--stdout/-s` with an input directory is not allowed.
 <% when :cannot_use_both_output_and_stdout %>
 Using both `--output/-o` and `--stdout/-s` is not allowed.
 Use eiter a specific output file or directory, or standard out, not both.
+<% when :feature_toggle_does_not_exist %>
+'<%= @error.data %>'. 
+Pandocomatic supports the following feature toggles: <%= Pandocomatic::FEATURES.map{|f| f.to_s}.join(", ") %>.
 <% else %>
 '<%= @error.data %>'.
 <% end %>

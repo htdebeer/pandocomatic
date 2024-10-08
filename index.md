@@ -55,12 +55,12 @@ guide](https://pandoc.org/installing.html) for more information about
 installing pandoc.
 
 You can also download the latest gem,
-[pandocomatic-1.2.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-1.2.0.gem),
+[pandocomatic-1.9.0](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-1.9.0.gem),
 from Github and install it manually as follows:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-1.2.0.gem
+gem install pandocomatic-1.9.0.gem
 ```
 
 ## Why pandocomatic?
@@ -607,7 +607,15 @@ Pandocomatic will complain if the input and output types do not match.
     paths](#specifying-paths)). It is used mostly with the --css pandoc
     option. It defaults to the directory of the specified output.
 
-    Note. This option is experimental.
+`-e FEATURE, --enable FEATURE`
+
+:   Enable FEATURE in pandocomatic. Pandocomatic supports the following
+    feature toggles:
+
+    -   "pandoc-verbose" to enable using pandoc's verbose option. By
+        default pandocomatic removes that verbose option because it can
+        interfere with running pandoc filters or pandocomatic
+        processors.
 
 ### Status codes
 
