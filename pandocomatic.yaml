@@ -1,2 +1,2 @@
 settings:
-    skip: ['README.md']
+    skip: ['README.md', 'example']
