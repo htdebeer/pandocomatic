@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake', '~> 13.2.1'
   s.add_development_dependency 'rubocop', '~> 1.66.1'
   s.add_development_dependency 'yard', '~> 0.9.37'
+  s.add_development_dependency 'rdoc'
   s.executables << 'pandocomatic'
   s.homepage = 'https://heerdebeer.org/Software/markdown/pandocomatic/'
   s.requirements << 'pandoc, a universal document converter'

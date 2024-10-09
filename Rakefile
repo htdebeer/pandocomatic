@@ -1,3 +1,4 @@
+require 'bundler/gem_tasks'
 require 'rake/testtask'
 require 'rubocop/rake_task'
 require 'yard'
@@ -32,7 +33,6 @@ task :build do
   Rake::Task[:rubocop].execute
   Rake::Task[:test].execute
   Rake::Task[:yard].execute
-  sh 'gem build pandocomatic.gemspec; mv *.gem releases'
   Rake::Task['generate_docs'].execute
 end
 
