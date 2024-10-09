@@ -13,11 +13,15 @@ pandoc. To use pandocomatic, you also need a working pandoc installation. See
 [pandoc's installation guide](https://pandoc.org/installing.html) for more
 information about installing pandoc.
 
-You can also download the latest gem,
-[pandocomatic-::pandocomatic::version](https://github.com/htdebeer/pandocomatic/blob/master/releases/pandocomatic-::pandocomatic::version.gem),
-from Github and install it manually as follows:
+You can also build and install the latest version yourself by running the
+following commands:
 
 ~~~{.bash}
 cd /directory/you/downloaded/the/gem/to
-gem install pandocomatic-::pandocomatic::version.gem
+docker image build --tag pandocomatic:dev .
+docker container run --rm -it --volume $(pwd):/home/pandocomatic-user pandocomatic:dev bundle exec rake build
+gem install pkg/pandocomatic-::pandocomatic::version.gem
 ~~~ 
+
+You only have to do the second step one time. Once you've created a docker
+image, you can reuse it as is until `Dockerfile` changes.
