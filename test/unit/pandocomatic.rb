@@ -442,13 +442,13 @@ class TestPandocomaticRun < Minitest::Test
       assert_files_equal example_output, output
     end
 
-    VARS.each do |key, _|
+    VARS.each_key do |key|
       ENV.delete key if ENV.key? key
     end
   end
 
   def test_non_existing_var_substitution
-    VARS.each do |key, _|
+    VARS.each_key do |key|
       ENV.delete key if ENV.key? key
     end
 
