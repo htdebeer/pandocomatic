@@ -13,6 +13,8 @@ pandoc. To use pandocomatic, you also need a working pandoc installation. See
 [pandoc's installation guide](https://pandoc.org/installing.html) for more
 information about installing pandoc.
 
+### Docker
+
 You can also build and install the latest version yourself by running the
 following commands:
 
@@ -25,3 +27,13 @@ gem install pkg/pandocomatic-::pandocomatic::version.gem
 
 You only have to do the second step one time. Once you've created a docker
 image, you can reuse it as is until `Dockerfile` changes.
+
+### MacOS: Brew
+
+Alternatively, MacOS users can install pandocomatic via
+[homebrew](https://formulae.brew.sh/formula/pandocomatic):
+
+~~~{.bash}
+brew install pandocomatic
+~~~
+
