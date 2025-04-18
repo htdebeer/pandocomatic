@@ -72,23 +72,23 @@ module Pandocomatic
       Dir.foreach @src_dir do |filename|
         src = File.join @src_dir, filename
 
-        next if config.skip? src
+        next if @config.skip? src
 
         @errors.push IOError.new(:file_or_directory_does_not_exist, nil, src) unless File.exist? src
 
         dst = File.join @dst_dir, filename
 
-        if File.symlink?(src) && !config.follow_links?
+        if File.symlink?(src) && !@config.follow_links?
           subcommand = CreateLinkCommand.new(src, dst)
         elsif File.directory? src
-          subcommand = if config.recursive?
-                         ConvertDirCommand.new(config, src, dst)
+          subcommand = if @config.recursive?
+                         ConvertDirCommand.new(@config, src, dst)
                        else
                          SkipCommand.new(src, :skipping_directory)
                        end
         elsif File.file? src
-          if config.convert? src
-            subcommand = ConvertFileMultipleCommand.new(config, src, dst)
+          if @config.convert? src
+            subcommand = ConvertFileMultipleCommand.new(@config, src, dst)
           elsif !modified_only? || file_modified?(src, dst)
             subcommand = CopyFileCommand.new(src, dst)
           end
@@ -149,7 +149,7 @@ module Pandocomatic
       if File.exist? config_file
         current_config.reconfigure config_file
       else
-        current_config
+        current_config.clone
       end
     end
   end

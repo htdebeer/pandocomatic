@@ -255,10 +255,17 @@ module Pandocomatic
     def reconfigure(filename)
       settings = PandocomaticYAML.load_file filename
       new_config = Marshal.load(Marshal.dump(self))
-      new_config.configure settings, filename
+      new_config.configure settings, filename, recursive: true
       new_config
     rescue StandardError => e
       raise ConfigurationError.new(:unable_to_load_config_file, e, filename)
+    end
+
+    #  Create a copy of this configuration
+    #
+    #  @return [Configuration] copy
+    def clone
+      Marshal.load(Marshal.dump(self))
     end
 
     # Configure pandocomatic based on a settings Hash
@@ -266,13 +273,15 @@ module Pandocomatic
     # @param settings [Hash] a settings Hash to mixin in this
     # @param path [String] the configuration's path or filename
     # Configuration.
-    def configure(settings, path)
+    # @param recursive [Boolean] should this configuration be configured
+    # recursively? I.e., when running on a directory?
+    def configure(settings, path, recursive: false)
       reset_settings settings['settings'] if settings.key? 'settings'
 
       return unless settings.key? 'templates'
 
       settings['templates'].each do |name, template|
-        reset_template Template.new(name, template, path)
+        reset_template Template.new(name, template, path), recursive:
       end
     end
 
@@ -719,16 +728,18 @@ module Pandocomatic
       resolved_template
     end
 
-    # Reset the template with name in this Configuration based on a new
+    # Reset the template with same name in this Configuration based on a new
     # template
     #
     # @param template [Template] the template to use to update the template in
-    #   this Configuarion with
-    def reset_template(template)
+    #   this Configuration with
+    # @param recursive [Boolean] should this configuration be configured
+    # recursively? I.e., when running on a directory?
+    def reset_template(template, recursive: false)
       name = template.name
       extended_template = extend_template template
 
-      if @templates.key? name
+      if recursive && @templates.key?(name)
         @templates[name].merge! extended_template
       else
         @templates[name] = extended_template
@@ -771,11 +782,11 @@ module Pandocomatic
     end
 
     def marshal_dump
-      [@data_dir, @settings, @templates, @convert_patterns]
+      [@data_dir, @settings, @templates, @convert_patterns, @root_path]
     end
 
     def marshal_load(array)
-      @data_dir, @settings, @templates, @convert_patterns = array
+      @data_dir, @settings, @templates, @convert_patterns, @root_path = array
     end
 
     def to_stdout?(options)

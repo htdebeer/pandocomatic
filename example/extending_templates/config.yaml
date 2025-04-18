@@ -1,0 +1,10 @@
+templates:
+  title:
+    metadata:
+      title: Extended metadata
+  doc:
+    extends: title
+    pandoc:
+      from: markdown
+      to: latex
+      standalone: true
