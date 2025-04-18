@@ -61,7 +61,7 @@ the following commands:
 cd /directory/you/downloaded/the/gem/to
 docker image build --tag pandocomatic:dev .
 docker container run --rm -it --volume $(pwd):/home/pandocomatic-user pandocomatic:dev bundle exec rake build
-gem install pkg/pandocomatic-2.0.1.gem
+gem install pkg/pandocomatic-2.1.0.gem
 ```
 
 You only have to do the second step one time. Once you've created a
@@ -468,17 +468,16 @@ generated documents in the output directory `output_dir`.
 From here it is but a small step to use pandocomatic as a **static-site
 generator**. For that purpose some configuration options are available:
 
--   a settings property in a *pandocomatic configuration file* to
-    control
-    -   running pandocomatic recursively or not
-    -   follow symbolic links or not
--   a `glob` property in an *external pandocomatic template* telling
-    pandocomatic which files in the directory to apply the template to.
-    As a convention, a file named `pandocomatic.yaml` in a directory is
-    used as the *pandocomatic configuration file* to control the
-    conversion of the files in that directory
--   a command-line option `--modified-only` to only convert the files
-    that have changes rather than to convert all files in the directory.
+- a settings property in a *pandocomatic configuration file* to control
+  - running pandocomatic recursively or not
+  - follow symbolic links or not
+- a `glob` property in an *external pandocomatic template* telling
+  pandocomatic which files in the directory to apply the template to. As
+  a convention, a file named `pandocomatic.yaml` in a directory is used
+  as the *pandocomatic configuration file* to control the conversion of
+  the files in that directory
+- a command-line option `--modified-only` to only convert the files that
+  have changes rather than to convert all files in the directory.
 
 With these features, you can (re)generate a website with the
 pandocomatic invocation:
@@ -616,10 +615,9 @@ Pandocomatic will complain if the input and output types do not match.
 :   Enable FEATURE in pandocomatic. Pandocomatic supports the following
     feature toggles:
 
-    -   "pandoc-verbose" to enable using pandoc's verbose option. By
-        default pandocomatic removes that verbose option because it can
-        interfere with running pandoc filters or pandocomatic
-        processors.
+    - "pandoc-verbose" to enable using pandoc's verbose option. By
+      default pandocomatic removes that verbose option because it can
+      interfere with running pandoc filters or pandocomatic processors.
 
 ### Status codes
 
@@ -829,10 +827,10 @@ Pandocomatic's default configuration file is defined in the file
 [`lib/pandocomatic/default_configuration.yaml`](https://github.com/htdebeer/pandocomatic/blob/master/lib/pandocomatic/default_configuration.yaml).
 This default configuration is used when
 
--   no configuration is specified via the command-line option
-    `--config`, and
--   no default configuration file (`pandocomatic.yaml`) can be found in
-    the *pandocomatic data directory*.
+- no configuration is specified via the command-line option `--config`,
+  and
+- no default configuration file (`pandocomatic.yaml`) can be found in
+  the *pandocomatic data directory*.
 
 When converting a directory tree, each time pandocomatic enters a (sub)
 directory, it also looks for a default configuration file to *update*
@@ -927,14 +925,14 @@ property name is the template name. The property value is the template's
 definition. A template definition can contain the following sub
 properties:
 
--   `extends`
--   `glob`
--   `setup`
--   `preprocessors`
--   `metadata`
--   `pandoc`
--   `postprocessors`
--   `cleanup`
+- `extends`
+- `glob`
+- `setup`
+- `preprocessors`
+- `metadata`
+- `pandoc`
+- `postprocessors`
+- `cleanup`
 
 Before discussing these properties in detail, the way pandocomatic
 resolves paths used in these sections is described first because paths
@@ -1000,32 +998,32 @@ below.
 
 **Examples**
 
--   Extend from template `webpage`:
+- Extend from template `webpage`:
 
-    ``` yaml
-    extends: ['webpage']
-    ```
+  ``` yaml
+  extends: ['webpage']
+  ```
 
-    If only one template is extended, a string value is also allowed.
-    The following has the same effect as the example above:
+  If only one template is extended, a string value is also allowed. The
+  following has the same effect as the example above:
 
-    ``` yaml
-    extends: webpage
-    ```
+  ``` yaml
+  extends: webpage
+  ```
 
--   Extend from templates `webpage` and `overview`:
+- Extend from templates `webpage` and `overview`:
 
-    ``` yaml
-    extends: ['webpage', 'overview']
-    ```
+  ``` yaml
+  extends: ['webpage', 'overview']
+  ```
 
-    Note. If both templates have overlapping or contradictory
-    configuration, the above extension can be different from the one
-    below:
+  Note. If both templates have overlapping or contradictory
+  configuration, the above extension can be different from the one
+  below:
 
-    ``` yaml
-    extends: ['overview', 'webpage']
-    ```
+  ``` yaml
+  extends: ['overview', 'webpage']
+  ```
 
 ##### glob
 
@@ -1046,19 +1044,19 @@ the template will not be applied.
 
 **Examples**
 
--   Apply this template to all files with extension `.md` (i.e. all
-    markdown files):
+- Apply this template to all files with extension `.md` (i.e. all
+  markdown files):
 
-    ``` yaml
-    glob: ['*.md']
-    ```
+  ``` yaml
+  glob: ['*.md']
+  ```
 
--   Apply this template to all HTML files and all files starting with
-    `overview_`:
+- Apply this template to all HTML files and all files starting with
+  `overview_`:
 
-    ``` yaml
-    glob: ['overview_*', '*.html']
-    ```
+  ``` yaml
+  glob: ['overview_*', '*.html']
+  ```
 
 ##### setup
 
@@ -1071,13 +1069,13 @@ Setup scripts are run before the conversion process starts.
 
 **Examples**
 
--   Run script "create_working_directory.sh" before starting the
-    conversion process:
+- Run script "create_working_directory.sh" before starting the
+  conversion process:
 
-    ``` yaml
-    setup:
-    - scripts/create_working_directory.sh
-    ```
+  ``` yaml
+  setup:
+  - scripts/create_working_directory.sh
+  ```
 
 ##### preprocessors
 
@@ -1090,14 +1088,14 @@ files, replace strings, and so on.
 
 **Examples**
 
--   Add the today's date to the metadata:
+- Add the today's date to the metadata:
 
-    ``` yaml
-    preprocessors: ['preprocessors/today.sh']
-    ```
+  ``` yaml
+  preprocessors: ['preprocessors/today.sh']
+  ```
 
-    Note. You can also use a [filter to mix in the
-    date](https://github.com/htdebeer/paru/blob/master/examples/filters/add_today.rb).
+  Note. You can also use a [filter to mix in the
+  date](https://github.com/htdebeer/paru/blob/master/examples/filters/add_today.rb).
 
 ##### metadata
 
@@ -1109,12 +1107,12 @@ property of a template you can specify this global metadata. The
 
 **Examples**
 
--   For example, all document I write have me as the author:
+- For example, all document I write have me as the author:
 
-    ``` yaml
-    metadata:
-        author: Huub de Beer
-    ```
+  ``` yaml
+  metadata:
+      author: Huub de Beer
+  ```
 
 ##### pandoc
 
@@ -1124,26 +1122,26 @@ is a key-value list.
 
 **Examples**
 
--   Convert markdown to a standalone HTML document with a table of
-    contents:
+- Convert markdown to a standalone HTML document with a table of
+  contents:
 
-    ``` yaml
-    pandoc:
-        from: markdown
-        to: html
-        toc: true
-        standalone: true
-    ```
+  ``` yaml
+  pandoc:
+      from: markdown
+      to: html
+      toc: true
+      standalone: true
+  ```
 
--   Convert markdown to ODT with citations:
+- Convert markdown to ODT with citations:
 
-    ``` yaml
-    pandoc:
-        from: markdown
-        to: odt
-        bibliography: 'assets/bibligraphy.bib'
-        toc: 'assets/APA.csl'
-    ```
+  ``` yaml
+  pandoc:
+      from: markdown
+      to: odt
+      bibliography: 'assets/bibligraphy.bib'
+      toc: 'assets/APA.csl'
+  ```
 
 For convenience, the virtual output format `pdf` is added by
 pandocomatic. It allows you to specify PDF output without needing to use
@@ -1221,11 +1219,11 @@ links, do string replacing, and so on.
 
 **Examples**
 
--   Clean up the HTML generated by pandoc through the `tidy` program:
+- Clean up the HTML generated by pandoc through the `tidy` program:
 
-    ``` yaml
-    postprocessors: ['postprocessors/tidy.sh']
-    ```
+  ``` yaml
+  postprocessors: ['postprocessors/tidy.sh']
+  ```
 
 ##### cleanup
 
@@ -1236,11 +1234,11 @@ uploading the resulting document, and so on.
 
 **Examples**
 
--   Deploy a generated HTML file to your website:
+- Deploy a generated HTML file to your website:
 
-    ``` yaml
-    cleanup: ['scripts/upload_and_remove.sh']
-    ```
+  ``` yaml
+  cleanup: ['scripts/upload_and_remove.sh']
+  ```
 
 ### Extending pandocomatic templates
 
@@ -1279,10 +1277,10 @@ can create a `my-webpage` template like so:
 
 This `my-webpage` templates extends the original by:
 
--   it always has my name as author
--   it sets "today" as the date so the date gets updated automatically
-    whenever I convert a document with this template
--   and uses my bibliography for generating references.
+- it always has my name as author
+- it sets "today" as the date so the date gets updated automatically
+  whenever I convert a document with this template
+- and uses my bibliography for generating references.
 
 #### Extension rules
 
@@ -1485,14 +1483,14 @@ pandocomatic template
 :   A pandocomatic template specified the conversion process executed by
     pandocomatic. It can contain the following properties:
 
--   glob
--   extends
--   setup
--   preprocessors
--   metadata
--   pandoc
--   postprocessors
--   cleanup
+- glob
+- extends
+- setup
+- preprocessors
+- metadata
+- pandoc
+- postprocessors
+- cleanup
 
 internal pandocomatic template
 

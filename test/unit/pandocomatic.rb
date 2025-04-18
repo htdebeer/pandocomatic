@@ -9,17 +9,13 @@ class TestPandocomaticRun < Minitest::Test
     assert File.exist?(generated), generated
     assert_equal File.basename(expected), File.basename(generated), generated
 
-    check_file_contents = ['.txt', '.md', '.html'].include? File.extname(generated)
+    check_file_contents = ['.txt', '.md', '.html', '.tex'].include? File.extname(generated)
 
     assert_equal File.read(expected).strip, File.read(generated).strip, generated if check_file_contents
   end
 
   def assert_directories_equal(expected, generated)
     assert_equal File.basename(expected), File.basename(generated)
-    warn 'expected: '
-    warn Dir.entries(expected)
-    warn 'generated: '
-    warn Dir.entries(generated)
     assert_equal Dir.entries(expected).size, Dir.entries(generated).size, expected
 
     Dir.foreach(expected).each do |entry|
@@ -553,6 +549,21 @@ exit"
       output = $stdout.string.strip
       expected = '\\emph{Hello world!}, from \\textbf{pandocomatic}.'
       assert_equal expected, output
+    end
+  end
+
+  def test_only_explicit_extending_templates
+    Dir.mktmpdir('extend_metadata') do |dir|
+      config = File.join ['example', 'extending_templates', 'config.yaml']
+      data_dir = File.join ['example', 'extending_templates', 'data']
+      input = File.join ['example', 'extending_templates', 'extended_template.md']
+      output = File.join [dir, 'extended_template.tex']
+
+      Pandocomatic::Pandocomatic.run "-c #{config} -d #{data_dir} -i #{input} -o #{output}"
+
+      example_output = File.join ['example', 'extending_templates', 'extended_template.tex']
+
+      assert_files_equal example_output, output
     end
   end
 end

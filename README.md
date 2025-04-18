@@ -159,7 +159,7 @@ the following commands:
 cd /directory/you/downloaded/the/gem/to
 docker image build --tag pandocomatic:dev .
 docker container run --rm -it --volume $(pwd):/home/pandocomatic-user pandocomatic:dev bundle exec rake build
-gem install pkg/pandocomatic-2.0.1.gem
+gem install pkg/pandocomatic-2.1.0.gem
 ```
 
 You only have to do the second step one time. Once you’ve created a
