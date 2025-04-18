@@ -1,5 +1,5 @@
 FROM ruby:3.4
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 RUN apt-get update \
   ; apt-get install -y --no-install-recommends wget groff ghostscript \
   ; wget -q https://github.com/jgm/pandoc/releases/download/3.6.4/pandoc-3.6.4-1-amd64.deb \

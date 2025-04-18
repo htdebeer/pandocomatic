@@ -216,6 +216,8 @@ module Pandocomatic
       ErrorPrinter.new(e).print
       exit ERROR_STATUS + 1
     rescue StandardError => e
+      warn e
+      warn e.backtrace
       # An unexpected error has occurred; break off the program drastically
       # for now. This is likely a bug: ask the user to report it.
       UnknownErrorPrinter.new(e).print
