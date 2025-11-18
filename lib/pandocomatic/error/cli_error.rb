@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017-2025, Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -40,6 +40,7 @@ module Pandocomatic
     # :output_it_not_writable,
 
     # :cannot_use_stdout_with_directory
+    # :cannot_use_template_with_directory
     # :cannot_use_both_output_and_stdout
 
     # :unknown_option,

@@ -49,10 +49,14 @@ module Pandocomatic
     # Create an empty metadata object with only the source format set.
     #
     # @param src_format [String] the source format
+    # @param ignore_pandocomatic [Boolean] when true, ignore pandocomatic
+    # configuration in YAML metadata blocks
     # @return [PandocMetadata[ empty metadata with only pandoc's source format
     # set.
-    def self.empty(src_format)
-      PandocMetadata.new({ 'pandocomatic_' => { 'pandoc' => { 'from' => src_format } } })
+    def self.empty(src_format, ignore_pandocomatic: false)
+      metadata = PandocMetadata.new
+      metadata['pandocomatic_'] = { 'pandoc' => { 'from' => src_format } } unless ignore_pandocomatic
+      metadata
     end
 
     # Collect the metadata embedded in the src file and create a new
@@ -61,8 +65,8 @@ module Pandocomatic
     # @param src [String] the path to the file to load metadata from
     # @return [PandocMetadata] the metadata in the source file, or an empty
     #   one if no such metadata is contained in the source file.
-    def self.load_file(src)
-      self.load File.read(src), src
+    def self.load_file(src, ignore_pandocomatic: false)
+      self.load File.read(src), path: src, ignore_pandocomatic:
     end
 
     # Collect the metadata embedded in the src file and create a new
@@ -70,18 +74,23 @@ module Pandocomatic
     #
     # @param input [String] the string to load the metadata from
     # @param path [String|Nil] the path to the source of the input, if any
+    # @param ignore_pandocomatic [Boolean] when true, ignore pandocomatic
+    # configuration in YAML metadata blocks
     # @return [PandocMetadata] the metadata in the source file, or an empty
     #   one if no such metadata is contained in the source file.
     #
     # @raise [PandocomaticError] when the pandoc metadata cannot be
     # extracted.
-    def self.load(input, path = nil)
+    def self.load(input, path: nil, ignore_pandocomatic: false)
       yaml, pandocomatic_blocks = extract_metadata(input, path)
 
       if yaml.empty?
         PandocMetadata.new
       else
-        PandocMetadata.new PandocomaticYAML.load(yaml, path), unique: pandocomatic_blocks <= 1
+        metadata = PandocMetadata.new PandocomaticYAML.load(yaml, path), unique: pandocomatic_blocks <= 1
+        metadata.delete('pandocomatic') if ignore_pandocomatic
+        metadata.delete('pandocomatic_') if ignore_pandocomatic
+        metadata
       end
     end
 

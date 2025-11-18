@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017-2024, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017-2025, Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -164,11 +164,18 @@ module Pandocomatic
              '"--enable pandoc-verbose".'
       end
 
-      template.merge! Template.new(INTERNAL_TEMPLATE, @metadata.pandocomatic) if @metadata.pandocomatic?
+      if @metadata.pandocomatic?
+        template.merge! Template.new(INTERNAL_TEMPLATE, @metadata.pandocomatic)
 
-      Pandocomatic::LOG.debug '  #  Selected template mixed with internal template and pandocomatic metadata ' \
-                              "gives final template:#{Pandocomatic::LOG.indent(YAML.dump(template.to_h).sub('---', ''),
-                                                                               34)}"
+        Pandocomatic::LOG.debug '  #  Selected template mixed with internal template and pandocomatic metadata ' \
+                                "gives final template:#{Pandocomatic::LOG.indent(YAML.dump(template.to_h).sub('---', ''),
+                                                                                 34)}"
+      else
+        Pandocomatic::LOG.debug '  #  Selected template' \
+                                ":#{Pandocomatic::LOG.indent(YAML.dump(template.to_h).sub('---', ''),
+                                                             34)}"
+      end
+
 
       # Write out the results of the conversion process to file.
       @dst = @metadata.pandoc_options['output'] if @dst.to_s.empty? && @metadata.pandoc_options.key?('output')

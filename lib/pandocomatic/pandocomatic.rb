@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2014—2024, Huub de Beer <huub@heerdebeer.org>
+# Copyright 2014—2025, Huub de Beer <huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -219,6 +219,7 @@ module Pandocomatic
       # An unexpected error has occurred; break off the program drastically
       # for now. This is likely a bug: ask the user to report it.
       UnknownErrorPrinter.new(e).print
+      LOG.error e.backtrace.join("\n")
       exit ERROR_STATUS + 2
     ensure
       configuration&.clean_up!
