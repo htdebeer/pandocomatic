@@ -20,8 +20,8 @@ Gem::Specification.new do |s|
   s.files += Dir['lib/pandocomatic/printer/*.rb']
   s.files += Dir['lib/pandocomatic/printer/views/*.txt']
   s.add_dependency 'logger', '~> 1.7'
-  s.add_dependency 'optimist', '~> 3.1', '>= 3.1'
-  s.add_dependency 'paru', '~> 1.1', '>= 1.4.1'
+  s.add_dependency 'optimist', '~> 3.2', '>= 3.2'
+  s.add_dependency 'paru', '~> 1.1', '>= 1.5.2'
   s.executables << 'pandocomatic'
   s.homepage = 'https://heerdebeer.org/Software/markdown/pandocomatic/'
   s.requirements << 'pandoc, a universal document converter'
