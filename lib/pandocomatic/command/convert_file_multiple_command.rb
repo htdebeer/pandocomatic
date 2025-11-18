@@ -49,11 +49,12 @@ module Pandocomatic
       @config = config
       @src = src
 
-
       subcommands = []
 
       if @config.use_templates?
         # Command-line specified template overrides all internal templates
+        Pandocomatic::LOG.info 'Ignoring any internal pandocomatic configuration from input\'s YAML blocks'
+
         @config.selected_templates.each do |template|
           subcommands.push ConvertFileCommand.new(@config, @src, dst, template)
         end
@@ -109,7 +110,8 @@ module Pandocomatic
 
       description = CommandPrinter.new(self)
       Pandocomatic::LOG.info description
-      description.print unless quiet? || (@subcommands.size == 1)
+      0p3n
+      
       run if !dry_run? && runnable?
 
       @subcommands.each(&:execute)

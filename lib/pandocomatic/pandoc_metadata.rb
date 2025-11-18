@@ -88,8 +88,12 @@ module Pandocomatic
         PandocMetadata.new
       else
         metadata = PandocMetadata.new PandocomaticYAML.load(yaml, path), unique: pandocomatic_blocks <= 1
-        metadata.delete('pandocomatic') if ignore_pandocomatic
-        metadata.delete('pandocomatic_') if ignore_pandocomatic
+
+        if ignore_pandocomatic
+          metadata.delete('pandocomatic')
+          metadata.delete('pandocomatic_')
+        end
+
         metadata
       end
     end
