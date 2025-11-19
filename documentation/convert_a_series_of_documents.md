@@ -21,20 +21,36 @@ pandocomatic template* `hello` in the *pandocomatic configuration file*
 ::paru::insert ../example/manual/my-config.yaml
 ```
 
-You use it in a pandoc markdown file by specifying the `use-template` sub
-property in the `pandocomatic_` property. The `hello_world.md` example then
-becomes:
+You use an *external pandocomatic template* in one of two ways:
 
-```{.pandoc}
-::paru::insert ../example/manual/external_hello_world.md
-```
+1. You use it in a pandoc markdown file by specifying the `use-template` sub
+   property in the `pandocomatic_` property. The `hello_world.md` example then
+   becomes:
+
+   ```{.pandoc}
+   ::paru::insert ../example/manual/external_hello_world.md
+   ```
+
+2. You use it via command-line option `--template` or `-t`, which takes the template's
+   name as argument. This way, you don't have to have a `pandocomatic_`
+   configuration in your input file's YAML block. This allows you to use
+   *external pandocomatic templates* with any input format. After all, only pandoc's
+   Markdown format supports YAML blocks where you could specify a
+   `pandocomatic_` configuration.
 
 To convert `external_hello_world.md` you need to tell pandocomatic where to
 find the *external pandocomatic template* via the `--config` command-line
-option. For example, to convert `external_hello_world.md` to `out.html`, use:
+option. For example, to convert `external_hello_world.md` to `out.html` via
+the first way, use:
 
 ```{.bash}
 pandocomatic -d my_data_dir --config my-config.yaml -i external_hello_world.md -o out.html
+```
+
+Or, using the second way:
+
+```{.bash}
+pandocomatic -d my_data_dir --config my-config.yaml -i hello_world.md -t hello -o out.html
 ```
 
 ### Customizing external templates with an internal template
@@ -72,6 +88,10 @@ Lists and properties in *internal pandocomatic templates* are merged with
 *external pandocomatic templates*; simple values, such as strings, numbers, or
 Booleans, are replaced. Besides a template's `pandoc` property you can also
 customize any other property of the template.
+
+**Note** When using command-line option `--template`, pandocomatic will
+ignore any *internal pandocomatic templates* and only apply the template
+specified via the command-line option.
 
 ### Extending templates
 

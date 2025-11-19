@@ -22,16 +22,16 @@ are quite similar.
 I already wrote the program *do-pandoc.rb* as part of a Ruby wrapper around
 pandoc, [paru](https://heerdebeer.org/Software/markdown/paru/). Using
 *do-pandoc.rb* I can specify the options to pandoc in a metadata block in the
-source file itself. With *do-pandoc.rb* the invocation above is simplified to:
+source file itself. With *do-pandoc.rb* you simplify the invocation above to:
 
 ~~~{.bash}
 do-pandoc.rb source.md
 ~~~
 
-It saves me from typing out the whole pandoc invocation each time I run pandoc
-on a source file. However, I have still to setup the same options to use in
-each document that I am writing, even though these options do not differ that
-much from document to document.
+It saves me from typing out the pandoc invocation each time I run pandoc on a
+source file. However, I have still to set up the same options to use in each
+document that I am writing, even though these options do not differ that much
+from document to document.
 
 *Pandocomatic* is a tool to re-use these common configurations by specifying a
 so-called *pandocomatic template* in a [YAML](https://yaml.org/) configuration
@@ -53,7 +53,7 @@ templates:
     postprocessors: []
 ~~~   
 
-In this configuration file a single *pandocomatic template* is being defined:
+In this configuration file I define a single *pandocomatic template*:
 *education-research*. This template specifies that the source files it is
 applied to are not being preprocessed. Furthermore, the source files are
 converted with pandoc by invoking `pandoc --from markdown --to html
@@ -91,6 +91,15 @@ adding a `pandoc` property with those options to the `pandocomatic_` metadata
 property in the source file like I did with the `output` property in the
 example above. 
 
-Once I had written a number of related documents this way, it was a small step
-to enable pandocomatic to convert directories as well. Just like that,
+Alternatively, you can use pandocomatic's `--template` command-line option and
+skip the `pandocomatic_` metadata block in your source file or use
+pandocomatic with non-markdown source files. In this example, run
+pandocomatic:
+
+~~~{.bash}
+pandocomatic -i on_teaching_maths.md --template education-research
+~~~
+
+Once I had written several related documents this way, it was a small step to
+enable pandocomatic to convert directories as well. Just like that,
 pandocomatic can be used as a *static site generator*!

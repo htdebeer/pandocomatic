@@ -15,8 +15,8 @@ information about installing pandoc.
 
 ### Docker
 
-You can also build and install the latest version yourself by running the
-following commands:
+Alternatively, you can also build and install the latest version yourself by
+running the following commands:
 
 ~~~{.bash}
 cd /directory/you/downloaded/the/gem/to
@@ -30,7 +30,7 @@ image, you can reuse it as is until `Dockerfile` changes.
 
 ### MacOS: Brew
 
-Alternatively, MacOS users can install pandocomatic via
+Finally, macOS users can install pandocomatic via
 [homebrew](https://formulae.brew.sh/formula/pandocomatic):
 
 ~~~{.bash}
