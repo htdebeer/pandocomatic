@@ -2,7 +2,6 @@
 
 #--
 # Copyright 2017-2025, Huub de Beer <Huub@heerdebeer.org>
-#
 # This file is part of pandocomatic.
 #
 # Pandocomatic is free software: you can redistribute it and/or modify

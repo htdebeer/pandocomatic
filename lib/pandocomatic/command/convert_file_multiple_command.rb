@@ -110,7 +110,6 @@ module Pandocomatic
 
       description = CommandPrinter.new(self)
       Pandocomatic::LOG.info description
-      0p3n
       
       run if !dry_run? && runnable?
 
