@@ -24,6 +24,8 @@ module Pandocomatic
   require_relative 'error/cli_error'
   require_relative 'configuration'
 
+  # rubocop:disable Metrics
+
   ##
   # Command line options parser for pandocomatic using optimist.
   #
@@ -48,8 +50,6 @@ module Pandocomatic
         raise CLIError.new(:problematic_invocation, e, args)
       end
     end
-
-    # rubocop:disable Metrics
 
     # Parse pandocomatic's global options.
     #

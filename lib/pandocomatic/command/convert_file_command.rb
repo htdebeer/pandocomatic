@@ -127,9 +127,10 @@ module Pandocomatic
       str
     end
 
-    private
-
+    # Name of the anonymous inner template.
     INTERNAL_TEMPLATE = 'internal template'
+
+    private
 
     def convert_file
       pandoc_options = @metadata.pandoc_options || {}
@@ -164,18 +165,16 @@ module Pandocomatic
              '"--enable pandoc-verbose".'
       end
 
+      template_log = Pandocomatic::LOG.indent(YAML.dump(template.to_h).sub('---', ''), 34)
+
       if @metadata.pandocomatic?
         template.merge! Template.new(INTERNAL_TEMPLATE, @metadata.pandocomatic)
 
         Pandocomatic::LOG.debug '  #  Selected template mixed with internal template and pandocomatic metadata ' \
-                                "gives final template:#{Pandocomatic::LOG.indent(YAML.dump(template.to_h).sub('---', ''),
-                                                                                 34)}"
+                                "gives final template:#{template_log}"
       else
-        Pandocomatic::LOG.debug '  #  Selected template' \
-                                ":#{Pandocomatic::LOG.indent(YAML.dump(template.to_h).sub('---', ''),
-                                                             34)}"
+        Pandocomatic::LOG.debug "  #  Selected template:#{template_log}"
       end
-
 
       # Write out the results of the conversion process to file.
       @dst = @metadata.pandoc_options['output'] if @dst.to_s.empty? && @metadata.pandoc_options.key?('output')

@@ -110,7 +110,7 @@ module Pandocomatic
 
       description = CommandPrinter.new(self)
       Pandocomatic::LOG.info description
-      
+
       run if !dry_run? && runnable?
 
       @subcommands.each(&:execute)
