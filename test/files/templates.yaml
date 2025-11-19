@@ -1,0 +1,11 @@
+templates:
+  a:
+    metadata:
+      variable: a
+  b:
+    metadata:
+      variable: b
+  c:
+    metadata:
+      variable: c
+

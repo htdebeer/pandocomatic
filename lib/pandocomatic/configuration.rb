@@ -2,7 +2,7 @@
 
 # rubocop:disable Metrics
 #--
-# Copyright 2014—2024 Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2014—2025 Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -109,6 +109,7 @@ module Pandocomatic
     'tei' => 'tei',
     'texinfo' => 'texi',
     'textile' => 'textile',
+    'typst' => 'typ',
     'xwiki' => 'xwiki',
     'zimwiki' => 'zimwiki'
   }.freeze
@@ -196,6 +197,15 @@ module Pandocomatic
       @convert_patterns = {}
 
       load_configuration_hierarchy options, data_dirs
+
+      # Check if template selected via CLI option exists
+      if use_templates?
+        non_existing_templates = selected_templates.reject { |t| template? t }
+
+        unless non_existing_templates.empty?
+          raise ConfigurationError.new(:templates_do_not_exist, nil, non_existing_templates)
+        end
+      end
 
       @input = if input.nil? || input.empty?
                  nil
@@ -377,6 +387,24 @@ module Pandocomatic
       !@options.nil? and @options[:output_given] and @options[:output]
     end
 
+    # Is the template CLI option given?
+    #
+    # @return [Boolean]
+    def use_templates?
+      !@options.nil? and @options[:template_given] and @options[:template] and !@options[:template].empty?
+    end
+
+    # Get the selected templates
+    #
+    # @return [String[]]
+    def selected_templates
+      if use_templates?
+        @options[:template]
+      else
+        []
+      end
+    end
+
     # Get the output file name
     #
     # @return [String]
@@ -439,8 +467,8 @@ module Pandocomatic
     # @param template_name [String] template used; optional parameter
     # @return [PandocMetadata] Pandoc's metadata for given file and template.
     def get_metadata(src, template_name = nil)
-      if extract_metadata_from? src
-        PandocMetadata.load_file src
+      if extract_metadata_from?(src)
+        PandocMetadata.load_file src, ignore_pandocomatic: use_templates?
       else
         src_format = nil
 
@@ -460,9 +488,9 @@ module Pandocomatic
 
         if !src_format || src_format == 'markdown'
           # Behave like pandoc: If no source format can be determined, assume markdown
-          PandocMetadata.load_file src
+          PandocMetadata.load_file src, ignore_pandocomatic: use_templates?
         else
-          PandocMetadata.empty src_format
+          PandocMetadata.empty src_format, ignore_pandocomatic: use_templates?
         end
       end
     end

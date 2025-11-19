@@ -566,4 +566,36 @@ exit"
       assert_files_equal example_output, output
     end
   end
+
+  def test_template_specified_on_command_line
+    Dir.mktmpdir('template') do |dir|
+      # Latex template
+      input = File.join ['example', 'hello_world.md']
+      output = File.join [dir, 'hello_world.tex']
+      config = File.join ['example', 'templates.yaml']
+
+      Pandocomatic::Pandocomatic.run "-i #{input} -o #{output} -c #{config} -t latex"
+
+      latex_output = File.join ['example', 'hello_world.tex']
+
+      assert_files_equal latex_output, output
+    end
+  end
+
+  def test_multiple_templates_specified_on_command_line
+    Dir.mktmpdir('templates') do |dir|
+      # Latex template
+      input = File.join ['example', 'hello_world.md']
+      output = File.join [dir, 'hello_world.tex']
+      config = File.join ['example', 'templates.yaml']
+
+      Pandocomatic::Pandocomatic.run "-i #{input} -c #{config} -o #{output} -t latex -t typst"
+
+      latex_output = File.join ['example', 'hello_world.tex']
+      typst_output = File.join ['example', 'hello_world.typ']
+
+      assert_files_equal latex_output, File.join([dir, 'hello_world.tex'])
+      assert_files_equal typst_output, File.join([dir, 'hello_world.typ'])
+    end
+  end
 end

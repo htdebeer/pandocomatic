@@ -3,11 +3,10 @@ Version](https://badge.fury.io/rb/pandocomatic.svg)](https://badge.fury.io/rb/pa
 
 # Pandocomatic—Automate the use of pandoc
 
-Pandocomatic automates the use of [pandoc](https://pandoc.org/). With
-pandocomatic you can express common patterns of using pandoc for
-generating your documents. Applied to a directory, pandocomatic acts as
-a static site generator. For example, this manual is generated with
-pandocomatic!
+Pandocomatic automates using [pandoc](https://pandoc.org/). With
+pandocomatic you express common patterns of using pandoc for generating
+your documents. Applied to a directory, pandocomatic acts as a static
+site generator. For example, I generated this manual with pandocomatic!
 
 Pandocomatic is [free
 software](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic
@@ -15,11 +14,10 @@ is released under the
 [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html). You will find the
 source code of pandocomatic in its
 [repository](https://github.com/htdebeer/pandocomatic) on
-[Github](https://github.com).
+[GitHub](https://github.com).
 
 **Note.** Pandocomatic is build on top of
-[paru](https://github.com/htdebeer/paru), which is a wrapper around
-pandoc.
+[paru](https://github.com/htdebeer/paru), a wrapper around pandoc.
 
 **Note.** As I am a GNU/Linux user, I do not officially support other
 operating systems like Mac OSX or Windows. Fixes and patches for those
@@ -54,17 +52,17 @@ these invocations are quite similar.
 I already wrote the program *do-pandoc.rb* as part of a Ruby wrapper
 around pandoc, [paru](https://heerdebeer.org/Software/markdown/paru/).
 Using *do-pandoc.rb* I can specify the options to pandoc in a metadata
-block in the source file itself. With *do-pandoc.rb* the invocation
-above is simplified to:
+block in the source file itself. With *do-pandoc.rb* you simplify the
+invocation above to:
 
 ``` bash
 do-pandoc.rb source.md
 ```
 
-It saves me from typing out the whole pandoc invocation each time I run
-pandoc on a source file. However, I have still to setup the same options
-to use in each document that I am writing, even though these options do
-not differ that much from document to document.
+It saves me from typing out the pandoc invocation each time I run pandoc
+on a source file. However, I have still to set up the same options to
+use in each document that I am writing, even though these options do not
+differ that much from document to document.
 
 *Pandocomatic* is a tool to re-use these common configurations by
 specifying a so-called *pandocomatic template* in a
@@ -86,10 +84,10 @@ templates:
     postprocessors: []
 ```
 
-In this configuration file a single *pandocomatic template* is being
-defined: *education-research*. This template specifies that the source
-files it is applied to are not being preprocessed. Furthermore, the
-source files are converted with pandoc by invoking
+In this configuration file I define a single *pandocomatic template*:
+*education-research*. This template specifies that the source files it
+is applied to are not being preprocessed. Furthermore, the source files
+are converted with pandoc by invoking
 `pandoc --from markdown --to html --standalone --csl apa.csl --toc --bibliography /path/to/bibliography.bib --mathjax`.
 Finally, the template specifies that pandoc’s output is not being
 postprocessed.
@@ -125,9 +123,18 @@ process is as easy as adding a `pandoc` property with those options to
 the `pandocomatic_` metadata property in the source file like I did with
 the `output` property in the example above.
 
-Once I had written a number of related documents this way, it was a
-small step to enable pandocomatic to convert directories as well. Just
-like that, pandocomatic can be used as a *static site generator*!
+Alternatively, you can use pandocomatic’s `--template` command-line
+option and skip the `pandocomatic_` metadata block in your source file
+or use pandocomatic with non-markdown source files. In this example, run
+pandocomatic:
+
+``` bash
+pandocomatic -i on_teaching_maths.md --template education-research
+```
+
+Once I had written several related documents this way, it was a small
+step to enable pandocomatic to convert directories as well. Just like
+that, pandocomatic can be used as a *static site generator*!
 
 Pandocomatic is [free
 software](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic
@@ -154,14 +161,14 @@ installing pandoc.
 
 ### Docker
 
-You can also build and install the latest version yourself by running
-the following commands:
+Alternatively, you can also build and install the latest version
+yourself by running the following commands:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
 docker image build --tag pandocomatic:dev .
 docker container run --rm -it --volume $(pwd):/home/pandocomatic-user pandocomatic:dev bundle exec rake build
-gem install pkg/pandocomatic-2.1.0.gem
+gem install pkg/pandocomatic-2.2.0.gem
 ```
 
 You only have to do the second step one time. Once you’ve created a
@@ -169,7 +176,7 @@ docker image, you can reuse it as is until `Dockerfile` changes.
 
 ### MacOS: Brew
 
-Alternatively, MacOS users can install pandocomatic via
+Finally, macOS users can install pandocomatic via
 [homebrew](https://formulae.brew.sh/formula/pandocomatic):
 
 ``` bash

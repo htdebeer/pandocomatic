@@ -38,5 +38,6 @@ module Pandocomatic
     # :unable_to_load_config_file
 
     # :no_such_template
+    # :templates_do_not_exist
   end
 end

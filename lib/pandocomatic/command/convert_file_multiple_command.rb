@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017—2024 Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017—2025 Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -49,30 +49,39 @@ module Pandocomatic
       @config = config
       @src = src
 
-      metadata = @config.get_metadata @src
-
       subcommands = []
 
-      if metadata&.template?
-        # There are templates in this document's metadata, try to use
-        # those.
-        metadata.templates.each do |template_name|
-          unless template_name.empty? || config.template?(template_name)
-            raise ConfigurationError.new(:no_such_template, nil,
-                                         template_name)
-          end
+      if @config.use_templates?
+        # Command-line specified template overrides all internal templates
+        Pandocomatic::LOG.info 'Ignoring any internal pandocomatic configuration from input\'s YAML blocks'
 
-          subcommands.push ConvertFileCommand.new(@config, @src, dst, template_name)
+        @config.selected_templates.each do |template|
+          subcommands.push ConvertFileCommand.new(@config, @src, dst, template)
         end
       else
-        # Try to match any global templates using the glob patterns
-        global_templates = @config.determine_templates(@src)
+        metadata = @config.get_metadata @src
 
-        if global_templates.empty?
-          subcommands.push ConvertFileCommand.new(@config, @src, dst)
-        else
-          global_templates.each do |template_name|
+        if metadata&.template?
+          # There are templates in this document's metadata, try to use
+          # those.
+          metadata.templates.each do |template_name|
+            unless template_name.empty? || config.template?(template_name)
+              raise ConfigurationError.new(:no_such_template, nil,
+                                           template_name)
+            end
+
             subcommands.push ConvertFileCommand.new(@config, @src, dst, template_name)
+          end
+        else
+          # Try to match any global templates using the glob patterns
+          global_templates = @config.determine_templates(@src)
+
+          if global_templates.empty?
+            subcommands.push ConvertFileCommand.new(@config, @src, dst)
+          else
+            global_templates.each do |template_name|
+              subcommands.push ConvertFileCommand.new(@config, @src, dst, template_name)
+            end
           end
         end
       end
@@ -101,7 +110,7 @@ module Pandocomatic
 
       description = CommandPrinter.new(self)
       Pandocomatic::LOG.info description
-      description.print unless quiet? || (@subcommands.size == 1)
+
       run if !dry_run? && runnable?
 
       @subcommands.each(&:execute)

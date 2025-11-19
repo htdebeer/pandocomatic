@@ -13,11 +13,10 @@ title: Pandocomatic
 
 # Introduction
 
-Pandocomatic automates the use of [pandoc](https://pandoc.org/). With
-pandocomatic you can express common patterns of using pandoc for
-generating your documents. Applied to a directory, pandocomatic acts as
-a static site generator. For example, this manual is generated with
-pandocomatic!
+Pandocomatic automates using [pandoc](https://pandoc.org/). With
+pandocomatic you express common patterns of using pandoc for generating
+your documents. Applied to a directory, pandocomatic acts as a static
+site generator. For example, I generated this manual with pandocomatic!
 
 Pandocomatic is [free
 software](https://www.gnu.org/philosophy/free-sw.en.html); pandocomatic
@@ -25,11 +24,10 @@ is released under the
 [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html). You will find the
 source code of pandocomatic in its
 [repository](https://github.com/htdebeer/pandocomatic) on
-[Github](https://github.com).
+[GitHub](https://github.com).
 
 **Note.** Pandocomatic is build on top of
-[paru](https://github.com/htdebeer/paru), which is a wrapper around
-pandoc.
+[paru](https://github.com/htdebeer/paru), a wrapper around pandoc.
 
 ## Acknowledgements
 
@@ -56,14 +54,14 @@ installing pandoc.
 
 ### Docker
 
-You can also build and install the latest version yourself by running
-the following commands:
+Alternatively, you can also build and install the latest version
+yourself by running the following commands:
 
 ``` bash
 cd /directory/you/downloaded/the/gem/to
 docker image build --tag pandocomatic:dev .
 docker container run --rm -it --volume $(pwd):/home/pandocomatic-user pandocomatic:dev bundle exec rake build
-gem install pkg/pandocomatic-2.1.0.gem
+gem install pkg/pandocomatic-2.2.0.gem
 ```
 
 You only have to do the second step one time. Once you've created a
@@ -71,7 +69,7 @@ docker image, you can reuse it as is until `Dockerfile` changes.
 
 ### MacOS: Brew
 
-Alternatively, MacOS users can install pandocomatic via
+Finally, macOS users can install pandocomatic via
 [homebrew](https://formulae.brew.sh/formula/pandocomatic):
 
 ``` bash
@@ -103,17 +101,17 @@ these invocations are quite similar.
 I already wrote the program *do-pandoc.rb* as part of a Ruby wrapper
 around pandoc, [paru](https://heerdebeer.org/Software/markdown/paru/).
 Using *do-pandoc.rb* I can specify the options to pandoc in a metadata
-block in the source file itself. With *do-pandoc.rb* the invocation
-above is simplified to:
+block in the source file itself. With *do-pandoc.rb* you simplify the
+invocation above to:
 
 ``` bash
 do-pandoc.rb source.md
 ```
 
-It saves me from typing out the whole pandoc invocation each time I run
-pandoc on a source file. However, I have still to setup the same options
-to use in each document that I am writing, even though these options do
-not differ that much from document to document.
+It saves me from typing out the pandoc invocation each time I run pandoc
+on a source file. However, I have still to set up the same options to
+use in each document that I am writing, even though these options do not
+differ that much from document to document.
 
 *Pandocomatic* is a tool to re-use these common configurations by
 specifying a so-called *pandocomatic template* in a
@@ -135,10 +133,10 @@ templates:
     postprocessors: []
 ```
 
-In this configuration file a single *pandocomatic template* is being
-defined: *education-research*. This template specifies that the source
-files it is applied to are not being preprocessed. Furthermore, the
-source files are converted with pandoc by invoking
+In this configuration file I define a single *pandocomatic template*:
+*education-research*. This template specifies that the source files it
+is applied to are not being preprocessed. Furthermore, the source files
+are converted with pandoc by invoking
 `pandoc --from markdown --to html --standalone --csl apa.csl --toc --bibliography /path/to/bibliography.bib --mathjax`.
 Finally, the template specifies that pandoc's output is not being
 postprocessed.
@@ -174,9 +172,18 @@ process is as easy as adding a `pandoc` property with those options to
 the `pandocomatic_` metadata property in the source file like I did with
 the `output` property in the example above.
 
-Once I had written a number of related documents this way, it was a
-small step to enable pandocomatic to convert directories as well. Just
-like that, pandocomatic can be used as a *static site generator*!
+Alternatively, you can use pandocomatic's `--template` command-line
+option and skip the `pandocomatic_` metadata block in your source file
+or use pandocomatic with non-markdown source files. In this example, run
+pandocomatic:
+
+``` bash
+pandocomatic -i on_teaching_maths.md --template education-research
+```
+
+Once I had written several related documents this way, it was a small
+step to enable pandocomatic to convert directories as well. Just like
+that, pandocomatic can be used as a *static site generator*!
 
 ------------------------------------------------------------------------
 
@@ -185,9 +192,9 @@ like that, pandocomatic can be used as a *static site generator*!
 ## Converting a single document
 
 Pandocomatic allows you to put [pandoc command-line
-options](http://pandoc.org/MANUAL.html) in the document to be converted
+options](https://pandoc.org/MANUAL.html) in the document to be converted
 itself. Instead of a complex pandoc command-line invocation,
-pandocomatic allows you to convert your markdown document
+pandocomatic allows you to convert your Markdown document
 `hello_world.md` with just:
 
 ``` bash
@@ -201,7 +208,7 @@ and the file is converted according to that **pandocomatic template**.
 For more information about *pandocomatic template*s, see the [chapter
 about templates](#pandocomatic-templates) later in this manual.
 
-For example, if `hello_world.md` contains the following pandoc markdown
+For example, if `hello_world.md` contains the following pandoc Markdown
 text:
 
 ``` pandoc
@@ -239,7 +246,7 @@ pandoc:
 Besides the `pandoc` property to configure the pandoc conversion,
 *pandocomatic templates* can also contain a list of **preprocessors**
 and a list of **postprocessors**. Preprocessors are run before the
-document is converted with pandoc and postprocessors are run afterwards
+document is converted with pandoc and postprocessors are run afterward
 (see the Figure below):
 
 ![How pandocomatic works: a simple
@@ -332,27 +339,42 @@ configuration file* `my-config.yaml` as follows:
              - ./tidy.sh
 ```
 
-You use it in a pandoc markdown file by specifying the `use-template`
-sub property in the `pandocomatic_` property. The `hello_world.md`
-example then becomes:
+You use an *external pandocomatic template* in one of two ways:
 
-``` pandoc
-  ---
-  title: My second pandocomatic-converted document
-  pandocomatic_:
-      use-template: hello
-  ...
-  
-  Hello *World*!
-```
+1.  You use it in a pandoc markdown file by specifying the
+    `use-template` sub property in the `pandocomatic_` property. The
+    `hello_world.md` example then becomes:
+
+    ``` pandoc
+      ---
+      title: My second pandocomatic-converted document
+      pandocomatic_:
+          use-template: hello
+      ...
+      
+      Hello *World*!
+    ```
+
+2.  You use it via command-line option `--template` or `-t`, which takes
+    the template's name as argument. This way, you don't have to have a
+    `pandocomatic_` configuration in your input file's YAML block. This
+    allows you to use *external pandocomatic templates* with any input
+    format. After all, only pandoc's Markdown format supports YAML
+    blocks where you could specify a `pandocomatic_` configuration.
 
 To convert `external_hello_world.md` you need to tell pandocomatic where
 to find the *external pandocomatic template* via the `--config`
 command-line option. For example, to convert `external_hello_world.md`
-to `out.html`, use:
+to `out.html` via the first way, use:
 
 ``` bash
 pandocomatic -d my_data_dir --config my-config.yaml -i external_hello_world.md -o out.html
+```
+
+Or, using the second way:
+
+``` bash
+pandocomatic -d my_data_dir --config my-config.yaml -i hello_world.md -t hello -o out.html
 ```
 
 ### Customizing external templates with an internal template
@@ -391,6 +413,10 @@ Lists and properties in *internal pandocomatic templates* are merged
 with *external pandocomatic templates*; simple values, such as strings,
 numbers, or Booleans, are replaced. Besides a template's `pandoc`
 property you can also customize any other property of the template.
+
+**Note** When using command-line option `--template`, pandocomatic will
+ignore any *internal pandocomatic templates* and only apply the template
+specified via the command-line option.
 
 ### Extending templates
 
@@ -551,7 +577,7 @@ Pandocomatic will complain if the input and output types do not match.
 
 `-s, --stdout`
 
-:   Print result of converstion to standard output.
+:   Print result of conversion to standard output.
 
     You cannot combine this option with `--output` or with a directory
     as input.
@@ -569,6 +595,18 @@ Pandocomatic will complain if the input and output types do not match.
 :   Configure pandocomatic to use `FILE` as its configuration file
     during the conversion process. Default is
     `DATA_DIR/pandocomatic.yaml`.
+
+`-t TEMPLATE, --template TEMPLATE`
+
+:   Configure pandocomatic to use `TEMPLATE` when converting input to
+    output. Any internal pandocomatic template in the input is ignored.
+
+    You can use this option multiple times, for each template a separate
+    conversion is run.
+
+    This command-line option only applies when converting input files;
+    it does not work when converting directories. If given template does
+    not exist, pandocomatic will print an error.
 
 ### Arguments to change how pandocomatic operates
 
@@ -1486,6 +1524,59 @@ command-line option. For example:
 ``` bash
 pandocomatic --quiet some-file-to-export.md
 ```
+
+### Something goes wrong! How can I figure out what pandocomatic is doing?
+
+Enable logging to see what steps pandocomatic takes while converting
+your documents. Use command-line options `--log` and `--log-level DEBUG`
+to tell pandocomatic to log everything. By default `--log` logs to file
+`pandocomatic.log`, but you can supply an alternative log file location.
+
+For example:
+
+``` bash
+pandocomatic --log /tmp/my-log.txt --log-level DEBUG examples/hello_world.md
+```
+
+will generate log:
+
+    # Logfile created on 2025-11-19 13:06:48 +0100 by logger.rb/v1.7.0
+    2025-11-19 13:06:48 INFO : ------------ START ---------------
+    2025-11-19 13:06:48 INFO : Running /home/huub/.rbenv/versions/3.5-dev/bin/pandocomatic --log /tmp/my-log.txt --log-level DEBUG example/hello_world.md
+    2025-11-19 13:06:48 DEBUG: Validating command-line arguments:
+    2025-11-19 13:06:48 DEBUG: ✓  Option '--input' not used:  treat all arguments after last option as input files or directories.
+    2025-11-19 13:06:48 DEBUG: ✓  Convert single input file or directory.
+    2025-11-19 13:06:48 DEBUG: ✓  Input files and directories exist.
+    2025-11-19 13:06:48 DEBUG: Start conversion:
+    2025-11-19 13:06:48 INFO : (2) + converting /home/huub/Projects/htdebeer@github.com/pandocomatic/example/hello_world.md 1 time:
+    2025-11-19 13:06:48 INFO : (1)   - convert hello_world.md -> hello_world.html
+    2025-11-19 13:06:48 DEBUG:   #  Using internal template.
+    2025-11-19 13:06:48 DEBUG:   #  Selected template mixed with internal template and pandocomatic metadata gives final template:
+                                      extends: []
+                                      glob: []
+                                      setup: []
+                                      preprocessors: []
+                                      metadata: {}
+                                      pandoc:
+                                        from: markdown
+                                        to: html5
+                                      postprocessors: []
+                                      cleanup: []
+    2025-11-19 13:06:48 DEBUG:   →  Reading source file: '/home/huub/Projects/htdebeer@github.com/pandocomatic/example/hello_world.md'
+    2025-11-19 13:06:48 DEBUG:      | FileInfoPreprocessor. Adding file information to metadata:
+                                         pandocomatic-fileinfo:
+                                           from: markdown
+                                           to: html5
+                                           path: '/home/huub/Projects/htdebeer@github.com/pandocomatic/example/hello_world.md'
+                                           src_path: '/home/huub/Projects/htdebeer@github.com/pandocomatic/example/hello_world.md'
+                                           created: 2025-04-18
+                                           modified: 2024-05-04
+    2025-11-19 13:06:48 DEBUG:      #  Changing directory to '/home/huub/Projects/htdebeer@github.com/pandocomatic/example'
+    2025-11-19 13:06:48 DEBUG:      #  Running pandoc
+    2025-11-19 13:06:48 DEBUG:      |  pandoc       --from=markdown \
+                                                    --to=html5
+    2025-11-19 13:06:48 DEBUG:   ←  Writing output to './hello_world.html'.
+    2025-11-19 13:06:48 INFO : ------------  END  ---------------
 
 ## Glossary
 

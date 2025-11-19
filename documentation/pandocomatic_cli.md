@@ -42,7 +42,7 @@ will complain if the input and output types do not match.
 
 `-s, --stdout`
 
-:   Print result of converstion to standard output.
+:   Print result of conversion to standard output.
 
     You cannot combine this option with `--output` or with a directory as
     input.
@@ -59,6 +59,18 @@ will complain if the input and output types do not match.
 
 :   Configure pandocomatic to use `FILE` as its configuration file 
     during the conversion process. Default is `DATA_DIR/pandocomatic.yaml`.
+
+`-t TEMPLATE, --template TEMPLATE`
+
+:   Configure pandocomatic to use `TEMPLATE` when converting input to output. 
+    Any internal pandocomatic template in the input is ignored.
+    
+    You can use this option multiple times, for each template a separate 
+    conversion is run. 
+
+    This command-line option only applies when converting input files; it does
+    not work when converting directories. If given template does not exist, 
+    pandocomatic will print an error.
 
 ### Arguments to change how pandocomatic operates
 

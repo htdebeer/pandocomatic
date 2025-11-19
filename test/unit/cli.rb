@@ -181,4 +181,37 @@ class TestPandocomaticCLI < Minitest::Test
 
     assert_equal e.message, 'Multiple input files only'
   end
+
+  def test_template_not_for_directories
+    e = assert_raises Pandocomatic::CLIError do
+      cli('-i test/files/readable_test_dir -t a -c test/files/templates.yaml')
+    end
+
+    assert_equal e.message, 'Cannot use template with directory'
+  end
+
+  def test_template_does_not_exist
+    e = assert_raises Pandocomatic::ConfigurationError do
+      cli('-i test/files/readable_test_file -t a -t d -c test/files/templates.yaml')
+    end
+
+    assert_equal e.message, 'Templates do not exist'
+    assert_equal e.data, ['d']
+  end
+
+  def test_templates
+    # No template given
+    options = cli('-i test/files/readable_test_file -c test/files/templates.yaml')
+    refute options.use_templates?
+
+    # Templates given
+    options = cli('-i test/files/readable_test_file -t a -t b -t c -c test/files/templates.yaml')
+    assert options.use_templates?
+    assert_equal options.selected_templates, %w[a b c]
+
+    # Duplicates are removed
+    options = cli('-i test/files/readable_test_file -t a -t b -t b -c test/files/templates.yaml')
+    assert options.use_templates?
+    assert_equal options.selected_templates, %w[a b]
+  end
 end

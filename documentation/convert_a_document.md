@@ -1,9 +1,9 @@
 ## Converting a single document
 
 Pandocomatic allows you to put [pandoc command-line
-options](http://pandoc.org/MANUAL.html) in the document to be converted
+options](https://pandoc.org/MANUAL.html) in the document to be converted
 itself. Instead of a complex pandoc command-line invocation, pandocomatic
-allows you to convert your markdown document `hello_world.md` with just:
+allows you to convert your Markdown document `hello_world.md` with just:
 
 ``` {.bash}
 pandocomatic hello_world.md
@@ -16,7 +16,7 @@ converted according to that **pandocomatic template**. For more information
 about *pandocomatic template*s, see the [chapter about
 templates](#pandocomatic-templates) later in this manual.
 
-For example, if `hello_world.md` contains the following pandoc markdown text:
+For example, if `hello_world.md` contains the following pandoc Markdown text:
 
 ```{.pandoc}
 ::paru::insert ../example/manual/hello_world.md
@@ -45,7 +45,7 @@ pandoc:
 Besides the `pandoc` property to configure the pandoc conversion,
 *pandocomatic templates* can also contain a list of **preprocessors** and a
 list of **postprocessors**. Preprocessors are run before the document is
-converted with pandoc and postprocessors are run afterwards (see the Figure
+converted with pandoc and postprocessors are run afterward (see the Figure
 below): 
 
 ![How pandocomatic works: a simple

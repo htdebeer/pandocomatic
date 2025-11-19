@@ -7,7 +7,7 @@
 documentation/api-doc
 .yardoc
 
-hello_world.html
+hello_world.*
 pandocomatic.log
 
 # Artifacts from running rake in docker 

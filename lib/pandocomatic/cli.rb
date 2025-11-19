@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017-2024, Huub de Beer <huub@heerdebeer.org>
+# Copyright 2017-2025, Huub de Beer <huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -23,6 +23,8 @@ module Pandocomatic
 
   require_relative 'error/cli_error'
   require_relative 'configuration'
+
+  # rubocop:disable Metrics
 
   ##
   # Command line options parser for pandocomatic using optimist.
@@ -49,8 +51,6 @@ module Pandocomatic
       end
     end
 
-    # rubocop:disable Metrics
-
     # Parse pandocomatic's global options.
     #
     # @return [Configuration]
@@ -70,6 +70,7 @@ module Pandocomatic
         opt :data_dir, 'Data dir', short: '-d', type: String
         opt :config, 'Configuration file', short: '-c', type: String
         opt :root_path, 'Root path', short: '-r', type: String
+        opt :template, 'Template to use for conversion', short: '-t', type: String, multi: true
 
         # What to convert and where to put it
         opt :output, 'Output', short: '-o', type: String
@@ -106,7 +107,7 @@ module Pandocomatic
 
         # if no input option is specified, all items following the last option
         # are treated as input files.
-        if !(options[:input_given])
+        if !options[:input_given]
           Pandocomatic::LOG.debug '✓  Option \'--input\' not used:  ' \
                                   'treat all arguments after last option as input files or directories.'
           options[:input] = args
@@ -143,11 +144,29 @@ module Pandocomatic
         Pandocomatic::LOG.debug '✓  Input files and directories exist.'
 
         # You cannot use the --stdout option while converting directories
-        if options[:stdout_given] && File.directory?(input.first)
+        if convert_directory?(input) && options[:stdout_given]
           options[:stdout] = false
           raise CLIError, :cannot_use_stdout_with_directory
         end
         Pandocomatic::LOG.debug '✓  Write output to STDOUT.' if options[:stdout_given]
+
+        # You cannot use the --template option while converting directories
+        if convert_directory?(input) && options[:template_given]
+          options[:template] = nil
+          raise CLIError, :cannot_use_template_with_directory
+        end
+
+        # Postponing checking for existence of template until configuration
+        # hierarchy has been loaded.
+        if options[:template_given]
+          templates = options[:template]
+          duplicates = templates.select { |t| templates.count(t) > 1 }
+
+          options[:template] = templates.uniq
+
+          Pandocomatic::LOG.debug "✓  Use templates '#{options[:template]}' for conversion."
+          Pandocomatic::LOG.warn " !  Ignoring duplicate templates: #{duplicates}." unless duplicates.empty?
+        end
 
         if options[:output_given]
           # You cannot use --stdout with --output
@@ -224,7 +243,7 @@ module Pandocomatic
     # rubocop:enable Metrics
 
     private_class_method def self.options_need_to_be_validated?(options)
-      !(options[:version_given]) and !(options[:help_given])
+      !options[:version_given] and !options[:help_given]
     end
 
     #--
@@ -266,6 +285,10 @@ module Pandocomatic
 
       raise CLIError.new(:output_is_not_a_file, nil, input) if File.file? input
       raise CLIError.new(:output_is_not_a_directory, nil, input) if File.directory? input
+    end
+
+    private_class_method def self.convert_directory?(input)
+      File.directory? input.first
     end
   end
 end

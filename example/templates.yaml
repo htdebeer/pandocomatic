@@ -1,0 +1,9 @@
+templates:
+  latex:
+    pandoc:
+      from: markdown
+      to: latex
+  typst:
+    pandoc:
+      from: markdown
+      to: typst
