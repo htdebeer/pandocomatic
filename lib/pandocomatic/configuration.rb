@@ -2,7 +2,7 @@
 
 # rubocop:disable Metrics
 #--
-# Copyright 2014—2025 Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2014—2026 Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
@@ -486,8 +486,9 @@ module Pandocomatic
           src_format = PANDOCS_EXTENSION_TO_FORMAT_MAPPING[src_extension]
         end
 
-        if !src_format || src_format == 'markdown'
-          # Behave like pandoc: If no source format can be determined, assume markdown
+        if !src_format || src_format.match?(/markdown(((\+|-).+)|$)/)
+          # Behave like pandoc: If no source format can be determined, assume markdown.
+          # If format is markdown, ignore any extensions.
           PandocMetadata.load_file src, ignore_pandocomatic: use_templates?
         else
           PandocMetadata.empty src_format, ignore_pandocomatic: use_templates?

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# Copyright 2017-2025, Huub de Beer <Huub@heerdebeer.org>
+# Copyright 2017-2026, Huub de Beer <Huub@heerdebeer.org>
 #
 # This file is part of pandocomatic.
 #
